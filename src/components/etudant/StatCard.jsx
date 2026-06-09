@@ -38,8 +38,8 @@ const StatCard = ({ icon: Icon, value, label, trend, trendType = 'neutral', colo
   return (
     <div className={`bg-white border border-slate-200/80 rounded-2xl p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 group`}>
       <div className="flex flex-col gap-1.5">
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{label}</span>
-        <span className="text-xl font-bold text-slate-900 tracking-tight">{value}</span>
+        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{label}</span>
+        <span className="text-md font-bold text-slate-700 tracking-tight">{value}</span>
         
         {trend && (
           <span className={`inline-flex items-center self-start gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mt-1 ${trendColorClass}`}>
@@ -49,7 +49,7 @@ const StatCard = ({ icon: Icon, value, label, trend, trendType = 'neutral', colo
       </div>
       
       <div className={`p-3.5 rounded-xl transition-all duration-300 ${activeColor.bg} group-hover:scale-105 shadow-sm ${activeColor.shadow}`}>
-        <Icon className="w-5 h-5" />
+        <Icon className="w-4 h-4" />
       </div>
     </div>
   )

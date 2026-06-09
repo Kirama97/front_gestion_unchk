@@ -50,6 +50,7 @@ function App() {
           ),
           children : [
                 { path: "accueil", element: <HomeEtudiant /> },
+                { path: "emploi-du-temps", element: <EmploiDuTemps /> },
           ]
         },
         // route enseignant

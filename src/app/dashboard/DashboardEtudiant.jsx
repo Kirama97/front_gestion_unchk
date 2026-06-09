@@ -15,7 +15,8 @@ import {
   FiCalendar, 
   FiBookOpen, 
   FiAward, 
-  FiHelpCircle
+  FiHelpCircle,
+  FiFileText
 } from 'react-icons/fi'
 
 const DashboardEtudiant = () => {
@@ -98,8 +99,8 @@ const DashboardEtudiant = () => {
             >
               {isMobileSidebarOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
             </button>
-            <Link to="/etudiant/emploi-du-temps" className="flex items-center gap-3 hover:opacity-95 transition-opacity">
-              <div className="relative flex h-8 w-8 items-center justify-center rounded-md bg-blue-600 shadow-md shadow-blue-500/20">
+            <Link to="/etudiant/accueil" className="flex items-center gap-3 hover:opacity-95 transition-opacity">
+              <div className="relative flex h-8 w-8 items-center justify-center rounded-md bg-orange-400 shadow-md shadow-blue-500/20">
               
                 <span className=" text-white font-extrabold text-lg">U</span>
               </div>
@@ -127,7 +128,7 @@ const DashboardEtudiant = () => {
               >
                 <FiMessageSquare className="w-4 h-5" />
                 {unreadMessagesCount > 0 && (
-                  <span className="absolute top-1 right-1 flex h-3 w-3 items-center justify-center rounded-lg bg-blue-500 text-[9px] font-bold text-white ring-2 ring-white">
+                  <span className="absolute top-1 right-1 flex h-3 w-3 items-center justify-center rounded-sm bg-neutral-600 text-[9px] font-bold text-white ring-2 ring-white">
                     {unreadMessagesCount}
                   </span>
                 )}
@@ -189,7 +190,7 @@ const DashboardEtudiant = () => {
               >
                 <FiBell className="w-4 h-4" />
                 {unreadNotificationsCount > 0 && (
-                  <span className="absolute top-1 right-1 flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-white animate-pulse">
+                  <span className="absolute top-1 right-1 flex h-3 w-3 items-center justify-center rounded-sm bg-red-500 text-[9px] font-bold text-white ring-2 ring-white animate-pulse">
                     {unreadNotificationsCount}
                   </span>
                 )}
@@ -310,23 +311,144 @@ const DashboardEtudiant = () => {
           </div>
 
         </div>
-        <div className="h-[10vh] bg-neutral-100 px-10 py-1 flex items-center justify-between">
+        <div className="bg-slate-100 px-4 sm:px-8 py-2 flex items-center justify-between border-t border-slate-200/50 shadow-inner">
             {/* Search bar (desktop) */}
-            <BarreDeRechercheEtudiant/>
+            <BarreDeRechercheEtudiant />
 
-          <div className=" flex items-center justify-end gap-5 ">
-            <Link to="etudiant/accueil" className='text-black hover:font-semibold text-sm '>Accueil</Link>
-            <Link to="etudiant/accueil" className='text-black hover:font-semibold text-sm '>Planning</Link>
-            <Link to="etudiant/accueil" className='text-black hover:font-semibold text-sm '>Mes Cours</Link>
-            <Link to="etudiant/accueil" className='text-black hover:font-semibold text-sm '>Notes</Link>
-        </div>
-
+            <div className="hidden md:flex items-center justify-end gap-6">
+              <Link 
+                to="/etudiant/accueil" 
+                className={`text-xs font-bold transition duration-200 ${
+                  location.pathname === '/etudiant/accueil' 
+                    ? 'text-blue-600' 
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Accueil
+              </Link>
+              <Link 
+                to="/etudiant/emploi-du-temps" 
+                className={`text-xs font-bold transition duration-200 ${
+                  location.pathname === '/etudiant/emploi-du-temps' 
+                    ? 'text-blue-600' 
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                Planning
+              </Link>
+              <Link to="#" className="text-xs font-bold text-slate-600 hover:text-slate-900 transition duration-200">
+                Mes Cours
+              </Link>
+              <Link to="#" className="text-xs font-bold text-slate-600 hover:text-slate-900 transition duration-200">
+                Notes
+              </Link>
+            </div>
         </div>
         
       </header>
 
+      {/* Mobile Sidebar Overlay */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm md:hidden"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* Mobile Sidebar Panel */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-white p-6 shadow-2xl transition-transform duration-300 transform md:hidden ${
+        isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-600 shadow-md shadow-blue-500/20">
+              <span className="text-white font-extrabold text-lg">U</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs font-bold tracking-tight text-slate-900">UNCHK Portal</span>
+              <span className="text-[8px] font-bold tracking-wider text-blue-600 uppercase">Espace Étudiant</span>
+            </div>
+          </div>
+          <button 
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
+          >
+            <FiX className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Navigation Links inside Mobile Sidebar */}
+        <nav className="space-y-1">
+          <Link 
+            to="/etudiant/accueil" 
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold transition ${
+              location.pathname === '/etudiant/accueil' 
+                ? 'bg-blue-50 text-blue-600' 
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            }`}
+          >
+            <FiBookOpen className="w-4 h-4" />
+            Accueil
+          </Link>
+          <Link 
+            to="/etudiant/emploi-du-temps" 
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold transition ${
+              location.pathname === '/etudiant/emploi-du-temps' 
+                ? 'bg-blue-50 text-blue-600' 
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            }`}
+          >
+            <FiCalendar className="w-4 h-4" />
+            Planning
+          </Link>
+          <Link 
+            to="#" 
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition"
+          >
+            <FiAward className="w-4 h-4" />
+            Mes Cours
+          </Link>
+          <Link 
+            to="#" 
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition"
+          >
+            <FiFileText className="w-4 h-4" />
+            Notes
+          </Link>
+        </nav>
+
+        {/* User profile footer inside mobile sidebar */}
+        <div className="absolute bottom-6 left-6 right-6 border-t border-slate-100 pt-6">
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              src="/img2.jpg"
+              alt="Photo de profil"
+              className="h-9 w-9 rounded-full object-cover border border-slate-200"
+              onError={(e) => {
+                e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100&h=100";
+              }}
+            />
+            <div className="flex flex-col flex-1 min-w-0">
+              <span className="text-xs font-bold text-slate-800 truncate">Diene thiam</span>
+              <span className="text-[9px] text-slate-400 font-semibold truncate">{user.email || 'etudiant@gmail.com'}</span>
+            </div>
+          </div>
+          <button 
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-xs font-bold text-red-600 hover:bg-red-50 transition"
+          >
+            <FiLogOut className="w-4 h-4" />
+            Se déconnecter
+          </button>
+        </div>
+      </div>
+
       {/* Main Container */}
-      <div className="">
+      <div className="flex-1">
         
         <Outlet/>
 
