@@ -320,7 +320,7 @@ const DashboardEtudiant = () => {
                 to="/etudiant/accueil" 
                 className={`text-xs font-bold transition duration-200 ${
                   location.pathname === '/etudiant/accueil' 
-                    ? 'text-blue-600' 
+                    ? 'text-orange-500' 
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -330,7 +330,7 @@ const DashboardEtudiant = () => {
                 to="/etudiant/emploi-du-temps" 
                 className={`text-xs font-bold transition duration-200 ${
                   location.pathname === '/etudiant/emploi-du-temps' 
-                    ? 'text-blue-600' 
+                    ? 'text-orange-500' 
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
