@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 
-const login = () => {
+const Login = () => {
    const [loading ,setLoading] = useState(false)
+   const [error, setError] = useState("")
+   const navigate = useNavigate()
    const [form , setForm] = useState({
      email :  "",
      password :  "",
@@ -46,19 +48,42 @@ const login = () => {
   ]
 
   const handleLogin = (e) => {
-
       e.preventDefault();
       setLoading(true)
+      setError("")
 
-      const data = {
-        email : form.email ,
-        password : form.password
+      const foundUser = compte.find(
+        (c) => c.email === form.email && c.password === form.password
+      )
+
+      if (foundUser) {
+        localStorage.setItem("user", JSON.stringify({
+          email: foundUser.email,
+          role: foundUser.role,
+          token: foundUser.token
+        }))
+
+        // Redirect based on role
+        setTimeout(() => {
+          setLoading(false)
+          if (foundUser.role === "admin") {
+            navigate("/admin/accueil")
+          } else if (foundUser.role === "etudiant") {
+            navigate("/etudiant/accueil")
+          } else if (foundUser.role === "enseignant") {
+            navigate("/enseignant/accueim")
+          } else if (foundUser.role === "tuteur") {
+            navigate("/tuteur/accueil")
+          } else if (foundUser.role === "insertion") {
+            navigate("/insertion")
+          } else {
+            navigate("/")
+          }
+        }, 800) // slight delay for beautiful loading micro-animation
+      } else {
+        setLoading(false)
+        setError("Email ou mot de passe institutionnel incorrect.")
       }
-
-      console.log(data)
-      setLoading(false)
-
-
   } 
 
 
@@ -71,6 +96,12 @@ const login = () => {
                <h1 className='text-xl font-bold  '>Connexion</h1>
                <p className='text-xs text-neutral mt-1'>Bienvenue ! Connectez-vous à votre compte</p>
            </div>
+
+           {error && (
+             <div className="mb-4 text-xs text-red-700 bg-red-100/80 border border-red-300 p-3 rounded-md text-center font-medium backdrop-blur-sm">
+               {error}
+             </div>
+           )}
 
             {/* form */}
            <form action="" className="" onSubmit={handleLogin}>
@@ -97,7 +128,7 @@ const login = () => {
                   <input
                       type="password"
                       value={form.password}
-                      onchange = {e => setForm({...form , password:e.target.value})}
+                      onChange = {e => setForm({...form , password:e.target.value})}
                       placeholder='**********'
                       className='text-xs px-3 py-3 rounded-md bg-transparent border border-black placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#00802D] transition focus:ring-offset-1 '
 
@@ -117,7 +148,8 @@ const login = () => {
                   {/* btn submit  */}
                   <button
                     type='submit'
-                    className='mt-5 text-center text-xs w-full bg-green-600 py-3 hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-[#006622] focus:ring-offset-1 transition text-white  rounded-md'
+                    disabled={loading}
+                    className='mt-5 text-center text-xs w-full bg-green-600 py-3 hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-[#006622] focus:ring-offset-1 transition text-white  rounded-md disabled:bg-green-600/50'
                   >
                     {
                       loading ? "chargement... " : "se connecter"
@@ -131,4 +163,4 @@ const login = () => {
   )
 }
 
-export default login
+export default Login
