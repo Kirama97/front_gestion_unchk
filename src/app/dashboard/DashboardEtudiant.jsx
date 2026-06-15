@@ -404,7 +404,7 @@ const DashboardEtudiant = () => {
             Planning
           </Link>
           <Link 
-            to="/mes_cours" 
+            to="/etudiant/mes_cours" 
             onClick={() => setIsMobileSidebarOpen(false)}
             className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition"
           >
