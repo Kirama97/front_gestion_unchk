@@ -14,7 +14,7 @@ const EmploiDuTemps = () => {
   ]
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-[5%] mt-3">
       <div>
         <h2 className="text-xl font-bold text-slate-800">Emploi du Temps</h2>
         <p className="text-xs text-slate-500 mt-0.5">Votre planning de cours pour le semestre en cours.</p>

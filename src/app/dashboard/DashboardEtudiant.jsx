@@ -336,7 +336,7 @@ const DashboardEtudiant = () => {
               >
                 Planning
               </Link>
-              <Link to="#" className="text-xs font-bold text-slate-600 hover:text-slate-900 transition duration-200">
+              <Link to="/etudiant/mes_cours" className="text-xs font-bold text-slate-600 hover:text-slate-900 transition duration-200">
                 Mes Cours
               </Link>
               <Link to="#" className="text-xs font-bold text-slate-600 hover:text-slate-900 transition duration-200">
@@ -404,7 +404,7 @@ const DashboardEtudiant = () => {
             Planning
           </Link>
           <Link 
-            to="#" 
+            to="/mes_cours" 
             onClick={() => setIsMobileSidebarOpen(false)}
             className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition"
           >

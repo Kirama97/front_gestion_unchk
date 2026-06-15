@@ -34,7 +34,7 @@ const BarreDeRechercheEtudiant = () => {
                  />
                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                    <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 font-mono text-[9px] font-medium text-slate-400 shadow-sm">
-                     <span>⌘</span>K
+                     <span className='py-1 px-3'>ok</span>
                    </kbd>
                  </div>
                </div>

@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import Login from './app/commun/Login'
 import DashboardAdmin from './app/dashboard/DashboardAdmin'
 import ProtectedRoute from './routes/ProtectedRoute'
@@ -12,6 +12,11 @@ import PageNonAutorisé from './app/commun/PageNonAutorisé';
 import NotFoundPage from './app/commun/NotFoundPage';
 import HomeEtudiant from './pages/etudiant/HomeEtudiant';
 import HomeAdmin from './pages/administrateur/HomeAdmin';
+import CourEtudiant from './pages/etudiant/CourEtudiant';
+import DetailCoursEtudiant from './app/module/module_formation/DetailCoursEtudiant';
+import DetailSequence from './app/module/module_formation/DetailSequence';
+
+
 
 
 function App() {
@@ -41,17 +46,33 @@ function App() {
         },
 
         // route etudiant
-        {
+       {
           path: "/etudiant",
-          element : (
-           <ProtectedRoute roleRequired="etudiant">
-              <DashboardEtudiant/>
-           </ProtectedRoute>
+          element: (
+            <ProtectedRoute roleRequired="etudiant">
+              <DashboardEtudiant />
+            </ProtectedRoute>
           ),
-          children : [
-                { path: "accueil", element: <HomeEtudiant /> },
-                { path: "emploi-du-temps", element: <EmploiDuTemps /> },
-          ]
+          children: [
+            { path: "accueil", element: <HomeEtudiant /> },
+            { path: "emploi-du-temps", element: <EmploiDuTemps /> },
+            { path: "mes_cours", element: <CourEtudiant /> },
+
+            {
+              path: "detail_cours/:id",
+              element: <DetailCoursEtudiant />,
+              children: [
+                  {
+                  index: true,
+                  element: <Navigate to="sequence/1" replace />,
+                },
+                {
+                  path: "sequence/:sequenceId",
+                  element: <DetailSequence />,
+                },
+              ],
+            },
+          ],
         },
         // route enseignant
         {
