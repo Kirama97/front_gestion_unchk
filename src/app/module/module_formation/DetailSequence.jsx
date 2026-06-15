@@ -33,7 +33,7 @@ export default function DetailSequence() {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <h1 className="text-2xl font-bold">{sequence.titre}</h1>
 
       <p className="mt-4 text-gray-600">
