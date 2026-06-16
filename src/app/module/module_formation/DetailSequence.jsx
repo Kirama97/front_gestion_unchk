@@ -34,11 +34,18 @@ export default function DetailSequence() {
 
   return (
     <div className="w-full">
-      <h1 className="text-2xl font-bold">{sequence.titre}</h1>
+      <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold">{sequence.titre}</h1>
+          <div className="flex items-center gap-2">
+             <button className="px-2 py-1 bg-orange-500 text-white rounded-lg text-sm hover:bg-black hover:text-white duration-200 transition ease-linear">Traveaux dirigé</button>
+             <button className="px-2 py-1 bg-orange-500 text-white rounded-lg text-sm hover:bg-black hover:text-white duration-200 transition ease-linear">Devoirs</button>
+          </div>
+      </div>
+       
 
-      <p className="mt-4 text-gray-600">
+      {/* <p className="mt-4 text-gray-600">
         {sequence.contenu}
-      </p>
+      </p> */}
     </div>
   );
 }

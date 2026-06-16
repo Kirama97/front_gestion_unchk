@@ -105,8 +105,8 @@ const Detailcourstudiant = () => {
         </aside>
 
         {/* MAIN */}
-        <main className="flex-1 p-3 md:p-8 ">
-          <div className=" bg-white rounded-2xl border shadow-sm p-6 min-h-[400px]">
+        <main className="flex-1 p-3 md:p-3 ">
+          <div className=" bg-white rounded-lg border shadow-sm p-6 min-h-[400px]">
             <Outlet />
           </div>
         </main>
