@@ -15,6 +15,7 @@ import HomeAdmin from './pages/administrateur/HomeAdmin';
 import CourEtudiant from './pages/etudiant/CourEtudiant';
 import DetailCoursEtudiant from './app/module/module_formation/DetailCoursEtudiant';
 import DetailSequence from './app/module/module_formation/DetailSequence';
+import NotesEtudiant from './pages/etudiant/NotesEtudiant';
 
 
 
@@ -57,6 +58,7 @@ function App() {
             { path: "accueil", element: <HomeEtudiant /> },
             { path: "emploi-du-temps", element: <EmploiDuTemps /> },
             { path: "mes_cours", element: <CourEtudiant /> },
+            { path: "notes", element: <NotesEtudiant /> },
 
             {
               path: "detail_cours/:id",

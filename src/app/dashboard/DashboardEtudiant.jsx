@@ -339,7 +339,14 @@ const DashboardEtudiant = () => {
               <Link to="/etudiant/mes_cours" className="text-xs font-bold text-slate-600 hover:text-slate-900 transition duration-200">
                 Mes Cours
               </Link>
-              <Link to="#" className="text-xs font-bold text-slate-600 hover:text-slate-900 transition duration-200">
+              <Link 
+                to="/etudiant/notes" 
+                className={`text-xs font-bold transition duration-200 ${
+                  location.pathname === '/etudiant/notes' 
+                    ? 'text-orange-500' 
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
                 Notes
               </Link>
             </div>
@@ -412,9 +419,13 @@ const DashboardEtudiant = () => {
             Mes Cours
           </Link>
           <Link 
-            to="#" 
+            to="/etudiant/notes" 
             onClick={() => setIsMobileSidebarOpen(false)}
-            className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition"
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold transition ${
+              location.pathname === '/etudiant/notes' 
+                ? 'bg-blue-50 text-blue-600' 
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            }`}
           >
             <FiFileText className="w-4 h-4" />
             Notes
