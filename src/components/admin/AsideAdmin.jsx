@@ -41,9 +41,9 @@ const PROMOS = [
       { id: 15, label: 'IDA' },
       { id: 16, label: 'MIC' },
       { id: 17, label: 'MAI' },
-      { id: 18, label: 'AES' },
+      { id: 18 ,label: 'AES' }
     ],
-  },
+  }
 ]
 
 // ─── Filière ───────────────────────────────────────────────────────────────
