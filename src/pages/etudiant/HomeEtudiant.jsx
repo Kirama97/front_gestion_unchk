@@ -4,6 +4,7 @@ import ProchainCours from '../../components/etudant/ProchainCours'
 import ProfilAcademique from '../../components/etudant/ProfilAcademique'
 import ActualitesEvenements from '../../components/etudant/ActualitesEvenements'
 import AccesRapide from '../../components/etudant/AccesRapide'
+import InfoBoxEtudiant from './../../components/etudant/InfoBoxEtudiant';
 
 const HomeEtudiant = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}')
@@ -36,6 +37,9 @@ const HomeEtudiant = () => {
 
             {/* Actions Rapides */}
             <AccesRapide />
+            {/* info box */}
+
+            <InfoBoxEtudiant/>
 
          </div>
       

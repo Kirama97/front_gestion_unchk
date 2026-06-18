@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom'
 import BarreDeRechercheEtudiant from '../../components/etudant/BarreDeRechercheEtudiant';
+import Footer from './../commun/Footer';
 import { 
+
 
   FiSearch, 
   FiBell, 
@@ -282,14 +284,14 @@ const DashboardEtudiant = () => {
                     <p className="text-xs font-bold text-slate-800 truncate">{user.email || 'etudiant@gmail.com'}</p>
                   </div>
                   <div className="mt-1 space-y-0.5">
-                    <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                    <Link to="/etudiant/profil" className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
                       <FiUser className="w-4 h-4" />
                       Mon Profil
-                    </button>
-                    <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                    </Link>
+                    <Link to="/etudiant/parametre" className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
                       <FiSettings className="w-4 h-4" />
                       Paramètres
-                    </button>
+                    </Link>
                     <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
                       <FiHelpCircle className="w-4 h-4" />
                       Support & FAQ
@@ -464,6 +466,11 @@ const DashboardEtudiant = () => {
         <Outlet/>
 
       </div>
+
+
+        {/* footer */}
+        <Footer></Footer>
+
     </div>
   )
 }

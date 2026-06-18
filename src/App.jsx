@@ -16,6 +16,8 @@ import CourEtudiant from './pages/etudiant/CourEtudiant';
 import DetailCoursEtudiant from './app/module/module_formation/DetailCoursEtudiant';
 import DetailSequence from './app/module/module_formation/DetailSequence';
 import NotesEtudiant from './pages/etudiant/NotesEtudiant';
+import ProfilEtudiant from './pages/etudiant/ProfilEtudiant';
+import ParametreEtudiant from './pages/etudiant/ParametreEtudiant';
 
 
 
@@ -59,6 +61,8 @@ function App() {
             { path: "emploi-du-temps", element: <EmploiDuTemps /> },
             { path: "mes_cours", element: <CourEtudiant /> },
             { path: "notes", element: <NotesEtudiant /> },
+            { path: "profil", element: <ProfilEtudiant /> },
+            { path: "parametre", element: <ParametreEtudiant /> },
 
             {
               path: "detail_cours/:id",
