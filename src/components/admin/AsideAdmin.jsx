@@ -5,6 +5,7 @@ import {
   PiChalkboardTeacher,
   PiBriefcase,        // ← remplace PiUserTie
   PiCalendarCheck,
+  PiCalendarDotsLight ,
   PiNotebook,
   PiHouseLine,
   PiGearSix,
@@ -68,6 +69,7 @@ const FiliereItem = ({ filiere }) => {
           <NavLink to={`/admin/etudiants/filiere/${filiere.id}`} icon={<PiListBullets />} label="Liste des étudiants" />
           <NavLink to={`/admin/etudiants/filiere/${filiere.id}/ajouter`} icon={<PiUserPlus />} label="Ajouter un étudiant" />
           <NavLink to={`/admin/etudiants/filiere/${filiere.id}/notes`} icon={<PiNotebook />} label="Notes de la filière" />
+          <NavLink to={`/admin/etudiants/filiere/${filiere.id}/planning`} icon={<PiCalendarDotsLight  />} label="Emploie du temps" />
         </div>
       )}
     </div>

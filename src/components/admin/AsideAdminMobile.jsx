@@ -5,6 +5,7 @@ import {
   PiChalkboardTeacher,
   PiBriefcase,        // ← remplace PiUserTie
   PiCalendarCheck,
+  PiCalendarDotsLight ,
   PiNotebook,
   PiHouseLine,
   PiGearSix,
@@ -26,20 +27,24 @@ import {
 const PROMOS = [
   {
     id: 1,
-    label: 'Promo BTS 2025',
+    label: 'Promo 8 ',
     filieres: [
-      { id: 11, label: 'Informatique' },
-      { id: 12, label: 'Gestion' },
+      { id: 11, label: 'IDA' },
+      { id: 12, label: 'MIC' },
+      { id: 13, label: 'MAI' },
+      { id: 14, label: 'AES' },
     ],
   },
   {
     id: 2,
-    label: 'Promo L3 2024',
+    label: 'Promo 9',
     filieres: [
-      { id: 21, label: 'Développement Web' },
-      { id: 22, label: 'Réseaux' },
+      { id: 15, label: 'IDA' },
+      { id: 16, label: 'MIC' },
+      { id: 17, label: 'MAI' },
+      { id: 18 ,label: 'AES' }
     ],
-  },
+  }
 ]
 
 // ─── Filière ───────────────────────────────────────────────────────────────
@@ -64,6 +69,7 @@ const FiliereItem = ({ filiere }) => {
           <NavLink to={`/admin/etudiants/filiere/${filiere.id}`} icon={<PiListBullets />} label="Liste des étudiants" />
           <NavLink to={`/admin/etudiants/filiere/${filiere.id}/ajouter`} icon={<PiUserPlus />} label="Ajouter un étudiant" />
           <NavLink to={`/admin/etudiants/filiere/${filiere.id}/notes`} icon={<PiNotebook />} label="Notes de la filière" />
+          <NavLink to={`/admin/etudiants/filiere/${filiere.id}/planning`} icon={<PiCalendarDotsLight  />} label="Emploie du temps" />
         </div>
       )}
     </div>
@@ -144,7 +150,7 @@ const SideSection = ({ icon: Icon, label, children }) => {
 // ─── Aside principal ───────────────────────────────────────────────────────
 const AsideAdminMobile = () => {
   return (
-    <aside className="aside_admin w-64 h-[92vh] bg-white border-r border-slate-200 p-4 flex flex-col gap-4 max-md:hidden overflow-y-auto">
+    <aside className="aside_admin w-64 h-[92vh]  bg-white border-r border-slate-200 p-4 flex flex-col gap-4 max-md:hidden overflow-y-auto">
 
       {/* Logo */}
       <div className="px-2 py-1 border-b border-slate-100 pb-4">
