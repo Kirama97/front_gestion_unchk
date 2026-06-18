@@ -87,46 +87,94 @@ const BtnGhost = ({ children, onClick }) => (
   </button>
 )
 
-/* ─── Données initiales ─── */
-
-const initial = {
-  nom: 'Diene Thiam',
-  image:"/img2.jpg",
-  initiales: 'AD',
-  identifiant: 'ETU-2024-00342',
-  email: 'diene.thiam@unchk.edu.sn',
-  telephone: '+221 77 234 56 78',
-  dateNaissance: '14 mars 2001',
-  genre: 'Masculin',
-  adresse: 'Parcelles Assainies, Dakar',
-  etablissement: 'Université Cheikh Anta Diop',
-  filiere: 'Informatique',
-  niveau: 'Licence 3',
-  anneeEntree: '2022 – 2023',
-  statut: 'Inscrit',
-  localisation: 'Dakar, Sénégal',
-}
+import { useEffect } from 'react'
+import { apiGet, apiPut } from '../../utils/api'
 
 /* ─── Composant principal ─── */
 
 const ProfilEtudiant = () => {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [editMode, setEditMode]   = useState(false)
-  const [etudiant, setEtudiant]   = useState(initial)
-  const [draft, setDraft]         = useState(initial)
+  const [etudiant, setEtudiant]   = useState(null)
+  const [draft, setDraft]         = useState(null)
   const [saved, setSaved]         = useState(false)
 
-  const e = etudiant
+  const mapBackendToState = (data) => {
+    const userObj = data.utilisateur || {};
+    return {
+      id: data.id,
+      nom: `${userObj.prenom || ''} ${userObj.nom || ''}`,
+      prenom: userObj.prenom || '',
+      nomSeul: userObj.nom || '',
+      image: "/img2.jpg",
+      identifiant: data.ine || '',
+      email: userObj.email || '',
+      telephone: userObj.telephone || '',
+      dateNaissance: data.dateNaissance || '',
+      genre: data.genre || '',
+      adresse: data.adresse || '',
+      etablissement: 'Université Numérique Cheikh Hamidou Kane (UN-CHK)',
+      filiere: data.filiere || '',
+      niveau: data.niveauEtude || '',
+      anneeEntree: data.anneeDebut ? `${data.anneeDebut} – ${data.anneeSortie || ''}` : '',
+      anneeDebut: data.anneeDebut || '',
+      anneeSortie: data.anneeSortie || '',
+      statut: userObj.statut || 'Actif',
+      localisation: data.adresse || 'Sénégal',
+    };
+  };
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
+        const data = await apiGet('/api/etudiant/me');
+        const stateObj = mapBackendToState(data);
+        setEtudiant(stateObj);
+        setDraft(stateObj);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching student profile:', err);
+        setError(err.message || 'Impossible de charger les données du profil.');
+        setLoading(false);
+      }
+    };
+    loadProfile();
+  }, []);
 
   const handleChange = (ev) => {
     const { name, value } = ev.target
     setDraft(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSave = () => {
-    setEtudiant(draft)
-    setEditMode(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+  const handleSave = async () => {
+    try {
+      const payload = {
+        nom: draft.nomSeul,
+        prenom: draft.prenom,
+        email: draft.email,
+        telephone: draft.telephone,
+        dateNaissance: draft.dateNaissance,
+        adresse: draft.adresse,
+        genre: draft.genre,
+        filiere: draft.filiere,
+        niveauEtude: draft.niveau,
+        anneeDebut: draft.anneeDebut,
+        anneeSortie: draft.anneeSortie,
+      };
+
+      const response = await apiPut(`/api/etudiants/${draft.id}`, payload);
+      const updatedState = mapBackendToState(response);
+      setEtudiant(updatedState);
+      setDraft(updatedState);
+      setEditMode(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert(err.message || "Erreur lors de la mise à jour du profil.");
+    }
   }
 
   const handleCancel = () => {
@@ -138,6 +186,26 @@ const ProfilEtudiant = () => {
     setDraft(etudiant)
     setEditMode(true)
   }
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-[50vh] flex items-center justify-center">
+        <div className="text-sm font-semibold text-gray-500 animate-pulse">Chargement de votre profil...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full min-h-[50vh] flex items-center justify-center px-4">
+        <div className="bg-red-50 text-red-700 text-sm p-4 rounded-xl border border-red-100 text-center max-w-md">
+          {error}
+        </div>
+      </div>
+    );
+  }
+
+  const e = etudiant
 
   return (
     <div className="w-full  mx-auto p-5 sm:px-[10%] py-6 font-sans">
@@ -156,7 +224,7 @@ const ProfilEtudiant = () => {
         <div className="px-5 pb-5">
           <div className="-mt-10 mb-3">
               <div className="w-20 h-20 rounded-full overflow-hidden  flex items-center justify-center text-3xl font-medium text-white shrink-0 border-4 border-white ring-2 ring-orange-500">
-                <img src={e.image} alt="" srcset="" className='w-full h-full object-cover' />
+                <img src={e.image} alt="" className='w-full h-full object-cover' />
             </div>
           </div>
           <div className="flex flex-wrap justify-between items-start gap-3">
@@ -193,16 +261,18 @@ const ProfilEtudiant = () => {
 
           {editMode ? (
             <>
-              <EditRow icon={FiLayout}   label="Identifiant"       name="identifiant"   value={draft.identifiant}   onChange={handleChange} readOnly />
+              <EditRow icon={FiLayout}   label="Identifiant (INE)"   name="identifiant"   value={draft.identifiant}   onChange={handleChange} readOnly />
+              <EditRow icon={FiUser}     label="Prénom"            name="prenom"        value={draft.prenom}        onChange={handleChange} />
+              <EditRow icon={FiUser}     label="Nom"               name="nomSeul"       value={draft.nomSeul}       onChange={handleChange} />
               <EditRow icon={FiMail}     label="Email"             name="email"         value={draft.email}         onChange={handleChange} type="email" />
               <EditRow icon={FiPhone}    label="Téléphone"         name="telephone"     value={draft.telephone}     onChange={handleChange} />
-              <EditRow icon={FiCalendar} label="Date de naissance" name="dateNaissance" value={draft.dateNaissance} onChange={handleChange} />
+              <EditRow icon={FiCalendar} label="Date de naissance" name="dateNaissance" value={draft.dateNaissance} onChange={handleChange} type="date" />
               <EditRow icon={FiUsers}    label="Genre"             name="genre"         value={draft.genre}         onChange={handleChange} />
               <EditRow icon={FiHome}     label="Adresse"           name="adresse"       value={draft.adresse}       onChange={handleChange} last />
             </>
           ) : (
             <>
-              <FieldRow icon={FiLayout}   label="Identifiant"       value={<span className="font-mono text-xs bg-gray-50 px-2 py-0.5 rounded">{e.identifiant}</span>} />
+              <FieldRow icon={FiLayout}   label="Identifiant (INE)" value={<span className="font-mono text-xs bg-gray-50 px-2 py-0.5 rounded">{e.identifiant}</span>} />
               <FieldRow icon={FiMail}     label="Email"             value={<span className="text-orange-500 text-xs">{e.email}</span>} />
               <FieldRow icon={FiPhone}    label="Téléphone"         value={e.telephone} />
               <FieldRow icon={FiCalendar} label="Date de naissance" value={e.dateNaissance} />
@@ -218,11 +288,10 @@ const ProfilEtudiant = () => {
 
           {editMode ? (
             <>
-              <EditRow icon={FiMap}         label="Établissement"  name="etablissement" value={draft.etablissement} onChange={handleChange} />
-              <EditRow icon={FiBookOpen}    label="Filière"        name="filiere"       value={draft.filiere}       onChange={handleChange} />
-              <EditRow icon={FiAward}       label="Niveau"         name="niveau"        value={draft.niveau}        onChange={handleChange} />
-              <EditRow icon={FiCalendar}    label="Année d'entrée" name="anneeEntree"   value={draft.anneeEntree}   onChange={handleChange} />
-              <EditRow icon={FiCheckCircle} label="Statut"         name="statut"        value={draft.statut}        onChange={handleChange} last />
+              <EditRow icon={FiMap}         label="Établissement"  name="etablissement" value={draft.etablissement} onChange={handleChange} readOnly />
+              <EditRow icon={FiBookOpen}    label="Filière"        name="filiere"       value={draft.filiere}       onChange={handleChange} readOnly />
+              <EditRow icon={FiAward}       label="Niveau"         name="niveau"        value={draft.niveau}        onChange={handleChange} readOnly />
+              <EditRow icon={FiCalendar}    label="Année d'entrée" name="anneeEntree"   value={draft.anneeEntree}   onChange={handleChange} readOnly last />
             </>
           ) : (
             <>

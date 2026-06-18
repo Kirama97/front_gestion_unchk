@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { apiGet } from '../../utils/api'
 import {
   PiStudent,
   PiChalkboardTeacher,
@@ -24,28 +25,6 @@ import {
   PiCaretDown,
 } from 'react-icons/pi'
 // ─── Données (à remplacer par API) ────────────────────────────────────────
-const PROMOS = [
-  {
-    id: 1,
-    label: 'Promo 8 ',
-    filieres: [
-      { id: 11, label: 'IDA' },
-      { id: 12, label: 'MIC' },
-      { id: 13, label: 'MAI' },
-      { id: 14, label: 'AES' },
-    ],
-  },
-  {
-    id: 2,
-    label: 'Promo 9',
-    filieres: [
-      { id: 15, label: 'IDA' },
-      { id: 16, label: 'MIC' },
-      { id: 17, label: 'MAI' },
-      { id: 18 ,label: 'AES' }
-    ],
-  }
-]
 
 // ─── Filière ───────────────────────────────────────────────────────────────
 const FiliereItem = ({ filiere }) => {
@@ -149,6 +128,30 @@ const SideSection = ({ icon: Icon, label, children }) => {
 
 // ─── Aside principal ───────────────────────────────────────────────────────
 const AsideAdmin = () => {
+  const [promos, setPromos] = useState([])
+
+  useEffect(() => {
+    const fetchPromos = async () => {
+      try {
+        const promotionsList = await apiGet('/api/academique/promotions')
+        const filieresList = await apiGet('/api/academique/filieres')
+        
+        const mapped = promotionsList.map(p => ({
+          id: p.id,
+          label: p.nom,
+          filieres: filieresList.map(f => ({
+            id: f.id,
+            label: f.code
+          }))
+        }));
+        setPromos(mapped);
+      } catch (err) {
+        console.error('Error fetching promos for sidebar:', err);
+      }
+    };
+    fetchPromos();
+  }, []);
+
   return (
     <aside className="aside_admin w-64 h-[92vh]  bg-white border-r border-slate-200 p-4 flex flex-col gap-4 max-md:hidden overflow-y-auto">
 
@@ -165,10 +168,10 @@ const AsideAdmin = () => {
 
         {/* Étudiants */}
         <SideSection icon={PiStudent} label="Étudiants">
-          {PROMOS.map((promo) => (
+          {promos.map((promo) => (
             <PromoItem key={promo.id} promo={promo} />
           ))}
-          <NavLink to="/admin/etudiants/promo/nouvelle" icon={<PiPlusCircle />} label="Nouvelle promo" />
+          <NavLink to="/admin/promotions" icon={<PiPlusCircle />} label="Nouvelle promo" />
         </SideSection>
 
         {/* Enseignants */}

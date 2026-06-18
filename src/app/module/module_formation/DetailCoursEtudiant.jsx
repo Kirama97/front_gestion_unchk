@@ -15,13 +15,18 @@ import {
   FiPaperclip
 } from "react-icons/fi";
 import { IoMdArrowDropright } from "react-icons/io";
-import { coursesData } from "../../../utils/mockData";
+import { apiGet } from "../../../utils/api";
 
 const Detailcourstudiant = () => {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("sequences"); // "sequences" | "tds" | "devoirs"
   
+  // Dynamic course states
+  const [cours, setCours] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   // Selected TD and Devoir IDs
   const [selectedTdId, setSelectedTdId] = useState(null);
   const [selectedDevoirId, setSelectedDevoirId] = useState(null);
@@ -34,18 +39,85 @@ const Detailcourstudiant = () => {
   // Local submissions storage to simulate backend delivery
   const [submissions, setSubmissions] = useState({});
 
-  // Fetch the current course
-  const cours = coursesData.find((c) => c.id === Number(id)) || coursesData[0];
-
-  // Reset states when the course changes
   useEffect(() => {
-    setActiveTab("sequences");
-    setSelectedTdId(cours.tds?.[0]?.id || null);
-    setSelectedDevoirId(cours.devoirs?.[0]?.id || null);
-    setUploadedFile(null);
-    setUploadProgress(0);
-    setUploading(false);
-  }, [id, cours]);
+    const fetchCourseDetails = async () => {
+      try {
+        setLoading(true);
+        // 1. Fetch course details
+        const courseData = await apiGet(`/api/cours/${id}`);
+        // 2. Fetch sequences for this course
+        const sequencesData = await apiGet(`/api/cours/${id}/sequences`);
+        
+        // 3. Format sequences to match UI structure
+        const formattedSequences = sequencesData.map(seq => ({
+          id: seq.id,
+          titre: seq.titre,
+          contenu: seq.description || "Aucune description fournie pour cette séquence.",
+          videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+          duree: "2h 00m",
+          objectifs: [
+            "Maîtriser les notions clés abordées dans la séquence",
+            "Appliquer les concepts théoriques à travers des exercices pratiques",
+            "Consulter les supports de cours mis à disposition par le tuteur"
+          ],
+          ressources: seq.documentChemin ? [
+            { titre: `Support de cours - ${seq.titre}`, lien: seq.documentChemin }
+          ] : []
+        }));
+
+        // 4. Create TDs and Devoirs based on sequences containing exerciceChemin
+        const formattedTds = sequencesData
+          .filter(seq => seq.exerciceChemin)
+          .map((seq, idx) => ({
+            id: seq.id,
+            titre: `TD ${idx + 1} : Exercice pratique - ${seq.titre}`,
+            consigne: `Veuillez télécharger l'énoncé de l'exercice et soumettre votre travail complété avant la date limite.`,
+            dateLimite: seq.dateFin || new Date().toLocaleDateString('fr-FR'),
+            statut: "À faire",
+            ressources: [
+              { titre: `Énoncé de l'exercice - ${seq.titre}`, lien: seq.exerciceChemin }
+            ]
+          }));
+
+        const formattedDevoirs = sequencesData
+          .filter(seq => seq.exerciceChemin)
+          .map((seq, idx) => ({
+            id: seq.id + 1000, // offset id to avoid conflicts
+            titre: `Devoir ${idx + 1} : Évaluation - ${seq.titre}`,
+            consigne: `Travail individuel noté. Veillez à respecter les critères de rigueur et de sémantique vus en cours.`,
+            dateLimite: seq.dateFin || new Date().toLocaleDateString('fr-FR'),
+            statut: "À faire",
+            ressources: [
+              { titre: `Sujet du devoir - ${seq.titre}`, lien: seq.exerciceChemin }
+            ]
+          }));
+
+        // 5. Construct course object matching mockData shape
+        const coursObj = {
+          id: courseData.id,
+          titre: courseData.matiere?.nom || "Cours sans titre",
+          description: courseData.matiere?.description || "Description non disponible",
+          tuteur: courseData.enseignant ? `${courseData.enseignant.prenom} ${courseData.enseignant.nom}` : "Administration",
+          duree: "30h",
+          progress: formattedSequences.length > 0 ? 60 : 0,
+          sequences: formattedSequences,
+          tds: formattedTds,
+          devoirs: formattedDevoirs
+        };
+
+        setCours(coursObj);
+        setSelectedTdId(formattedTds[0]?.id || null);
+        setSelectedDevoirId(formattedDevoirs[0]?.id || null);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error loading course details:", err);
+        setError(err.message || "Impossible de charger les détails de ce cours.");
+        setLoading(false);
+      }
+    };
+
+    fetchCourseDetails();
+  }, [id]);
 
   // Reset upload form when switching active TD/Devoir
   useEffect(() => {
@@ -55,8 +127,8 @@ const Detailcourstudiant = () => {
   }, [selectedTdId, selectedDevoirId, activeTab]);
 
   // Resolve active items
-  const activeTd = cours.tds?.find((t) => t.id === selectedTdId) || cours.tds?.[0];
-  const activeDevoir = cours.devoirs?.find((d) => d.id === selectedDevoirId) || cours.devoirs?.[0];
+  const activeTd = cours?.tds?.find((t) => t.id === selectedTdId) || cours?.tds?.[0];
+  const activeDevoir = cours?.devoirs?.find((d) => d.id === selectedDevoirId) || cours?.devoirs?.[0];
 
   // Submission handler
   const handleFileChange = (e) => {
@@ -98,7 +170,7 @@ const Detailcourstudiant = () => {
   // Resolve status for active items (taking local submissions into account)
   const getTdStatus = (td) => {
     if (!td) return {};
-    const key = `td-${cours.id}-${td.id}`;
+    const key = `td-${cours?.id}-${td.id}`;
     if (submissions[key]) {
       return { text: "Soumis", badgeClass: "bg-blue-50 text-blue-700 border-blue-100" };
     }
@@ -110,7 +182,7 @@ const Detailcourstudiant = () => {
 
   const getDevoirStatus = (devoir) => {
     if (!devoir) return {};
-    const key = `devoir-${cours.id}-${devoir.id}`;
+    const key = `devoir-${cours?.id}-${devoir.id}`;
     if (submissions[key]) {
       return { text: "Soumis", badgeClass: "bg-blue-50 text-blue-700 border-blue-100" };
     }
@@ -122,6 +194,24 @@ const Detailcourstudiant = () => {
     }
     return { text: "À faire", badgeClass: "bg-amber-50 text-amber-700 border-amber-100" };
   };
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-[60vh] flex items-center justify-center">
+        <div className="text-sm font-semibold text-gray-500 animate-pulse">Chargement des détails du cours...</div>
+      </div>
+    );
+  }
+
+  if (error || !cours) {
+    return (
+      <div className="w-full min-h-[60vh] flex items-center justify-center px-4">
+        <div className="bg-red-50 text-red-700 text-sm p-4 rounded-xl border border-red-100 text-center max-w-md">
+          {error || "Cours introuvable."}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full px-[3%] sm:px-[10%] relative pb-10">

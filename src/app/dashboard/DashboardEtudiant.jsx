@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { apiGet } from '../../utils/api';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom'
 import BarreDeRechercheEtudiant from '../../components/etudant/BarreDeRechercheEtudiant';
 import Footer from './../commun/Footer';
@@ -25,12 +26,14 @@ const DashboardEtudiant = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const displayName = user.prenom && user.nom ? `${user.prenom} ${user.nom}` : "Diene thiam"
 
   // UI States
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [isMessagesOpen, setIsMessagesOpen] = useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const [notifications, setNotifications] = useState([])
 
 
   // Refs for click-outside
@@ -59,12 +62,26 @@ const DashboardEtudiant = () => {
     navigate('/')
   }
 
-  // Mock notifications
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: "Nouvel emploi du temps", description: "L'emploi du temps du semestre a été mis à jour.", time: "Il y a 10 min", read: false, category: "schedule" },
-    { id: 2, title: "Note publiée", description: "Votre note pour le module 'Technologies Web' est disponible.", time: "Il y a 2 h", read: false, category: "exam" },
-    { id: 3, title: "Message de votre Tuteur", description: "Dr. Diop a répondu à votre question sur le projet.", time: "Hier", read: true, category: "message" },
-  ])
+  // Fetch real announcements (annonces) from backend to display in notifications
+  useEffect(() => {
+    const fetchAnnonces = async () => {
+      try {
+        const annoncesList = await apiGet('/api/annonces');
+        const formattedNotifications = annoncesList.slice(0, 5).map(ann => ({
+          id: ann.id,
+          title: ann.titre,
+          description: ann.contenu,
+          time: new Date(ann.datePublication).toLocaleDateString('fr-FR'),
+          read: false,
+          category: ann.type === 'ACADEMIQUE' ? 'exam' : 'message'
+        }));
+        setNotifications(formattedNotifications);
+      } catch (err) {
+        console.error('Error fetching announcements:', err);
+      }
+    };
+    fetchAnnonces();
+  }, []);
 
   // Mock messages
   const [messages, setMessages] = useState([
@@ -269,7 +286,7 @@ const DashboardEtudiant = () => {
                 </div>
                 <div className="hidden lg:flex flex-col text-left">
                   <span className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
-                    Diene thiam
+                    {displayName}
                   </span>
                   
                 </div>
@@ -446,7 +463,7 @@ const DashboardEtudiant = () => {
               }}
             />
             <div className="flex flex-col flex-1 min-w-0">
-              <span className="text-xs font-bold text-slate-800 truncate">Diene thiam</span>
+              <span className="text-xs font-bold text-slate-800 truncate">{displayName}</span>
               <span className="text-[9px] text-slate-400 font-semibold truncate">{user.email || 'etudiant@gmail.com'}</span>
             </div>
           </div>

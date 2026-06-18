@@ -19,6 +19,21 @@ import NotesEtudiant from './pages/etudiant/NotesEtudiant';
 import ProfilEtudiant from './pages/etudiant/ProfilEtudiant';
 import ParametreEtudiant from './pages/etudiant/ParametreEtudiant';
 import ProfilAdmin from './pages/administrateur/ProfilAdmin';
+import NouvellePromo from './pages/administrateur/NouvellePromo';
+import Etudiants from './pages/administrateur/Etudiants';
+import Enseignants from './pages/administrateur/Enseignants';
+import AdminAjouterMembre from './pages/administrateur/AdminAjouterMembre';
+import AdminNotes from './pages/administrateur/AdminNotes';
+import AdminPlanning from './pages/administrateur/AdminPlanning';
+import AdminReunions from './pages/administrateur/AdminReunions';
+import AdminTuteurs from './pages/administrateur/AdminTuteurs';
+import AdminEnseignantMatieres from './pages/administrateur/AdminEnseignantMatieres';
+import AdminParametres from './pages/administrateur/AdminParametres';
+import HomeEnseignant from './pages/enseignant/HomeEnseignant';
+import CourEnseignant from './pages/enseignant/CourEnseignant';
+import NotesEnseignant from './pages/enseignant/NotesEnseignant';
+import ProfilEnseignant from './pages/enseignant/ProfilEnseignant';
+import ParametreEnseignant from './pages/enseignant/ParametreEnseignant';
 
 
 
@@ -45,8 +60,30 @@ function App() {
            </ProtectedRoute>
           ),
           children : [
+                { index: true, element: <Navigate to="accueil" replace /> },
                 { path: "accueil", element: <HomeAdmin /> },
-                { path: "profil", element: <ProfilAdmin /> }
+                { path: "profil", element: <ProfilAdmin /> },
+                { path: "promotions", element: <NouvellePromo /> },
+                { path: "etudiants/promo/nouvelle", element: <NouvellePromo /> },
+                { path: "etudiants", element: <Etudiants /> },
+                { path: "etudiants/filiere/:filiereId", element: <Etudiants /> },
+                { path: "etudiants/filiere/:filiereId/ajouter", element: <AdminAjouterMembre /> },
+                { path: "etudiants/filiere/:filiereId/notes", element: <AdminNotes /> },
+                { path: "etudiants/filiere/:filiereId/planning", element: <AdminPlanning /> },
+                { path: "enseignants", element: <Enseignants /> },
+                { path: "enseignants/ajouter", element: <AdminAjouterMembre /> },
+                { path: "enseignants/matieres", element: <AdminEnseignantMatieres /> },
+                { path: "tuteurs", element: <AdminTuteurs /> },
+                { path: "tuteurs/ajouter", element: <AdminAjouterMembre /> },
+                { path: "tuteurs/affectations", element: <AdminTuteurs /> },
+                { path: "tuteurs/groupes", element: <AdminTuteurs /> },
+                { path: "reunions", element: <AdminReunions /> },
+                { path: "reunions/nouvelle", element: <AdminReunions /> },
+                { path: "planning", element: <AdminPlanning /> },
+                { path: "notes", element: <AdminNotes /> },
+                { path: "notes/saisir", element: <AdminNotes /> },
+                { path: "notes/bulletins", element: <AdminNotes /> },
+                { path: "parametres", element: <AdminParametres /> }
           ]
         },
 
@@ -91,7 +128,13 @@ function App() {
            </ProtectedRoute>
           ),
           children : [
+                { index: true, element: <Navigate to="accueil" replace /> },
+                { path: "accueil", element: <HomeEnseignant /> },
                 { path: "emploi-du-temps", element: <EmploiDuTemps /> },
+                { path: "mes_cours", element: <CourEnseignant /> },
+                { path: "notes", element: <NotesEnseignant /> },
+                { path: "profil", element: <ProfilEnseignant /> },
+                { path: "parametre", element: <ParametreEnseignant /> },
           ]
         },
         // route tuteur

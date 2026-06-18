@@ -12,7 +12,7 @@ const BanniereEtudiant = ({ user }) => {
           Année Académique 2025 – 2026
         </span>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
-          Bienvenue, {user.email ? user.email.split('@')[0] : 'Diene Thiam'} !
+          Bienvenue, {user.prenom && user.nom ? `${user.prenom} ${user.nom}` : (user.email ? user.email.split('@')[0] : 'Diene Thiam')} !
         </h1>
         <p className="text-xs sm:text-sm text-white/70 mt-1.5 max-w-lg leading-relaxed">
           Suivez vos cours, consultez vos notes et restez informé de l'actualité universitaire.

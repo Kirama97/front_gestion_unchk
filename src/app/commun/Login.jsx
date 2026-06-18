@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
-
+import { apiPost } from '../../utils/api'
 
 const Login = () => {
    const [loading ,setLoading] = useState(false)
@@ -12,79 +12,42 @@ const Login = () => {
      password :  "",
    })
 
+   const handleLogin = async (e) => {
+       e.preventDefault();
+       setLoading(true)
+       setError("")
 
-  const compte = [
-     {
-       email : "admin@gmail.com",
-       password : "Passer123",
-       role: "admin",
-       token : "123"
-     },
-     {
-       email : "etudiant@gmail.com",
-       password : "Passer123",
-       role: "etudiant",
-        token : "123"
-     },
-     {
-       email : "enseignant@gmail.com",
-       password : "Passer123",
-       role: "enseignant",
-        token : "123"
-     },
-     {
-       email : "tuteur@gmail.com",
-       password : "Passer123",
-       role: "tuteur",
-        token : "123"
+       try {
+         const response = await apiPost('/api/auth/login', {
+           email: form.email,
+           password: form.password
+         });
 
-     },
-     {
-       email : "insertion@gmail.com",
-       password : "Passer123",
-       role: "insertion",
-        token : "123"
-     },
-  ]
+         // Store full response including token, email, role, nom, prenom, id in localStorage
+         localStorage.setItem("user", JSON.stringify(response));
 
-  const handleLogin = (e) => {
-      e.preventDefault();
-      setLoading(true)
-      setError("")
-
-      const foundUser = compte.find(
-        (c) => c.email === form.email && c.password === form.password
-      )
-
-      if (foundUser) {
-        localStorage.setItem("user", JSON.stringify({
-          email: foundUser.email,
-          role: foundUser.role,
-          token: foundUser.token
-        }))
-
-        // Redirect based on role
-        setTimeout(() => {
-          setLoading(false)
-          if (foundUser.role === "admin") {
-            navigate("/admin/accueil")
-          } else if (foundUser.role === "etudiant") {
-            navigate("/etudiant/accueil")
-          } else if (foundUser.role === "enseignant") {
-            navigate("/enseignant/accueim")
-          } else if (foundUser.role === "tuteur") {
-            navigate("/tuteur/accueil")
-          } else if (foundUser.role === "insertion") {
-            navigate("/insertion")
-          } else {
-            navigate("/")
-          }
-        }, 800) // slight delay for beautiful loading micro-animation
-      } else {
-        setLoading(false)
-        setError("Email ou mot de passe institutionnel incorrect.")
-      }
-  } 
+         // Redirect based on role
+         setTimeout(() => {
+           setLoading(false)
+           if (response.role === "admin") {
+             navigate("/admin/accueil")
+           } else if (response.role === "etudiant") {
+             navigate("/etudiant/accueil")
+           } else if (response.role === "enseignant") {
+             navigate("/enseignant/accueil") // Kept as is if that was the route
+           } else if (response.role === "tuteur") {
+             navigate("/tuteur/accueil")
+           } else if (response.role === "insertion") {
+             navigate("/insertion")
+           } else {
+             navigate("/")
+           }
+         }, 800) // slight delay for beautiful loading micro-animation
+       } catch (err) {
+         setLoading(false)
+         setError(err.message || "Email ou mot de passe institutionnel incorrect.")
+       }
+   } 
 
 
   return (

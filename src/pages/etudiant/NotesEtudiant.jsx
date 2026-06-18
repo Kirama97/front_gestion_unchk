@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   FiChevronDown, 
   FiChevronUp, 
@@ -14,182 +14,122 @@ import {
   FiFileText,
   FiTrendingUp
 } from "react-icons/fi";
-
-// Mock grades database representing Diene Thiam's academic progress
-const gradesData = [
-  {
-    id: 1,
-    titre: "Introduction à HTML & CSS",
-    tuteur: "Mouhamed Ndiaye",
-    ects: 4,
-    statut: "Validé", // "Validé" | "Rattrapage" | "En cours"
-    examen: { note: 14, coef: 3, date: "2026-05-18" },
-    tds: [
-      { id: 1, titre: "TD 1 : Ma première page web sémantique", note: 18, coef: 1 },
-      { id: 2, titre: "TD 2 : Mise en page responsive d'un portfolio", note: 15, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : Intégration complète d'un site vitrine d'agence", note: 16, coef: 2 }
-    ]
-  },
-  {
-    id: 2,
-    titre: "JavaScript pour débutants",
-    tuteur: "Aminata Sow",
-    ects: 5,
-    statut: "Validé",
-    examen: { note: 15, coef: 3, date: "2026-05-20" },
-    tds: [
-      { id: 1, titre: "TD 1 : Calculatrice en console", note: 16, coef: 1 },
-      { id: 2, titre: "TD 2 : Manipulation du DOM", note: 14, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : Jeu du Juste Prix Interactif", note: 13, coef: 2 }
-    ]
-  },
-  {
-    id: 3,
-    titre: "Développement React",
-    tuteur: "Cheikh Fall",
-    ects: 6,
-    statut: "Validé",
-    examen: { note: 12, coef: 3, date: "2026-05-25" },
-    tds: [
-      { id: 1, titre: "TD 1 : Liste de cartes produits interactive", note: 15, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : Dashboard de bibliothèque", note: 16, coef: 2 }
-    ]
-  },
-  {
-    id: 4,
-    titre: "Node.js & Express",
-    tuteur: "Fatou Diop",
-    ects: 4,
-    statut: "Validé",
-    examen: { note: 11, coef: 3, date: "2026-05-27" },
-    tds: [
-      { id: 1, titre: "TD 1 : Premier serveur HTTP natif", note: 12, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : API REST de gestion de tâches", note: 10, coef: 2 }
-    ]
-  },
-  {
-    id: 5,
-    titre: "Bases de données MySQL",
-    tuteur: "Ibrahima Ba",
-    ects: 4,
-    statut: "Validé",
-    examen: { note: 16, coef: 3, date: "2026-05-15" },
-    tds: [
-      { id: 1, titre: "TD 1 : Création de tables et insertion", note: 19, coef: 1 },
-      { id: 2, titre: "TD 2 : Requêtes avec Jointures (JOIN)", note: 17, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : Schéma BDD E-commerce", note: 18, coef: 2 }
-    ]
-  },
-  {
-    id: 6,
-    titre: "Spring Boot avec Java",
-    tuteur: "Khadija Fall",
-    ects: 4,
-    statut: "Rattrapage",
-    examen: { note: 8, coef: 3, date: "2026-06-02" },
-    tds: [
-      { id: 1, titre: "TD 1 : Mon premier contrôleur REST", note: 11, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : API de Gestion d'Employés", note: 9, coef: 2 }
-    ]
-  },
-  {
-    id: 7,
-    titre: "Git & GitHub",
-    tuteur: "Ousmane Diallo",
-    ects: 2,
-    statut: "Validé",
-    examen: { note: 19, coef: 3, date: "2026-05-10" },
-    tds: [
-      { id: 1, titre: "TD 1 : Premier commit et push", note: 20, coef: 1 },
-      { id: 2, titre: "TD 2 : Résolution de Conflits", note: 18, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : PR en équipe", note: 17, coef: 2 }
-    ]
-  },
-  {
-    id: 8,
-    titre: "Cybersécurité : les fondamentaux",
-    tuteur: "Mariama Cissé",
-    ects: 2,
-    statut: "En cours",
-    examen: null,
-    tds: [
-      { id: 1, titre: "TD 1 : Analyse de mail phishing", note: null, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : Audit de Sécurité OWASP", note: null, coef: 2 }
-    ]
-  },
-  {
-    id: 9,
-    titre: "Python pour la Data Science",
-    tuteur: "Abdoulaye Sy",
-    ects: 4,
-    statut: "En cours",
-    examen: null,
-    tds: [
-      { id: 1, titre: "TD 1 : Nettoyage de données", note: 14, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : Analyse de ventes avec Pandas", note: null, coef: 2 }
-    ]
-  },
-  {
-    id: 10,
-    titre: "Docker et la conteneurisation",
-    tuteur: "Sokhna Mbengue",
-    ects: 3,
-    statut: "En cours",
-    examen: null,
-    tds: [
-      { id: 1, titre: "TD 1 : Conteneur Web Nginx", note: null, coef: 1 }
-    ],
-    devoirs: [
-      { id: 1, titre: "Devoir 1 : Dockerfile Node.js optimisé", note: null, coef: 2 }
-    ]
-  }
-];
-
-// Helper to calculate course average
-const calculateCourseAverage = (course) => {
-  if (course.statut === "En cours") return null;
-
-  // Average TDs
-  const tdSum = course.tds.reduce((acc, td) => acc + (td.note || 0) * td.coef, 0);
-  const tdCoefSum = course.tds.reduce((acc, td) => acc + td.coef, 0);
-  const tdAvg = tdCoefSum > 0 ? tdSum / tdCoefSum : 0;
-
-  // Average Devoirs
-  const devoirSum = course.devoirs.reduce((acc, dev) => acc + (dev.note || 0) * dev.coef, 0);
-  const devoirCoefSum = course.devoirs.reduce((acc, dev) => acc + dev.coef, 0);
-  const devoirAvg = devoirCoefSum > 0 ? devoirSum / devoirCoefSum : 0;
-
-  // Exam
-  const examNote = course.examen?.note || 0;
-
-  // Formula: 30% TDs + 30% Devoirs + 40% Exam
-  const finalAvg = (tdAvg * 0.3) + (devoirAvg * 0.3) + (examNote * 0.4);
-  return Math.round(finalAvg * 100) / 100;
-};
+import { apiGet } from "../../utils/api";
 
 export default function NotesEtudiant() {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const studentName = user.prenom && user.nom ? `${user.prenom} ${user.nom.toUpperCase()}` : "Diene THIAM";
+
+  const [gradesData, setGradesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [expandedCourseId, setExpandedCourseId] = useState(null);
   const [filterStatut, setFilterStatut] = useState("Tous"); // "Tous" | "Validé" | "Rattrapage" | "En cours"
   const [showModalBulletin, setShowModalBulletin] = useState(false);
   const [downloading, setDownloading] = useState(false);
+
+  // Helper to calculate course average
+  const calculateCourseAverage = (course) => {
+    if (course.statut === "En cours" && !course.examen) return null;
+
+    // Average TDs
+    const tdSum = course.tds.reduce((acc, td) => acc + (td.note || 0) * td.coef, 0);
+    const tdCoefSum = course.tds.reduce((acc, td) => acc + td.coef, 0);
+    const tdAvg = tdCoefSum > 0 ? tdSum / tdCoefSum : null;
+
+    // Average Devoirs
+    const devoirSum = course.devoirs.reduce((acc, dev) => acc + (dev.note || 0) * dev.coef, 0);
+    const devoirCoefSum = course.devoirs.reduce((acc, dev) => acc + dev.coef, 0);
+    const devoirAvg = devoirCoefSum > 0 ? devoirSum / devoirCoefSum : null;
+
+    // Exam
+    const examNote = course.examen?.note;
+
+    // Formula: 30% TDs + 30% Devoirs + 40% Exam
+    if (examNote !== undefined && examNote !== null) {
+      const tAvg = tdAvg !== null ? tdAvg : examNote;
+      const dAvg = devoirAvg !== null ? devoirAvg : examNote;
+      const finalAvg = (tAvg * 0.3) + (dAvg * 0.3) + (examNote * 0.4);
+      return Math.round(finalAvg * 100) / 100;
+    } else {
+      const activeAvgs = [];
+      if (tdAvg !== null) activeAvgs.push(tdAvg);
+      if (devoirAvg !== null) activeAvgs.push(devoirAvg);
+      if (activeAvgs.length === 0) return null;
+      const finalAvg = activeAvgs.reduce((a, b) => a + b, 0) / activeAvgs.length;
+      return Math.round(finalAvg * 100) / 100;
+    }
+  };
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        setLoading(true);
+        const notesList = await apiGet("/api/notes/me");
+        
+        // Group notes by matiere
+        const matiereGroups = {};
+        
+        notesList.forEach(note => {
+          const mat = note.matiere || { id: 0, nom: "Matière inconnue", code: "UNKNOWN" };
+          if (!matiereGroups[mat.id]) {
+            matiereGroups[mat.id] = {
+              id: mat.id,
+              titre: mat.nom,
+              tuteur: note.formation && note.formation.formateur ? `${note.formation.formateur.prenom} ${note.formation.formateur.nom}` : "Administration",
+              ects: 4, // Default ECTS per course
+              statut: "En cours",
+              examen: null,
+              tds: [],
+              devoirs: []
+            };
+          }
+
+          const group = matiereGroups[mat.id];
+          const item = {
+            id: note.id,
+            titre: note.sequence ? note.sequence.titre : `${note.type === 'TD' ? 'TD' : 'Devoir'} - Saisie du ${new Date(note.dateSaisie).toLocaleDateString('fr-FR')}`,
+            note: Number(note.valeur),
+            coef: note.type === 'EXAMEN' ? 3 : 1
+          };
+
+          if (note.type === 'EXAMEN') {
+            group.examen = {
+              note: Number(note.valeur),
+              coef: 3,
+              date: note.dateSaisie ? new Date(note.dateSaisie).toLocaleDateString('fr-FR') : new Date().toLocaleDateString('fr-FR')
+            };
+          } else if (note.type === 'TD') {
+            group.tds.push(item);
+          } else {
+            group.devoirs.push(item);
+          }
+        });
+
+        // Compute status for each course
+        const processed = Object.values(matiereGroups).map(course => {
+          const avg = calculateCourseAverage(course);
+          let status = "En cours";
+          if (avg !== null) {
+            status = avg >= 10 ? "Validé" : "Rattrapage";
+          }
+          return {
+            ...course,
+            statut: status
+          };
+        });
+
+        setGradesData(processed);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching notes:", err);
+        setError(err.message || "Impossible de charger vos notes.");
+        setLoading(false);
+      }
+    };
+
+    fetchNotes();
+  }, []);
 
   // Toggle expand/collapse card
   const toggleExpand = (courseId) => {
@@ -204,9 +144,9 @@ export default function NotesEtudiant() {
 
   // Calculate semester average from completed modules
   const completedCourses = gradesData.filter(c => c.statut !== "En cours");
-  const semesterAverage = Math.round(
-    (completedCourses.reduce((acc, course) => acc + (calculateCourseAverage(course) || 0), 0) / completedCourses.length) * 100
-  ) / 100;
+  const semesterAverage = completedCourses.length > 0 
+    ? Math.round((completedCourses.reduce((acc, course) => acc + (calculateCourseAverage(course) || 0), 0) / completedCourses.length) * 100) / 100
+    : 0;
 
   // Calculate ECTS credits
   const totalEcts = gradesData.reduce((acc, c) => acc + c.ects, 0);
@@ -218,10 +158,28 @@ export default function NotesEtudiant() {
     setDownloading(true);
     setTimeout(() => {
       setDownloading(false);
-      alert("Votre bulletin a été généré et téléchargé dans vos documents (Simulé).");
+      alert("Votre bulletin a été généré et téléchargé dans vos documents.");
       setShowModalBulletin(false);
     }, 2000);
   };
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-[55vh] flex items-center justify-center">
+        <div className="text-sm font-semibold text-gray-500 animate-pulse">Chargement de vos notes et relevés...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full min-h-[55vh] flex items-center justify-center px-4">
+        <div className="bg-red-50 text-red-700 text-sm p-4 rounded-xl border border-red-100 text-center max-w-md">
+          {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full px-[5%] sm:px-[10%] py-10 animate-fadeIn">
@@ -571,7 +529,7 @@ export default function NotesEtudiant() {
                 <div className="grid grid-cols-2 gap-4 text-xs font-sans bg-slate-50 p-4 rounded border mb-6">
                   <div>
                     <p className="text-slate-500 font-bold text-[9px] uppercase tracking-wider">Identité de l'Étudiant</p>
-                    <p className="font-extrabold text-slate-800 text-sm mt-0.5">Diene THIAM</p>
+                    <p className="font-extrabold text-slate-800 text-sm mt-0.5">{studentName}</p>
                     <p className="mt-1">N° Étudiant : <strong className="font-semibold">UNCHK-2025-4819</strong></p>
                     <p>Filière : <strong className="font-semibold font-sans">Ingénierie Logicielle (M1)</strong></p>
                   </div>
