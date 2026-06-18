@@ -10,3 +10,31 @@
    
      font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   }
+
+
+
+ /* Largeur de la scrollbar verticale */
+.aside_admin::-webkit-scrollbar {
+  width: 1px;
+}
+
+/* Hauteur de la scrollbar horizontale */
+.aside_admin::-webkit-scrollbar {
+  height: 6px;
+}
+
+/* Fond de la scrollbar */
+.aside_admin::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Curseur de la scrollbar */
+.aside_admin::-webkit-scrollbar-thumb {
+  background: #ce7414;
+  border-radius: 10px;
+}
+
+/* Au survol */
+.aside_admin::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

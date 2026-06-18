@@ -18,6 +18,7 @@ import DetailSequence from './app/module/module_formation/DetailSequence';
 import NotesEtudiant from './pages/etudiant/NotesEtudiant';
 import ProfilEtudiant from './pages/etudiant/ProfilEtudiant';
 import ParametreEtudiant from './pages/etudiant/ParametreEtudiant';
+import ProfilAdmin from './pages/administrateur/ProfilAdmin';
 
 
 
@@ -45,6 +46,7 @@ function App() {
           ),
           children : [
                 { path: "accueil", element: <HomeAdmin /> },
+                { path: "profil", element: <ProfilAdmin /> }
           ]
         },
 
