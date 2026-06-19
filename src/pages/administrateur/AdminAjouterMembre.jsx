@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { useToast } from '../../context/ToastContext'
 import { apiGet, apiPost } from '../../utils/api'
 import { FiUserPlus, FiArrowLeft, FiCheckCircle, FiInfo } from 'react-icons/fi'
 
@@ -7,6 +8,7 @@ const AdminAjouterMembre = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { filiereId } = useParams()
+  const { showToast } = useToast()
 
   // Determine role/type based on route URL
   let memberType = 'etudiant'
@@ -73,7 +75,7 @@ const AdminAjouterMembre = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!nom || !prenom || !email) {
-      alert("Veuillez remplir les champs obligatoires (Nom, Prénom, Email).")
+      showToast("Veuillez remplir les champs obligatoires (Nom, Prénom, Email).", "warning")
       return
     }
 
@@ -83,7 +85,7 @@ const AdminAjouterMembre = () => {
 
       if (memberType === 'etudiant') {
         if (!ine) {
-          alert("Le champ INE est obligatoire pour les étudiants.")
+          showToast("Le champ INE est obligatoire pour les étudiants.", "warning")
           setLoading(false)
           return
         }
@@ -145,7 +147,7 @@ const AdminAjouterMembre = () => {
       }, 1500)
     } catch (err) {
       console.error("Error creating member:", err)
-      alert(err.message || "Erreur lors de la création du compte.")
+      showToast(err.message || "Erreur lors de la création du compte.", "error")
     } finally {
       setLoading(false)
     }

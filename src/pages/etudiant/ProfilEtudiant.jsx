@@ -89,10 +89,12 @@ const BtnGhost = ({ children, onClick }) => (
 
 import { useEffect } from 'react'
 import { apiGet, apiPut } from '../../utils/api'
+import { useToast } from '../../context/ToastContext'
 
 /* ─── Composant principal ─── */
 
 const ProfilEtudiant = () => {
+  const { showToast } = useToast()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [editMode, setEditMode]   = useState(false)
@@ -170,10 +172,11 @@ const ProfilEtudiant = () => {
       setDraft(updatedState);
       setEditMode(false);
       setSaved(true);
+      showToast("Profil mis à jour avec succès !", "success");
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {
       console.error('Error updating profile:', err);
-      alert(err.message || "Erreur lors de la mise à jour du profil.");
+      showToast(err.message || "Erreur lors de la mise à jour du profil.", "error");
     }
   }
 

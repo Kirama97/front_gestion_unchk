@@ -16,8 +16,10 @@ import {
 } from "react-icons/fi";
 import { IoMdArrowDropright } from "react-icons/io";
 import { apiGet } from "../../../utils/api";
+import { useToast } from "../../../context/ToastContext";
 
 const Detailcourstudiant = () => {
+  const { showToast } = useToast();
   const { id } = useParams();
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("sequences"); // "sequences" | "tds" | "devoirs"
@@ -460,7 +462,7 @@ const Detailcourstudiant = () => {
                         </div>
                       </div>
                       <button 
-                        onClick={() => alert("Simulation du téléchargement du fichier sujet...")}
+                        onClick={() => showToast("Simulation du téléchargement du fichier sujet...", "info")}
                         className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition"
                       >
                         <FiDownload />

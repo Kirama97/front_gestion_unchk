@@ -10,8 +10,10 @@ import {
   FiChevronRight
 } from "react-icons/fi";
 import { coursesData } from "../../../utils/mockData";
+import { useToast } from "../../../context/ToastContext";
 
 export default function DetailSequence() {
+  const { showToast } = useToast();
   const { id, sequenceId } = useParams();
   
   // Find the course
@@ -120,7 +122,7 @@ export default function DetailSequence() {
                   <span className="text-xs font-bold text-slate-700 truncate">{res.titre}</span>
                 </div>
                 <button 
-                  onClick={() => alert(`Téléchargement de : ${res.titre}`)}
+                  onClick={() => showToast(`Téléchargement de : ${res.titre}`, "info")}
                   className="p-1.5 bg-slate-50 hover:bg-orange-50 hover:text-orange-500 text-slate-500 rounded-lg transition"
                 >
                   <FiDownload className="w-3.5 h-3.5" />

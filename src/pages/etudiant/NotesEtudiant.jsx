@@ -15,8 +15,10 @@ import {
   FiTrendingUp
 } from "react-icons/fi";
 import { apiGet } from "../../utils/api";
+import { useToast } from "../../context/ToastContext";
 
 export default function NotesEtudiant() {
+  const { showToast } = useToast();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const studentName = user.prenom && user.nom ? `${user.prenom} ${user.nom.toUpperCase()}` : "Diene THIAM";
 
@@ -158,7 +160,7 @@ export default function NotesEtudiant() {
     setDownloading(true);
     setTimeout(() => {
       setDownloading(false);
-      alert("Votre bulletin a été généré et téléchargé dans vos documents.");
+      showToast("Votre bulletin a été généré et téléchargé dans vos documents.", "success");
       setShowModalBulletin(false);
     }, 2000);
   };
@@ -594,7 +596,7 @@ export default function NotesEtudiant() {
                 Fermer
               </button>
               <button 
-                onClick={() => alert("Simulation de l'impression...")}
+                onClick={() => showToast("Simulation de l'impression...", "info")}
                 className="flex items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition"
                 disabled={downloading}
               >

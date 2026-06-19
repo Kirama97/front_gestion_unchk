@@ -1,7 +1,10 @@
 import React from 'react'
 import { FiSliders, FiBell, FiShield, FiDatabase, FiInfo } from 'react-icons/fi'
+import { useToast } from '../../context/ToastContext'
 
 const AdminParametres = () => {
+  const { showToast } = useToast()
+
   return (
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
       {/* Header */}
@@ -67,13 +70,13 @@ const AdminParametres = () => {
             <p className="text-[10px] text-slate-400 mt-0.5">Effectuez des sauvegardes de la base MySQL et nettoyez les caches.</p>
             <div className="flex gap-2 mt-4">
               <button 
-                onClick={() => alert("Sauvegarde démarrée...")}
+                onClick={() => showToast("Sauvegarde démarrée...", "info")}
                 className="text-[10px] font-bold px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition"
               >
                 Sauvegarder la BDD
               </button>
               <button 
-                onClick={() => alert("Cache système vidé.")}
+                onClick={() => showToast("Cache système vidé.", "success")}
                 className="text-[10px] font-bold px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
               >
                 Vider le cache

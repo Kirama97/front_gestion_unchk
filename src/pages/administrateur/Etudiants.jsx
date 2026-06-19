@@ -10,8 +10,10 @@ import {
   FiUser, 
   FiBriefcase 
 } from 'react-icons/fi';
+import { useToast } from '../../context/ToastContext';
 
 const Etudiants = () => {
+  const { showToast } = useToast();
   const { filiereId } = useParams();
   const [etudiants, setEtudiants] = useState([]);
   const [promotions, setPromotions] = useState([]);
@@ -74,7 +76,7 @@ const Etudiants = () => {
   const handleCreateStudent = async (e) => {
     e.preventDefault();
     if (!form.nom || !form.prenom || !form.email || !form.ine) {
-      alert("Veuillez remplir les informations obligatoires (Nom, Prénom, Email, INE).");
+      showToast("Veuillez remplir les informations obligatoires (Nom, Prénom, Email, INE).", "warning");
       return;
     }
 
@@ -95,6 +97,7 @@ const Etudiants = () => {
       };
 
       await apiPost('/api/etudiants', payload);
+      showToast("L'étudiant a été créé avec succès.", "success");
       setShowForm(false);
       // Reset form
       setForm({
@@ -119,7 +122,7 @@ const Etudiants = () => {
       loadData();
     } catch (err) {
       console.error('Error creating student:', err);
-      alert(err.message || "Erreur lors de la création de l'étudiant.");
+      showToast(err.message || "Erreur lors de la création de l'étudiant.", "error");
     }
   };
 
@@ -132,10 +135,11 @@ const Etudiants = () => {
           'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user') || '{}').token}`
         }
       });
+      showToast("L'étudiant a été supprimé avec succès.", "success");
       loadData();
     } catch (err) {
       console.error('Error deleting student:', err);
-      alert(err.message || 'Erreur lors de la suppression.');
+      showToast(err.message || 'Erreur lors de la suppression.', "error");
     }
   };
 

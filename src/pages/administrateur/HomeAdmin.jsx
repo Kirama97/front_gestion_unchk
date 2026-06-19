@@ -10,8 +10,10 @@ import {
   FiPlusCircle,
   FiTrash2
 } from 'react-icons/fi';
+import { useToast } from '../../context/ToastContext';
 
 const HomeAdmin = () => {
+  const { showToast } = useToast();
   const [stats, setStats] = useState({
     promotions: 0,
     filieres: 0,
@@ -70,7 +72,7 @@ const HomeAdmin = () => {
   const handlePublishAnnonce = async (e) => {
     e.preventDefault();
     if (!newAnnonce.titre || !newAnnonce.contenu) {
-      alert("Veuillez remplir le titre et le contenu.");
+      showToast("Veuillez remplir le titre et le contenu.", "warning");
       return;
     }
 
@@ -82,6 +84,7 @@ const HomeAdmin = () => {
         type: newAnnonce.type
       });
       
+      showToast("Annonce publiée avec succès.", "success");
       // Reset form
       setNewAnnonce({ titre: '', contenu: '', type: 'ACADEMIQUE' });
       
@@ -91,7 +94,7 @@ const HomeAdmin = () => {
       setSubmitting(false);
     } catch (err) {
       console.error('Error publishing announcement:', err);
-      alert('Impossible de publier l\'annonce.');
+      showToast('Impossible de publier l\'annonce.', "error");
       setSubmitting(false);
     }
   };
@@ -105,12 +108,13 @@ const HomeAdmin = () => {
           'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user') || '{}').token}`
         }
       });
+      showToast("Annonce supprimée avec succès.", "success");
       // Reload announcements
       const annoncesList = await apiGet('/api/annonces');
       setAnnonces(annoncesList);
     } catch (err) {
       console.error('Error deleting announcement:', err);
-      alert('Erreur lors de la suppression.');
+      showToast('Erreur lors de la suppression.', "error");
     }
   };
 

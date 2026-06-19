@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import { useToast } from '../../context/ToastContext'
 import { apiGet, apiPost } from '../../utils/api'
 import { FiBookOpen, FiPlus, FiCalendar, FiFileText, FiChevronDown, FiChevronUp, FiX, FiCheckCircle } from 'react-icons/fi'
 
 const CourEnseignant = () => {
+  const { showToast } = useToast()
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -104,7 +106,7 @@ const CourEnseignant = () => {
       }, 1500)
     } catch (err) {
       console.error("Error adding sequence:", err)
-      alert("Erreur lors de l'enregistrement de la séquence.")
+      showToast("Erreur lors de l'enregistrement de la séquence.", "error")
     } finally {
       setSavingSeq(false)
     }

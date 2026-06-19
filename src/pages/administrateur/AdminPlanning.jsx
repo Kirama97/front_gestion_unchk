@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiGet, apiPost } from '../../utils/api'
 import { FiCalendar, FiPlus, FiClock, FiMapPin, FiUser, FiX, FiCheckCircle } from 'react-icons/fi'
+import { useToast } from '../../context/ToastContext'
 
 const AdminPlanning = () => {
+  const { showToast } = useToast()
   const { filiereId } = useParams()
   const [classes, setClasses] = useState([])
   const [selectedClasse, setSelectedClasse] = useState(null)
@@ -120,16 +122,15 @@ const AdminPlanning = () => {
       }
 
       await apiPost('/api/emplois-du-temps', payload)
-      setSuccess('Le cours a été planifié avec succès !')
+      showToast('Le cours a été planifié avec succès !', 'success')
       
       setTimeout(() => {
-        setSuccess('')
         setShowAddModal(false)
         loadSchedule()
       }, 1500)
     } catch (err) {
       console.error("Error saving timetable slot:", err)
-      alert("Erreur lors de la planification du cours.")
+      showToast("Erreur lors de la planification du cours.", "error")
     } finally {
       setSaving(false)
     }

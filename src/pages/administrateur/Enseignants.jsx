@@ -7,8 +7,10 @@ import {
   FiX, 
   FiBriefcase 
 } from 'react-icons/fi';
+import { useToast } from '../../context/ToastContext';
 
 const Enseignants = () => {
+  const { showToast } = useToast();
   const [enseignants, setEnseignants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,7 +52,7 @@ const Enseignants = () => {
   const handleCreateTeacher = async (e) => {
     e.preventDefault();
     if (!form.nom || !form.prenom || !form.email) {
-      alert("Veuillez remplir les informations obligatoires (Nom, Prénom, Email).");
+      showToast("Veuillez remplir les informations obligatoires (Nom, Prénom, Email).", "warning");
       return;
     }
 
@@ -61,6 +63,7 @@ const Enseignants = () => {
       };
 
       await apiPost('/api/personnel', payload);
+      showToast("Le compte enseignant a été créé avec succès.", "success");
       setShowForm(false);
       // Reset form
       setForm({
@@ -76,7 +79,7 @@ const Enseignants = () => {
       loadData();
     } catch (err) {
       console.error('Error creating teacher:', err);
-      alert(err.message || "Erreur lors de la création du compte enseignant.");
+      showToast(err.message || "Erreur lors de la création du compte enseignant.", "error");
     }
   };
 
@@ -89,10 +92,11 @@ const Enseignants = () => {
           'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user') || '{}').token}`
         }
       });
+      showToast("Enseignant supprimé avec succès.", "success");
       loadData();
     } catch (err) {
       console.error('Error deleting teacher:', err);
-      alert(err.message || 'Erreur lors de la suppression.');
+      showToast(err.message || 'Erreur lors de la suppression.', "error");
     }
   };
 

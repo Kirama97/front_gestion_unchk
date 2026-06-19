@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { apiGet, apiPost } from '../../utils/api'
 import { FiBookOpen, FiPlus, FiUser, FiX, FiCheckCircle } from 'react-icons/fi'
+import { useToast } from '../../context/ToastContext'
 
 const AdminEnseignantMatieres = () => {
+  const { showToast } = useToast()
   const [teachers, setTeachers] = useState([])
   const [courses, setCourses] = useState([])
   const [matieres, setMatieres] = useState([])
@@ -62,17 +64,16 @@ const AdminEnseignantMatieres = () => {
       }
 
       await apiPost('/api/cours', payload)
-      setSuccess('Le cours a été assigné avec succès à l\'enseignant !')
+      showToast('Le cours a été assigné avec succès à l\'enseignant !', 'success')
       
       setTimeout(() => {
-        setSuccess('')
         setShowAssignModal(false)
         setSaving(false)
         loadData()
       }, 1500)
     } catch (err) {
       console.error(err)
-      alert("Erreur lors de l'assignation de la matière.")
+      showToast("Erreur lors de l'assignation de la matière.", "error")
       setSaving(false)
     }
   }

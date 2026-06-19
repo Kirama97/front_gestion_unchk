@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { ToastProvider } from './context/ToastContext'
 import Login from './app/commun/Login'
 import DashboardAdmin from './app/dashboard/DashboardAdmin'
 import ProtectedRoute from './routes/ProtectedRoute'
@@ -168,8 +169,10 @@ function App() {
 
 
   return (
+    <ToastProvider>
        <RouterProvider  router={router} />
-      )
+    </ToastProvider>
+  )
 }
 
 export default App

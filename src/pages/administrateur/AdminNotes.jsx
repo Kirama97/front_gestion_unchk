@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiGet, apiPost } from '../../utils/api'
 import { FiFileText, FiSave, FiAlertCircle, FiCheckCircle, FiSearch, FiPrinter, FiDownload } from 'react-icons/fi'
+import { useToast } from '../../context/ToastContext'
 
 const AdminNotes = () => {
+  const { showToast } = useToast()
   const { filiereId } = useParams()
   const [activeTab, setActiveTab] = useState('tableau') // 'tableau' | 'saisir' | 'bulletins'
 
@@ -211,7 +213,7 @@ const AdminNotes = () => {
   }
 
   const handlePrintMockBulletin = (studentName) => {
-    alert(`Génération du bulletin de ${studentName}...\nLe fichier PDF a été enregistré.`);
+    showToast(`Génération du bulletin de ${studentName}...\nLe fichier PDF a été enregistré.`, "success");
   }
 
   // Filter for Tab 1 (Tableau des Notes)

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { apiGet, apiDelete } from '../../utils/api'
 import { FiUsers, FiLink, FiTrash2, FiSearch, FiCheckCircle } from 'react-icons/fi'
+import { useToast } from '../../context/ToastContext'
 
 const AdminTuteurs = () => {
+  const { showToast } = useToast()
   const [activeTab, setActiveTab] = useState('liste') // 'liste' | 'affectations' | 'groupes'
   const [tuteurs, setTuteurs] = useState([])
   const [students, setStudents] = useState([])
@@ -41,12 +43,11 @@ const AdminTuteurs = () => {
           'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user') || '{}').token}`
         }
       })
-      setSuccess('Le tuteur a été supprimé avec succès.')
+      showToast('Le tuteur a été supprimé avec succès.', 'success')
       loadData()
-      setTimeout(() => setSuccess(''), 1500)
     } catch (err) {
       console.error(err)
-      alert('Erreur lors de la suppression.')
+      showToast('Erreur lors de la suppression.', 'error')
     }
   }
 
@@ -211,7 +212,7 @@ const AdminTuteurs = () => {
                             defaultValue="1"
                             className="text-[10px] border border-slate-200 rounded-lg px-2 py-1 outline-none bg-white font-bold text-slate-600 focus:border-orange-500"
                             onChange={() => {
-                              alert(`Affectation mise à jour pour l'étudiant ${studentName}`)
+                              showToast(`Affectation mise à jour pour l'étudiant ${studentName}`, "success")
                             }}
                           >
                             {tuteurs.map((t, idx) => (

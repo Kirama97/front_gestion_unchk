@@ -10,8 +10,10 @@ import {
   FiPlus, 
   FiFolder
 } from 'react-icons/fi';
+import { useToast } from '../../context/ToastContext';
 
 const NouvellePromo = () => {
+  const { showToast } = useToast();
   const [promotions, setPromotions] = useState([]);
   const [filieres, setFilieres] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,38 +29,62 @@ const NouvellePromo = () => {
   const [editingFiliereId, setEditingFiliereId] = useState(null);
   const [editFiliere, setEditFiliere] = useState({ nom: '', code: '' });
 
-  const loadData = async () => {
+  const translateError = (err, defaultMsg) => {
+    const message = err?.message || '';
+    if (message.includes('Failed to fetch') || message.includes('NetworkError') || message.includes('fetch')) {
+      return "Impossible de se connecter au serveur backend. Veuillez vous assurer que le serveur est démarré.";
+    }
+    if (message.includes('Duplicate entry') || message.includes('ConstraintViolation') || message.includes('already exists') || message.includes('unique')) {
+      if (defaultMsg.toLowerCase().includes('promotion')) {
+        return "Cette promotion existe déjà (le nom de la promotion doit être unique).";
+      }
+      if (defaultMsg.toLowerCase().includes('filière') || defaultMsg.toLowerCase().includes('filiere')) {
+        return "Cette filière ou son code existe déjà (le nom et le code doivent être uniques).";
+      }
+      return "Cette entrée existe déjà dans la base de données.";
+    }
+    if (message.includes('Unauthorized') || message.includes('401') || message.includes('token') || message.includes('expirée')) {
+      return "Votre session a expiré ou vous n'êtes pas autorisé. Veuillez vous reconnecter.";
+    }
+    return message || defaultMsg;
+  };
+
+  const loadData = async (initial = false) => {
     try {
-      setLoading(true);
+      if (initial) setLoading(true);
       const [promosList, filieresList] = await Promise.all([
         apiGet('/api/academique/promotions'),
         apiGet('/api/academique/filieres')
       ]);
       setPromotions(promosList);
       setFilieres(filieresList);
-      setLoading(false);
+      if (initial) setLoading(false);
     } catch (err) {
       console.error('Error loading academic details:', err);
-      setError('Erreur lors du chargement des promotions et filières.');
-      setLoading(false);
+      setError(translateError(err, 'Erreur lors du chargement des promotions et filières.'));
+      if (initial) setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadData();
+    loadData(true);
   }, []);
 
   // ──────────────────── Promotions Handlers ────────────────────
 
   const handleCreatePromo = async (e) => {
     e.preventDefault();
-    if (!newPromoNom.trim()) return;
+    if (!newPromoNom.trim()) {
+      showToast("Veuillez saisir le nom de la promotion.", "warning");
+      return;
+    }
     try {
-      await apiPost('/api/academique/promotions', { nom: newPromoNom });
+      await apiPost('/api/academique/promotions', { nom: newPromoNom.trim() });
+      showToast("La promotion a été créée avec succès.", "success");
       setNewPromoNom('');
-      loadData();
+      await loadData();
     } catch (err) {
-      alert(err.message || 'Erreur lors de la création de la promotion.');
+      showToast(translateError(err, 'Erreur lors de la création de la promotion.'), "error");
     }
   };
 
@@ -68,29 +94,33 @@ const NouvellePromo = () => {
   };
 
   const handleSavePromo = async (id) => {
-    if (!editPromoNom.trim()) return;
+    if (!editPromoNom.trim()) {
+      showToast("Le nom de la promotion ne peut pas être vide.", "warning");
+      return;
+    }
     try {
-      await apiPut(`/api/academique/promotions/${id}`, { nom: editPromoNom });
+      await apiPut(`/api/academique/promotions/${id}`, { nom: editPromoNom.trim() });
+      showToast("La promotion a été mise à jour avec succès.", "success");
       setEditingPromoId(null);
-      loadData();
+      await loadData();
     } catch (err) {
-      alert(err.message || 'Erreur lors de la mise à jour.');
+      showToast(translateError(err, 'Erreur lors de la mise à jour.'), "error");
     }
   };
 
   const handleDeletePromo = async (id) => {
     if (!window.confirm("Voulez-vous vraiment supprimer cette promotion ? Tous les étudiants et classes associés risquent d'être impactés.")) return;
     try {
-      // Direct call to verify deletion behavior
       await fetch(`http://localhost:8080/api/academique/promotions/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user') || '{}').token}`
         }
       });
-      loadData();
+      showToast("La promotion a été supprimée avec succès.", "success");
+      await loadData();
     } catch (err) {
-      alert(err.message || 'Erreur lors de la suppression.');
+      showToast(translateError(err, 'Erreur lors de la suppression.'), "error");
     }
   };
 
@@ -98,13 +128,24 @@ const NouvellePromo = () => {
 
   const handleCreateFiliere = async (e) => {
     e.preventDefault();
-    if (!newFiliere.nom.trim() || !newFiliere.code.trim()) return;
+    if (!newFiliere.nom.trim()) {
+      showToast("Veuillez saisir le nom de la filière.", "warning");
+      return;
+    }
+    if (!newFiliere.code.trim()) {
+      showToast("Veuillez saisir le code de la filière.", "warning");
+      return;
+    }
     try {
-      await apiPost('/api/academique/filieres', newFiliere);
+      await apiPost('/api/academique/filieres', {
+        nom: newFiliere.nom.trim(),
+        code: newFiliere.code.trim()
+      });
+      showToast("La filière a été créée avec succès.", "success");
       setNewFiliere({ nom: '', code: '' });
-      loadData();
+      await loadData();
     } catch (err) {
-      alert(err.message || 'Erreur lors de la création de la filière.');
+      showToast(translateError(err, 'Erreur lors de la création de la filière.'), "error");
     }
   };
 
@@ -114,13 +155,24 @@ const NouvellePromo = () => {
   };
 
   const handleSaveFiliere = async (id) => {
-    if (!editFiliere.nom.trim() || !editFiliere.code.trim()) return;
+    if (!editFiliere.nom.trim()) {
+      showToast("Le nom de la filière ne peut pas être vide.", "warning");
+      return;
+    }
+    if (!editFiliere.code.trim()) {
+      showToast("Le code de la filière ne peut pas être vide.", "warning");
+      return;
+    }
     try {
-      await apiPut(`/api/academique/filieres/${id}`, editFiliere);
+      await apiPut(`/api/academique/filieres/${id}`, {
+        nom: editFiliere.nom.trim(),
+        code: editFiliere.code.trim()
+      });
+      showToast("La filière a été mise à jour avec succès.", "success");
       setEditingFiliereId(null);
-      loadData();
+      await loadData();
     } catch (err) {
-      alert(err.message || 'Erreur lors de la mise à jour.');
+      showToast(translateError(err, 'Erreur lors de la mise à jour.'), "error");
     }
   };
 
@@ -133,9 +185,10 @@ const NouvellePromo = () => {
           'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user') || '{}').token}`
         }
       });
-      loadData();
+      showToast("La filière a été supprimée avec succès.", "success");
+      await loadData();
     } catch (err) {
-      alert(err.message || 'Erreur lors de la suppression.');
+      showToast(translateError(err, 'Erreur lors de la suppression.'), "error");
     }
   };
 
