@@ -294,8 +294,8 @@ const DashboardEnseignant = () => {
                         onClick={() => handleNotificationClick(notif)}
                         className={`flex gap-3 items-start p-2.5 rounded-xl transition cursor-pointer hover:bg-slate-50 ${!notif.lu ? 'bg-emerald-50/40' : ''}`}
                       >
-                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs bg-emerald-100 text-emerald-700`}>
-                          {notif.category === 'schedule' ? '📅' : notif.category === 'exam' ? '📝' : '💬'}
+                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-emerald-100 text-emerald-700`}>
+                          {notif.category === 'schedule' ? <FiCalendar className="w-4 h-4" /> : notif.category === 'exam' ? <FiFileText className="w-4 h-4" /> : <FiMessageSquare className="w-4 h-4" />}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
