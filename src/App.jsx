@@ -39,6 +39,7 @@ import TuteurSuivi from './pages/tuteur/TuteurSuivi';
 import TuteurReunions from './pages/tuteur/TuteurReunions';
 import TuteurBilan from './pages/tuteur/TuteurBilan';
 import ProfilTuteur from './pages/tuteur/ProfilTuteur';
+import TuteurAccueil from './pages/tuteur/TuteurAccueil';
 
 import CourrierList from './app/module/module_administration/CourrierList';
 import NoteServiceList from './app/module/module_administration/NoteServiceList';
@@ -164,7 +165,8 @@ function App() {
            </ProtectedRoute>
           ),
           children : [
-                { index: true, element: <Navigate to="emploi-du-temps" replace /> },
+                { index: true, element: <Navigate to="accueil" replace /> },
+                { path: "accueil", element: <TuteurAccueil /> },
                 { path: "emploi-du-temps", element: <EmploiDuTemps /> },
                 { path: "suivi", element: <TuteurSuivi /> },
                 { path: "reunions", element: <TuteurReunions /> },

@@ -14,7 +14,8 @@ import {
   FiCalendar, 
   FiHelpCircle,
   FiFileText,
-  FiUsers
+  FiUsers,
+  FiHome
 } from 'react-icons/fi'
 
 const DashboardTuteur = () => {
@@ -424,6 +425,18 @@ const DashboardTuteur = () => {
         {/* Navigation Links inside Mobile Sidebar */}
         <nav className="space-y-1">
           <Link 
+            to="/tuteur/accueil" 
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold transition ${
+              location.pathname === '/tuteur/accueil' 
+                ? 'bg-indigo-50 text-indigo-600' 
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            }`}
+          >
+            <FiHome className="w-4 h-4" />
+            Accueil
+          </Link>
+          <Link 
             to="/tuteur/emploi-du-temps" 
             onClick={() => setIsMobileSidebarOpen(false)}
             className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold transition ${
@@ -508,11 +521,22 @@ const DashboardTuteur = () => {
           <div className="flex flex-col gap-1">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Menu Principal</span>
             <Link
+              to="/tuteur/accueil"
+              className={`text-xs font-bold px-3 py-2.5 rounded-xl transition-all duration-205 flex items-center gap-2.5 ${
+                location.pathname === '/tuteur/accueil'
+                  ? 'bg-indigo-50 text-indigo-650'
+                  : 'text-slate-650 hover:text-indigo-655 hover:bg-indigo-50/40'
+              }`}
+            >
+              <FiHome className="w-4 h-4 shrink-0" />
+              Accueil
+            </Link>
+            <Link
               to="/tuteur/emploi-du-temps"
               className={`text-xs font-bold px-3 py-2.5 rounded-xl transition-all duration-205 flex items-center gap-2.5 ${
                 location.pathname === '/tuteur/emploi-du-temps'
-                  ? 'bg-indigo-50 text-indigo-650'
-                  : 'text-slate-650 hover:text-indigo-655 hover:bg-indigo-50/40'
+                  ? 'bg-indigo-50 text-indigo-655'
+                  : 'text-slate-655 hover:text-indigo-655 hover:bg-indigo-50/40'
               }`}
             >
               <FiCalendar className="w-4 h-4 shrink-0" />
