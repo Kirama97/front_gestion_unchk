@@ -202,6 +202,15 @@ const AsideAdmin = () => {
           <NavLink to="/admin/notes/saisir" icon={<PiPencilLine />} label="Saisir des notes" />
           <NavLink to="/admin/notes/bulletins" icon={<PiFolderOpen />} label="Bulletins de notes" />
         </SideSection>
+
+        {/* Administration & Communication */}
+        <SideSection icon={PiFolderOpen} label="Admin & Com">
+          <NavLink to="/admin/courriers" icon={<PiListBullets />} label="Courriers" />
+          <NavLink to="/admin/notes-service" icon={<PiListBullets />} label="Notes de service" />
+          <NavLink to="/admin/budget" icon={<PiListBullets />} label="Budget" />
+          <NavLink to="/admin/comptes-rendus" icon={<PiListBullets />} label="Comptes Rendus" />
+          <NavLink to="/admin/notifications" icon={<PiListBullets />} label="Notifications" />
+        </SideSection>
       </div>
 
       {/* Accès rapides */}

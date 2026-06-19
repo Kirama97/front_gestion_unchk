@@ -36,6 +36,14 @@ import NotesEnseignant from './pages/enseignant/NotesEnseignant';
 import ProfilEnseignant from './pages/enseignant/ProfilEnseignant';
 import ParametreEnseignant from './pages/enseignant/ParametreEnseignant';
 
+import CourrierList from './app/module/module_administration/CourrierList';
+import NoteServiceList from './app/module/module_administration/NoteServiceList';
+import BudgetPage from './app/module/module_administration/BudgetPage';
+import CompteRenduList from './app/module/module_communication/CompteRenduList';
+import NotificationsPage from './app/module/module_communication/NotificationsPage';
+import SuiviEtudiantList from './app/module/module_insertion/SuiviEtudiantList';
+import PartenaireList from './app/module/module_insertion/PartenaireList';
+
 
 
 
@@ -84,7 +92,12 @@ function App() {
                 { path: "notes", element: <AdminNotes /> },
                 { path: "notes/saisir", element: <AdminNotes /> },
                 { path: "notes/bulletins", element: <AdminNotes /> },
-                { path: "parametres", element: <AdminParametres /> }
+                { path: "parametres", element: <AdminParametres /> },
+                { path: "courriers", element: <CourrierList /> },
+                { path: "notes-service", element: <NoteServiceList /> },
+                { path: "budget", element: <BudgetPage /> },
+                { path: "comptes-rendus", element: <CompteRenduList /> },
+                { path: "notifications", element: <NotificationsPage /> }
           ]
         },
 
@@ -157,7 +170,13 @@ function App() {
             <ProtectedRoute roleRequired="insertion">
               <DashboardInsertion />
             </ProtectedRoute>
-          )
+          ),
+          children: [
+            { index: true, element: <Navigate to="suivi" replace /> },
+            { path: "suivi", element: <SuiviEtudiantList /> },
+            { path: "partenaires", element: <PartenaireList /> },
+            { path: "notifications", element: <NotificationsPage /> }
+          ]
         },
         // wildcards
         {
