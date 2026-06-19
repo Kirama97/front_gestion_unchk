@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { apiGet, apiPost, apiDelete } from '../../utils/api';
+import { apiGet, apiPost, apiPut, apiDelete } from '../../utils/api';
 import { 
   FiUserPlus, 
   FiTrash2, 
@@ -8,9 +8,11 @@ import {
   FiCheckCircle, 
   FiX, 
   FiUser, 
-  FiBriefcase 
+  FiBriefcase,
+  FiEdit
 } from 'react-icons/fi';
 import { useToast } from '../../context/ToastContext';
+import Modal from '../../components/common/Modal';
 
 const Etudiants = () => {
   const { showToast } = useToast();
@@ -28,6 +30,7 @@ const Etudiants = () => {
 
   // Form modal state
   const [showForm, setShowForm] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
   const [form, setForm] = useState({
     nom: '',
     prenom: '',
@@ -73,7 +76,56 @@ const Etudiants = () => {
     loadData();
   }, []);
 
-  const handleCreateStudent = async (e) => {
+  const handleOpenAddModal = () => {
+    setEditingStudent(null);
+    setForm({
+      nom: '',
+      prenom: '',
+      email: '',
+      motDePasse: 'Passer123',
+      ine: '',
+      dateNaissance: '',
+      filiere: '',
+      promo: '',
+      niveauEtude: 'Licence 1',
+      adresse: '',
+      genre: 'Masculin',
+      telephone: '',
+      anneeDebut: new Date().getFullYear(),
+      anneeSortie: new Date().getFullYear() + 3,
+      classeId: '',
+      filiereId: '',
+      promotionId: ''
+    });
+    setShowForm(true);
+  };
+
+  const handleOpenEditModal = (student) => {
+    setEditingStudent(student);
+    const userObj = student.utilisateur || {};
+    setForm({
+      nom: userObj.nom || '',
+      prenom: userObj.prenom || '',
+      email: userObj.email || '',
+      motDePasse: '', // Keep empty unless editing
+      ine: student.ine || '',
+      dateNaissance: student.dateNaissance || '',
+      filiere: student.filiere || '',
+      promo: student.promo || '',
+      niveauEtude: student.niveauEtude || 'Licence 1',
+      adresse: student.adresse || '',
+      genre: student.genre || 'Masculin',
+      telephone: userObj.telephone || '',
+      anneeDebut: student.anneeDebut || new Date().getFullYear(),
+      anneeSortie: student.anneeSortie || (new Date().getFullYear() + 3),
+      classeId: student.classe ? student.classe.id.toString() : '',
+      filiereId: student.filiereObj ? student.filiereObj.id.toString() : '',
+      promotionId: student.promotionObj ? student.promotionObj.id.toString() : ''
+    });
+    setShowForm(true);
+  };
+
+  const handleSaveStudent = async (e) => {
     e.preventDefault();
     if (!form.nom || !form.prenom || !form.email || !form.ine) {
       showToast("Veuillez remplir les informations obligatoires (Nom, Prénom, Email, INE).", "warning");
@@ -96,33 +148,24 @@ const Etudiants = () => {
         anneeSortie: Number(form.anneeSortie)
       };
 
-      await apiPost('/api/etudiants', payload);
-      showToast("L'étudiant a été créé avec succès.", "success");
+      // Remove default password if empty when editing
+      if (editingStudent && !payload.motDePasse) {
+        delete payload.motDePasse;
+      }
+
+      if (editingStudent) {
+        await apiPut(`/api/etudiants/${editingStudent.id}`, payload);
+        showToast("L'étudiant a été modifié avec succès.", "success");
+      } else {
+        await apiPost('/api/etudiants', payload);
+        showToast("L'étudiant a été créé avec succès.", "success");
+      }
+
       setShowForm(false);
-      // Reset form
-      setForm({
-        nom: '',
-        prenom: '',
-        email: '',
-        motDePasse: 'Passer123',
-        ine: '',
-        dateNaissance: '',
-        filiere: '',
-        promo: '',
-        niveauEtude: 'Licence 1',
-        adresse: '',
-        genre: 'Masculin',
-        telephone: '',
-        anneeDebut: new Date().getFullYear(),
-        anneeSortie: new Date().getFullYear() + 3,
-        classeId: '',
-        filiereId: '',
-        promotionId: ''
-      });
       loadData();
     } catch (err) {
-      console.error('Error creating student:', err);
-      showToast(err.message || "Erreur lors de la création de l'étudiant.", "error");
+      console.error('Error saving student:', err);
+      showToast(err.message || "Erreur lors de l'enregistrement de l'étudiant.", "error");
     }
   };
 
@@ -170,7 +213,7 @@ const Etudiants = () => {
         </div>
 
         <button 
-          onClick={() => setShowForm(true)}
+          onClick={handleOpenAddModal}
           className="flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl shadow transition duration-200 cursor-pointer"
         >
           <FiUserPlus />
@@ -222,6 +265,13 @@ const Etudiants = () => {
                         </span>
                       </td>
                       <td className="p-4 text-right">
+                        <button
+                          onClick={() => handleOpenEditModal(etud)}
+                          className="text-slate-450 hover:text-orange-500 p-1.5 rounded-lg hover:bg-slate-50 transition mr-1.5"
+                          title="Modifier l'étudiant"
+                        >
+                          <FiEdit className="w-4 h-4" />
+                        </button>
                         <button 
                           onClick={() => handleDeleteStudent(etud.id)}
                           className="text-slate-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-slate-50 transition"
@@ -243,195 +293,186 @@ const Etudiants = () => {
         </div>
       </div>
 
-      {/* CREATE STUDENT FORM MODAL */}
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
-            
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
-              <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                <FiUserPlus className="text-orange-500" />
-                Inscrire un nouvel Étudiant
-              </h3>
-              <button 
-                onClick={() => setShowForm(false)}
-                className="p-1 hover:bg-slate-200 text-slate-400 hover:text-slate-600 rounded-lg transition"
-              >
-                <FiX className="w-5 h-5" />
-              </button>
+      {/* CREATE / EDIT STUDENT FORM MODAL */}
+      <Modal
+        isOpen={showForm}
+        onClose={() => setShowForm(false)}
+        title={editingStudent ? "Modifier l'Étudiant" : "Inscrire un nouvel Étudiant"}
+        subtitle={editingStudent ? "Mettez à jour les informations de cet étudiant." : "Enregistrez un nouvel étudiant et gérez ses classes."}
+        maxWidth="max-w-2xl"
+      >
+        <form onSubmit={handleSaveStudent} className="space-y-4">
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Prénom *</label>
+              <input 
+                type="text" 
+                required
+                value={form.prenom}
+                onChange={e => setForm({...form, prenom: e.target.value})}
+                placeholder="Ex: Diene"
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              />
             </div>
-
-            {/* Modal Content - Scrollable Form */}
-            <form onSubmit={handleCreateStudent} className="flex-1 overflow-y-auto p-6 space-y-4">
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Prénom *</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={form.prenom}
-                    onChange={e => setForm({...form, prenom: e.target.value})}
-                    placeholder="Ex: Diene"
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nom *</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={form.nom}
-                    onChange={e => setForm({...form, nom: e.target.value})}
-                    placeholder="Ex: Thiam"
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email Institutionnel *</label>
-                  <input 
-                    type="email" 
-                    required
-                    value={form.email}
-                    onChange={e => setForm({...form, email: e.target.value})}
-                    placeholder="Ex: diene.thiam@unchk.edu.sn"
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Identifiant (INE) *</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={form.ine}
-                    onChange={e => setForm({...form, ine: e.target.value})}
-                    placeholder="Ex: INE-2026-9876"
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mots de passe par défaut</label>
-                  <input 
-                    type="password" 
-                    value={form.motDePasse}
-                    onChange={e => setForm({...form, motDePasse: e.target.value})}
-                    placeholder="Par défaut: Passer123"
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Date de Naissance</label>
-                  <input 
-                    type="date" 
-                    value={form.dateNaissance}
-                    onChange={e => setForm({...form, dateNaissance: e.target.value})}
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Promotion</label>
-                  <select 
-                    value={form.promotionId}
-                    onChange={e => setForm({...form, promotionId: e.target.value})}
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  >
-                    <option value="">Sélectionner</option>
-                    {promotions.map(p => <option key={p.id} value={p.id}>{p.nom}</option>)}
-                  </select>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Filière</label>
-                  <select 
-                    value={form.filiereId}
-                    onChange={e => setForm({...form, filiereId: e.target.value})}
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  >
-                    <option value="">Sélectionner</option>
-                    {filieres.map(f => <option key={f.id} value={f.id}>{f.code} - {f.nom}</option>)}
-                  </select>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Classe</label>
-                  <select 
-                    value={form.classeId}
-                    onChange={e => setForm({...form, classeId: e.target.value})}
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  >
-                    <option value="">Sélectionner</option>
-                    {classes.map(c => <option key={c.id} value={c.id}>{c.nom}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Téléphone</label>
-                  <input 
-                    type="text" 
-                    value={form.telephone}
-                    onChange={e => setForm({...form, telephone: e.target.value})}
-                    placeholder="Ex: +221 77 123 45 67"
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Genre</label>
-                  <select 
-                    value={form.genre}
-                    onChange={e => setForm({...form, genre: e.target.value})}
-                    className="border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  >
-                    <option value="Masculin">Masculin</option>
-                    <option value="Féminin">Féminin</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Adresse</label>
-                <input 
-                  type="text" 
-                  value={form.adresse}
-                  onChange={e => setForm({...form, adresse: e.target.value})}
-                  placeholder="Ex: Dakar, Sénégal"
-                  className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                />
-              </div>
-
-              {/* Modal Footer */}
-              <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
-                <button 
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  className="px-4 py-2 border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-xl text-xs font-bold transition"
-                >
-                  Annuler
-                </button>
-                <button 
-                  type="submit"
-                  className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition shadow"
-                >
-                  Inscrire l'étudiant
-                </button>
-              </div>
-
-            </form>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nom *</label>
+              <input 
+                type="text" 
+                required
+                value={form.nom}
+                onChange={e => setForm({...form, nom: e.target.value})}
+                placeholder="Ex: Thiam"
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              />
+            </div>
           </div>
-        </div>
-      )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email Institutionnel *</label>
+              <input 
+                type="email" 
+                required
+                value={form.email}
+                onChange={e => setForm({...form, email: e.target.value})}
+                placeholder="Ex: diene.thiam@unchk.edu.sn"
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Identifiant (INE) *</label>
+              <input 
+                type="text" 
+                required
+                disabled={!!editingStudent}
+                value={form.ine}
+                onChange={e => setForm({...form, ine: e.target.value})}
+                placeholder="Ex: INE-2026-9876"
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition disabled:opacity-60"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                {editingStudent ? "Nouveau Mot de Passe (Optionnel)" : "Mot de passe par défaut *"}
+              </label>
+              <input 
+                type="password" 
+                required={!editingStudent}
+                value={form.motDePasse}
+                onChange={e => setForm({...form, motDePasse: e.target.value})}
+                placeholder={editingStudent ? "Laisser vide pour ne pas modifier" : "Par défaut: Passer123"}
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Date de Naissance</label>
+              <input 
+                type="date" 
+                value={form.dateNaissance}
+                onChange={e => setForm({...form, dateNaissance: e.target.value})}
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Promotion</label>
+              <select 
+                value={form.promotionId}
+                onChange={e => setForm({...form, promotionId: e.target.value})}
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option value="">Sélectionner</option>
+                {promotions.map(p => <option key={p.id} value={p.id}>{p.nom}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Filière</label>
+              <select 
+                value={form.filiereId}
+                onChange={e => setForm({...form, filiereId: e.target.value})}
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option value="">Sélectionner</option>
+                {filieres.map(f => <option key={f.id} value={f.id}>{f.code} - {f.nom}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Classe</label>
+              <select 
+                value={form.classeId}
+                onChange={e => setForm({...form, classeId: e.target.value})}
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option value="">Sélectionner</option>
+                {classes.map(c => <option key={c.id} value={c.id}>{c.nom}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Téléphone</label>
+              <input 
+                type="text" 
+                value={form.telephone}
+                onChange={e => setForm({...form, telephone: e.target.value})}
+                placeholder="Ex: +221 77 123 45 67"
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Genre</label>
+              <select 
+                value={form.genre}
+                onChange={e => setForm({...form, genre: e.target.value})}
+                className="border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option value="Masculin">Masculin</option>
+                <option value="Féminin">Féminin</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Adresse</label>
+            <input 
+              type="text" 
+              value={form.adresse}
+              onChange={e => setForm({...form, adresse: e.target.value})}
+              placeholder="Ex: Dakar, Sénégal"
+              className="border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+            />
+          </div>
+
+          {/* Modal Footer */}
+          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
+            <button 
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="px-4 py-2 border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-xl text-xs font-bold transition"
+            >
+              Annuler
+            </button>
+            <button 
+              type="submit"
+              className="px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition shadow"
+            >
+              {editingStudent ? "Modifier l'étudiant" : "Inscrire l'étudiant"}
+            </button>
+          </div>
+
+        </form>
+      </Modal>
 
     </div>
   );
 };
 
 export default Etudiants;
+

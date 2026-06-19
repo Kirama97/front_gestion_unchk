@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { apiPost } from '../../../utils/api'
+import React, { useState, useEffect } from 'react'
+import { apiPost, apiPut } from '../../../utils/api'
 import { useToast } from '../../../context/ToastContext'
-import { FiUploadCloud, FiCheck, FiLoader } from 'react-icons/fi'
+import { FiUploadCloud, FiCheck, FiLoader, FiX } from 'react-icons/fi'
 
-const NoteServiceForm = ({ onSave }) => {
+const NoteServiceForm = ({ onSave, editingDoc, setEditingDoc }) => {
   const { showToast } = useToast()
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -13,6 +13,19 @@ const NoteServiceForm = ({ onSave }) => {
     type: 'NOTE_SERVICE_INTERNE',
     cheminFichier: ''
   })
+
+  useEffect(() => {
+    if (editingDoc) {
+      setFormData({
+        titre: editingDoc.titre || '',
+        description: editingDoc.description || '',
+        type: editingDoc.type || 'NOTE_SERVICE_INTERNE',
+        cheminFichier: editingDoc.cheminFichier || ''
+      })
+    } else {
+      setFormData({ titre: '', description: '', type: 'NOTE_SERVICE_INTERNE', cheminFichier: '' })
+    }
+  }, [editingDoc])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -56,8 +69,14 @@ const NoteServiceForm = ({ onSave }) => {
 
     try {
       setLoading(true)
-      await apiPost('/api/documents', formData)
-      showToast("Note enregistrée avec succès.", "success")
+      if (editingDoc) {
+        await apiPut(`/api/documents/${editingDoc.id}`, formData)
+        showToast("Note mise à jour avec succès.", "success")
+        setEditingDoc(null)
+      } else {
+        await apiPost('/api/documents', formData)
+        showToast("Note enregistrée avec succès.", "success")
+      }
       setFormData({ titre: '', description: '', type: 'NOTE_SERVICE_INTERNE', cheminFichier: '' })
       if (onSave) onSave()
     } catch (err) {
@@ -70,9 +89,22 @@ const NoteServiceForm = ({ onSave }) => {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-5 border border-slate-100 rounded-2xl shadow-sm flex flex-col gap-4">
-      <div>
-        <h3 className="text-sm font-bold text-slate-800">Créer une Note / Circulaire</h3>
-        <p className="text-[11px] text-slate-400">Publiez une note de service ou une circulaire centrale.</p>
+      <div className="flex justify-between items-start">
+        <div>
+          <h3 className="text-sm font-bold text-slate-800">
+            {editingDoc ? "Modifier la Note / Circulaire" : "Créer une Note / Circulaire"}
+          </h3>
+          <p className="text-[11px] text-slate-400">Publiez une note de service ou une circulaire centrale.</p>
+        </div>
+        {editingDoc && (
+          <button
+            type="button"
+            onClick={() => setEditingDoc(null)}
+            className="p-1 hover:bg-slate-100 text-slate-400 hover:text-slate-600 rounded-lg transition"
+          >
+            <FiX className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col gap-1">
@@ -94,7 +126,7 @@ const NoteServiceForm = ({ onSave }) => {
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 transition"
+            className="text-xs px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 transition bg-white"
           >
             <option value="NOTE_SERVICE_INTERNE">Note Service Interne</option>
             <option value="NOTE_SERVICE_EXTERNE">Note Service Externe</option>
@@ -148,7 +180,7 @@ const NoteServiceForm = ({ onSave }) => {
         className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-slate-300 transition text-white text-xs font-semibold py-2 rounded-lg shadow-md shadow-orange-500/10 flex items-center justify-center gap-1"
       >
         {loading && <FiLoader className="w-3.5 h-3.5 animate-spin" />}
-        <span>Publier la Note</span>
+        <span>{editingDoc ? "Mettre à jour la Note" : "Publier la Note"}</span>
       </button>
     </form>
   )

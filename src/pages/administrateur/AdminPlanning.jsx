@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { apiGet, apiPost } from '../../utils/api'
-import { FiCalendar, FiPlus, FiClock, FiMapPin, FiUser, FiX, FiCheckCircle } from 'react-icons/fi'
+import { apiGet, apiPost, apiPut, apiDelete } from '../../utils/api'
+import { FiCalendar, FiPlus, FiClock, FiMapPin, FiUser, FiX, FiCheckCircle, FiEdit2, FiTrash2 } from 'react-icons/fi'
 import { useToast } from '../../context/ToastContext'
 
 const AdminPlanning = () => {
@@ -10,6 +10,7 @@ const AdminPlanning = () => {
   const [classes, setClasses] = useState([])
   const [selectedClasse, setSelectedClasse] = useState(null)
   const [schedule, setSchedule] = useState([])
+  const [rawSchedule, setRawSchedule] = useState([])
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingSched, setLoadingSched] = useState(false)
@@ -17,6 +18,7 @@ const AdminPlanning = () => {
 
   // Modal State
   const [showAddModal, setShowAddModal] = useState(false)
+  const [editingSlot, setEditingSlot] = useState(null)
   const [selectedCourseId, setSelectedCourseId] = useState('')
   const [dayOfWeek, setDayOfWeek] = useState('LUNDI')
   const [startTime, setStartTime] = useState('08:00')
@@ -74,6 +76,7 @@ const AdminPlanning = () => {
     try {
       setLoadingSched(true)
       const data = await apiGet(`/api/emploi-du-temps/classe/${selectedClasse.id}`)
+      setRawSchedule(data)
       
       const formatted = data.map(item => {
         const formatTime = (tStr) => {
@@ -103,6 +106,42 @@ const AdminPlanning = () => {
     loadSchedule()
   }, [selectedClasse])
 
+  const handleEditClick = (slotId) => {
+    const raw = rawSchedule.find(item => item.id === slotId)
+    if (raw) {
+      setEditingSlot(raw)
+      setSelectedCourseId(raw.cours?.id?.toString() || '')
+      setDayOfWeek(raw.jourSemaine || 'LUNDI')
+      
+      const formatTime = (tStr) => {
+        if (!tStr) return ''
+        const parts = tStr.split(':')
+        if (parts.length >= 2) return `${parts[0]}:${parts[1]}`
+        return tStr
+      }
+      setStartTime(formatTime(raw.heureDebut) || '08:00')
+      setEndTime(formatTime(raw.heureFin) || '10:00')
+      setRoomName(raw.salle || 'Salle Virtuelle 1')
+      setShowAddModal(true)
+    }
+  }
+
+  const handleDeleteClick = async (slotId) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce créneau horaire ?")) {
+      return
+    }
+    try {
+      setLoadingSched(true)
+      await apiDelete(`/api/emplois-du-temps/${slotId}`)
+      showToast("Le créneau horaire a été supprimé avec succès.", "success")
+      loadSchedule()
+    } catch (err) {
+      console.error("Error deleting schedule slot:", err)
+      showToast(err.message || "Erreur lors de la suppression du créneau.", "error")
+      setLoadingSched(false)
+    }
+  }
+
   const handleAddSchedule = async (e) => {
     e.preventDefault()
     if (!selectedClasse || !selectedCourseId) return
@@ -121,8 +160,13 @@ const AdminPlanning = () => {
         matiere: selectedCourse ? selectedCourse.matiere?.nom : 'Matière'
       }
 
-      await apiPost('/api/emplois-du-temps', payload)
-      showToast('Le cours a été planifié avec succès !', 'success')
+      if (editingSlot) {
+        await apiPut(`/api/emplois-du-temps/${editingSlot.id}`, payload)
+        showToast('Le cours a été modifié avec succès !', 'success')
+      } else {
+        await apiPost('/api/emplois-du-temps', payload)
+        showToast('Le cours a été planifié avec succès !', 'success')
+      }
       
       setTimeout(() => {
         setShowAddModal(false)
@@ -130,7 +174,7 @@ const AdminPlanning = () => {
       }, 1500)
     } catch (err) {
       console.error("Error saving timetable slot:", err)
-      showToast("Erreur lors de la planification du cours.", "error")
+      showToast(err.message || "Erreur lors de la planification du cours.", "error")
     } finally {
       setSaving(false)
     }
@@ -154,7 +198,15 @@ const AdminPlanning = () => {
         </div>
 
         <button 
-          onClick={() => setShowAddModal(true)}
+          onClick={() => {
+            setEditingSlot(null)
+            setSelectedCourseId(courses[0]?.id?.toString() || '')
+            setDayOfWeek('LUNDI')
+            setStartTime('08:00')
+            setEndTime('10:00')
+            setRoomName('Salle Virtuelle 1')
+            setShowAddModal(true)
+          }}
           className="flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl shadow transition duration-200 cursor-pointer"
         >
           <FiPlus />
@@ -197,12 +249,32 @@ const AdminPlanning = () => {
                 <div className="flex flex-col gap-2.5">
                   {daySlots.length > 0 ? (
                     daySlots.map((slot, idx) => (
-                      <div key={idx} className="bg-slate-50/50 p-3 rounded-xl border border-slate-150/60 flex flex-col gap-1.5 hover:shadow-sm transition">
-                        <span className="text-[9px] text-orange-500 font-bold tracking-wide flex items-center gap-1">
-                          <FiClock className="w-3 h-3" />
-                          {slot.time}
-                        </span>
-                        <h4 className="text-xs font-bold text-slate-800 leading-tight">{slot.subject}</h4>
+                      <div key={idx} className="relative group bg-slate-50/50 p-3 rounded-xl border border-slate-150/60 flex flex-col gap-1.5 hover:shadow-sm transition">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[9px] text-orange-500 font-bold tracking-wide flex items-center gap-1">
+                            <FiClock className="w-3 h-3" />
+                            {slot.time}
+                          </span>
+                          
+                          {/* Actions */}
+                          <div className="opacity-0 group-hover:opacity-100 flex gap-1.5 transition duration-155">
+                            <button 
+                              onClick={() => handleEditClick(slot.id)}
+                              title="Modifier"
+                              className="text-slate-400 hover:text-orange-500 p-0.5 rounded transition cursor-pointer"
+                            >
+                              <FiEdit2 className="w-3 h-3" />
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteClick(slot.id)}
+                              title="Supprimer"
+                              className="text-slate-400 hover:text-red-500 p-0.5 rounded transition cursor-pointer"
+                            >
+                              <FiTrash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                        <h4 className="text-xs font-bold text-slate-800 leading-tight pr-6">{slot.subject}</h4>
                         <div className="flex flex-col gap-0.5 text-[9px] text-slate-400 mt-1">
                           <span className="flex items-center gap-1"><FiUser className="w-2.5 h-2.5" /> {slot.teacher}</span>
                           <span className="flex items-center gap-1"><FiMapPin className="w-2.5 h-2.5" /> {slot.room}</span>
@@ -226,8 +298,12 @@ const AdminPlanning = () => {
             {/* Header */}
             <div className="bg-slate-50 px-5 py-4 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Planifier un cours</h3>
-                <p className="text-[10px] text-slate-400 mt-0.5">Affectation d'une séance pour la classe de {selectedClasse?.nom}</p>
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+                  {editingSlot ? 'Modifier le cours' : 'Planifier un cours'}
+                </h3>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  {editingSlot ? `Modification de la séance pour ${selectedClasse?.nom}` : `Affectation d'une séance pour la classe de ${selectedClasse?.nom}`}
+                </p>
               </div>
               <button 
                 onClick={() => setShowAddModal(false)}
@@ -319,16 +395,16 @@ const AdminPlanning = () => {
                 <button 
                   type="button" 
                   onClick={() => setShowAddModal(false)}
-                  className="text-xs font-bold px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
+                  className="text-xs font-bold px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition cursor-pointer"
                 >
                   Annuler
                 </button>
                 <button 
                   type="submit" 
                   disabled={saving || !selectedCourseId}
-                  className="text-xs font-bold px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition disabled:opacity-55"
+                  className="text-xs font-bold px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition disabled:opacity-55 cursor-pointer"
                 >
-                  {saving ? 'Planification...' : 'Planifier'}
+                  {saving ? (editingSlot ? 'Modification...' : 'Planification...') : (editingSlot ? 'Enregistrer' : 'Planifier')}
                 </button>
               </div>
             </form>

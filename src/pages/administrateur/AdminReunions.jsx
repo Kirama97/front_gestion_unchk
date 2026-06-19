@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import { apiGet } from '../../utils/api'
-import { FiCalendar, FiPlus, FiClock, FiMapPin, FiX, FiCheckCircle, FiInfo } from 'react-icons/fi'
+import { apiGet, apiPost, apiPut, apiDelete } from '../../utils/api'
+import { FiCalendar, FiPlus, FiClock, FiMapPin, FiX, FiCheckCircle, FiInfo, FiEdit, FiTrash2 } from 'react-icons/fi'
+import { useToast } from '../../context/ToastContext'
+import Modal from '../../components/common/Modal'
 
 const AdminReunions = () => {
+  const { showToast } = useToast()
   const [reunions, setReunions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   
   // Modal state
-  const [showAddModal, setShowAddModal] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [editingReunion, setEditingReunion] = useState(null)
   const [titre, setTitre] = useState('')
   const [type, setType] = useState('Préparation des cours')
   const [date, setDate] = useState('')
   const [salle, setSalle] = useState('Virtuelle (Google Meet)')
-  const [success, setSuccess] = useState('')
   const [saving, setSaving] = useState(false)
 
   const loadReunions = async () => {
@@ -33,31 +36,80 @@ const AdminReunions = () => {
     loadReunions()
   }, [])
 
-  const handleCreateReunion = (e) => {
+  // Helper to format date for datetime-local input (YYYY-MM-DDThh:mm)
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return ''
+    const d = new Date(dateStr)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const hours = String(d.getHours()).padStart(2, '0')
+    const minutes = String(d.getMinutes()).padStart(2, '0')
+    return `${year}-${month}-${day}T${hours}:${minutes}`
+  }
+
+  const handleOpenAddModal = () => {
+    setEditingReunion(null)
+    setTitre('')
+    setType('Préparation des cours')
+    setDate('')
+    setSalle('Virtuelle (Google Meet)')
+    setShowModal(true)
+  }
+
+  const handleOpenEditModal = (reunion) => {
+    setEditingReunion(reunion)
+    setTitre(reunion.titre || '')
+    setType(reunion.type || 'Préparation des cours')
+    setDate(formatDateForInput(reunion.date))
+    setSalle(reunion.salle || 'Virtuelle (Google Meet)')
+    setShowModal(true)
+  }
+
+  const handleSaveReunion = async (e) => {
     e.preventDefault()
-    if (!titre || !date) return
+    if (!titre || !date) {
+      showToast("Veuillez renseigner le titre et la date.", "warning")
+      return
+    }
 
     setSaving(true)
-    const newMeeting = {
-      id: Date.now(),
+    const payload = {
       titre,
       type,
       date: new Date(date).toISOString(),
       salle,
-      statut: 'Planifiée'
+      statut: editingReunion ? editingReunion.statut : 'Planifiée'
     }
 
-    // Add to local state (since backend is read-only mock for /api/reunions)
-    setReunions(prev => [...prev, newMeeting])
-    setSuccess('La réunion a été planifiée avec succès !')
-    
-    setTimeout(() => {
-      setSuccess('')
-      setShowAddModal(false)
-      setTitre('')
-      setDate('')
+    try {
+      if (editingReunion) {
+        await apiPut(`/api/reunions/${editingReunion.id}`, payload)
+        showToast("La réunion a été modifiée avec succès !", "success")
+      } else {
+        await apiPost('/api/reunions', payload)
+        showToast("La réunion a été planifiée avec succès !", "success")
+      }
+      setShowModal(false)
+      loadReunions()
+    } catch (err) {
+      console.error(err)
+      showToast("Erreur lors de l'enregistrement de la réunion.", "error")
+    } finally {
       setSaving(false)
-    }, 1200)
+    }
+  }
+
+  const handleDeleteReunion = async (id) => {
+    if (!window.confirm("Voulez-vous vraiment supprimer cette réunion ?")) return
+    try {
+      await apiDelete(`/api/reunions/${id}`)
+      showToast("La réunion a été supprimée.", "success")
+      loadReunions()
+    } catch (err) {
+      console.error(err)
+      showToast("Échec de la suppression.", "error")
+    }
   }
 
   if (loading) {
@@ -78,7 +130,7 @@ const AdminReunions = () => {
         </div>
 
         <button 
-          onClick={() => setShowAddModal(true)}
+          onClick={handleOpenAddModal}
           className="flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl shadow transition duration-200 cursor-pointer"
         >
           <FiPlus />
@@ -103,9 +155,11 @@ const AdminReunions = () => {
                   }`}>
                     {meeting.type}
                   </span>
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
-                    {meeting.statut}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                      {meeting.statut}
+                    </span>
+                  </div>
                 </div>
 
                 <h3 className="text-sm font-extrabold text-slate-800 leading-snug">{meeting.titre}</h3>
@@ -113,6 +167,23 @@ const AdminReunions = () => {
                 <div className="flex flex-col gap-1 text-[10px] text-slate-400 font-semibold mt-2">
                   <span className="flex items-center gap-1.5"><FiCalendar className="w-3.5 h-3.5 text-slate-400" /> Le {dateStr}</span>
                   <span className="flex items-center gap-1.5"><FiMapPin className="w-3.5 h-3.5 text-slate-400" /> Salle: <span className="text-slate-600">{meeting.salle}</span></span>
+                </div>
+
+                <div className="flex justify-end gap-2 border-t border-slate-50 pt-3 mt-2">
+                  <button
+                    onClick={() => handleOpenEditModal(meeting)}
+                    className="p-1.5 bg-slate-50 text-slate-500 hover:bg-orange-50 hover:text-orange-500 border border-slate-150 rounded-lg transition"
+                    title="Modifier la réunion"
+                  >
+                    <FiEdit className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteReunion(meeting.id)}
+                    className="p-1.5 bg-slate-50 text-slate-450 hover:bg-red-50 hover:text-red-500 border border-slate-150 rounded-lg transition"
+                    title="Supprimer la réunion"
+                  >
+                    <FiTrash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               </div>
             )
@@ -124,97 +195,91 @@ const AdminReunions = () => {
         )}
       </div>
 
-      {/* Plan modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-200">
-            {/* Header */}
-            <div className="bg-slate-50 px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Planifier une réunion</h3>
-                <p className="text-[10px] text-slate-400 mt-0.5">Planifier une visioconférence ou un suivi tutorat.</p>
-              </div>
-              <button 
-                onClick={() => setShowAddModal(false)}
-                className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition"
-              >
-                <FiX className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Success message banner */}
-            {success && (
-              <div className="bg-emerald-50 border-b border-emerald-100 px-5 py-3 flex items-center gap-2 text-[10px] font-bold text-emerald-700">
-                <FiCheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                {success}
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleCreateReunion} className="p-5 flex flex-col gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Titre de la réunion *</label>
-                <input 
-                  type="text" required placeholder="Ex: Cadrage de l'examen final"
-                  value={titre} onChange={e => setTitre(e.target.value)}
-                  className="text-xs px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-orange-500"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Type de réunion</label>
-                <select
-                  value={type} onChange={e => setType(e.target.value)}
-                  className="text-xs px-3 py-2 border border-slate-200 rounded-lg bg-white"
-                >
-                  <option value="Préparation des cours">Préparation des cours</option>
-                  <option value="Suivi tutorat">Suivi tutorat</option>
-                  <option value="Préparation des évaluations">Préparation des évaluations</option>
-                </select>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Date & Heure *</label>
-                  <input 
-                    type="datetime-local" required
-                    value={date} onChange={e => setDate(e.target.value)}
-                    className="text-xs px-3 py-2 border border-slate-200 rounded-lg outline-none"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Salle virtuelle / physique</label>
-                  <input 
-                    type="text" required
-                    value={salle} onChange={e => setSalle(e.target.value)}
-                    className="text-xs px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-orange-500"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2 border-t border-slate-50 pt-4 mt-2">
-                <button 
-                  type="button" 
-                  onClick={() => setShowAddModal(false)}
-                  className="text-xs font-bold px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
-                >
-                  Annuler
-                </button>
-                <button 
-                  type="submit" 
-                  disabled={saving || !titre || !date}
-                  className="text-xs font-bold px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition disabled:opacity-55"
-                >
-                  {saving ? 'Planification...' : 'Planifier'}
-                </button>
-              </div>
-            </form>
+      {/* Plan / Edit Modal */}
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title={editingReunion ? "Modifier la réunion" : "Planifier une réunion"}
+        subtitle={editingReunion ? "Mettez à jour les détails de cette réunion." : "Planifier une visioconférence ou un suivi tutorat."}
+      >
+        <form onSubmit={handleSaveReunion} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Titre de la réunion *</label>
+            <input 
+              type="text" required placeholder="Ex: Cadrage de l'examen final"
+              value={titre} onChange={e => setTitre(e.target.value)}
+              className="text-xs px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-orange-500"
+            />
           </div>
-        </div>
-      )}
 
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Type de réunion</label>
+            <select
+              value={type} onChange={e => setType(e.target.value)}
+              className="text-xs px-3 py-2 border border-slate-200 rounded-lg bg-white"
+            >
+              <option value="Préparation des cours">Préparation des cours</option>
+              <option value="Suivi tutorat">Suivi tutorat</option>
+              <option value="Préparation des évaluations">Préparation des évaluations</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Date & Heure *</label>
+              <input 
+                type="datetime-local" required
+                value={date} onChange={e => setDate(e.target.value)}
+                className="text-xs px-3 py-2 border border-slate-200 rounded-lg outline-none"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Salle virtuelle / physique</label>
+              <input 
+                type="text" required
+                value={salle} onChange={e => setSalle(e.target.value)}
+                className="text-xs px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-orange-500"
+              />
+            </div>
+          </div>
+
+          {editingReunion && (
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Statut</label>
+              <select
+                value={editingReunion.statut}
+                onChange={e => setEditingReunion(prev => ({ ...prev, statut: e.target.value }))}
+                className="text-xs px-3 py-2 border border-slate-200 rounded-lg bg-white"
+              >
+                <option value="Planifiée">Planifiée</option>
+                <option value="En cours">En cours</option>
+                <option value="Terminée">Terminée</option>
+                <option value="Annulée">Annulée</option>
+              </select>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2 border-t border-slate-50 pt-4 mt-2">
+            <button 
+              type="button" 
+              onClick={() => setShowModal(false)}
+              className="text-xs font-bold px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
+            >
+              Annuler
+            </button>
+            <button 
+              type="submit" 
+              disabled={saving || !titre || !date}
+              className="text-xs font-bold px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition disabled:opacity-55"
+            >
+              {saving ? 'Enregistrement...' : editingReunion ? 'Modifier' : 'Planifier'}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   )
 }
 
 export default AdminReunions
+

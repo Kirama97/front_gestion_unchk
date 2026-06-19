@@ -12,9 +12,9 @@ const DashboardInsertion = () => {
   }
 
   const menuItems = [
-    { label: "💼 Suivi des Étudiants", path: "/insertion/suivi" },
-    { label: "🤝 Partenaires", path: "/insertion/partenaires" },
-    { label: "🔔 Notifications", path: "/insertion/notifications" }
+    { label: " Suivi des Étudiants", path: "/insertion/suivi" },
+    { label: " Partenaires", path: "/insertion/partenaires" },
+    { label: " Notifications", path: "/insertion/notifications" }
   ]
 
   return (

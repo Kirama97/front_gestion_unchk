@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { apiGet } from '../../../utils/api'
 import CourrierForm from './CourrierForm'
-import { FiDownload, FiTrash2, FiMail, FiFolder } from 'react-icons/fi'
+import { FiDownload, FiTrash2, FiMail, FiFolder, FiEdit } from 'react-icons/fi'
 import { useToast } from '../../../context/ToastContext'
 
 const CourrierList = () => {
@@ -12,6 +12,7 @@ const CourrierList = () => {
   const [documents, setDocuments] = useState([])
   const [loading, setLoading] = useState(true)
   const [filterType, setFilterType] = useState('ALL')
+  const [editingDoc, setEditingDoc] = useState(null)
 
   const fetchDocuments = async () => {
     try {
@@ -40,6 +41,7 @@ const CourrierList = () => {
       if (!res.ok) throw new Error()
       showToast("Courrier supprimé.", "success")
       fetchDocuments()
+      if (editingDoc && editingDoc.id === id) setEditingDoc(null)
     } catch (err) {
       console.error(err)
       showToast("Échec de la suppression.", "error")
@@ -125,13 +127,22 @@ const CourrierList = () => {
                     </a>
                   )}
                   {isAdmin && (
-                    <button
-                      onClick={() => handleDelete(doc.id)}
-                      className="p-2 bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 border border-slate-150 rounded-xl transition"
-                      title="Supprimer"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
+                    <>
+                      <button
+                        onClick={() => setEditingDoc(doc)}
+                        className="p-2 bg-slate-50 text-slate-500 hover:bg-orange-50 hover:text-orange-500 border border-slate-150 rounded-xl transition"
+                        title="Modifier"
+                      >
+                        <FiEdit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(doc.id)}
+                        className="p-2 bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 border border-slate-150 rounded-xl transition"
+                        title="Supprimer"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
@@ -143,7 +154,7 @@ const CourrierList = () => {
       {/* Form Column (For Admin only) */}
       <div className="lg:col-span-1">
         {isAdmin ? (
-          <CourrierForm onSave={fetchDocuments} />
+          <CourrierForm onSave={fetchDocuments} editingDoc={editingDoc} setEditingDoc={setEditingDoc} />
         ) : (
           <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl text-center">
             <FiFolder className="w-8 h-8 text-slate-300 mx-auto mb-2" />

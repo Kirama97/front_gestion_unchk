@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { apiGet } from '../../utils/api';
+import { apiGet, apiPut } from '../../utils/api';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom'
 import BarreDeRechercheEtudiant from '../../components/etudant/BarreDeRechercheEtudiant';
 import Footer from './../commun/Footer';
+import { useToast } from '../../context/ToastContext';
 import { 
 
 
@@ -27,6 +28,7 @@ const DashboardEtudiant = () => {
   const location = useLocation()
   const user = JSON.parse(localStorage.getItem('user') || '{}')
   const displayName = user.prenom && user.nom ? `${user.prenom} ${user.nom}` : "Diene thiam"
+  const { showToast } = useToast()
 
   // UI States
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
@@ -34,12 +36,16 @@ const DashboardEtudiant = () => {
   const [isMessagesOpen, setIsMessagesOpen] = useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [notifications, setNotifications] = useState([])
-
+  const [messages, setMessages] = useState([])
 
   // Refs for click-outside
   const profileRef = useRef(null)
   const notificationsRef = useRef(null)
   const messagesRef = useRef(null)
+  
+  const previousNotificationsRef = useRef([])
+  const previousMessagesRef = useRef([])
+  const isFirstLoad = useRef(true)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -62,42 +68,90 @@ const DashboardEtudiant = () => {
     navigate('/')
   }
 
-  // Fetch real announcements (annonces) from backend to display in notifications
-  useEffect(() => {
-    const fetchAnnonces = async () => {
-      try {
-        const annoncesList = await apiGet('/api/annonces');
-        const formattedNotifications = annoncesList.slice(0, 5).map(ann => ({
-          id: ann.id,
-          title: ann.titre,
-          description: ann.contenu,
-          time: new Date(ann.datePublication).toLocaleDateString('fr-FR'),
-          read: false,
-          category: ann.type === 'ACADEMIQUE' ? 'exam' : 'message'
-        }));
-        setNotifications(formattedNotifications);
-      } catch (err) {
-        console.error('Error fetching announcements:', err);
+  const fetchNotifications = async () => {
+    try {
+      const list = await apiGet('/api/notifications')
+      const notifs = list.filter(n => n.category !== 'message')
+      const msgs = list.filter(n => n.category === 'message')
+
+      if (!isFirstLoad.current) {
+        notifs.forEach(n => {
+          if (!n.lu && !previousNotificationsRef.current.some(prev => prev.id === n.id)) {
+            showToast(`Notification : ${n.titre} - ${n.description}`, 'info')
+          }
+        })
+        msgs.forEach(m => {
+          if (!m.lu && !previousMessagesRef.current.some(prev => prev.id === m.id)) {
+            showToast(`Nouveau message de ${m.titre || 'Enseignant'} : ${m.description}`, 'success')
+          }
+        })
+      } else {
+        isFirstLoad.current = false
       }
-    };
-    fetchAnnonces();
-  }, []);
 
-  // Mock messages
-  const [messages, setMessages] = useState([
-    { id: 1, sender: "Dr. Diop", text: "N'oubliez pas de rendre le rapport final avant vendredi.", time: "09:41", read: false, initial: "D" },
-    { id: 2, sender: "Mme. Fall", text: "Le cours de base de données se tiendra exceptionnellement à...", time: "Hier", read: true, initial: "F" },
-  ])
+      previousNotificationsRef.current = notifs
+      previousMessagesRef.current = msgs
 
-  const unreadNotificationsCount = notifications.filter(n => !n.read).length
-  const unreadMessagesCount = messages.filter(m => !m.read).length
-
-  const markAllNotificationsAsRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, read: true })))
+      setNotifications(notifs)
+      setMessages(msgs)
+    } catch (err) {
+      console.error('Error fetching notifications:', err)
+    }
   }
 
-  const markAllMessagesAsRead = () => {
-    setMessages(messages.map(m => ({ ...m, read: true })))
+  useEffect(() => {
+    fetchNotifications()
+    const interval = setInterval(fetchNotifications, 10000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const unreadNotificationsCount = notifications.filter(n => !n.lu).length
+  const unreadMessagesCount = messages.filter(m => !m.lu).length
+
+  const markAllNotificationsAsRead = async () => {
+    const unread = notifications.filter(n => !n.lu)
+    try {
+      await Promise.all(unread.map(n => apiPut(`/api/notifications/${n.id}/read`)))
+      setNotifications(prev => prev.map(n => ({ ...n, lu: true })))
+      showToast('Toutes les notifications ont été marquées comme lues.', 'success')
+    } catch (err) {
+      console.error('Error marking all notifications as read:', err)
+      showToast('Erreur lors du marquage des notifications.', 'error')
+    }
+  }
+
+  const markAllMessagesAsRead = async () => {
+    const unread = messages.filter(m => !m.lu)
+    try {
+      await Promise.all(unread.map(m => apiPut(`/api/notifications/${m.id}/read`)))
+      setMessages(prev => prev.map(m => ({ ...m, lu: true })))
+      showToast('Tous les messages ont été marqués comme lus.', 'success')
+    } catch (err) {
+      console.error('Error marking all messages as read:', err)
+      showToast('Erreur lors du marquage des messages.', 'error')
+    }
+  }
+
+  const handleNotificationClick = async (notif) => {
+    if (!notif.lu) {
+      try {
+        await apiPut(`/api/notifications/${notif.id}/read`)
+        setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, lu: true } : n))
+      } catch (err) {
+        console.error('Error marking notification as read:', err)
+      }
+    }
+  }
+
+  const handleMessageClick = async (msg) => {
+    if (!msg.lu) {
+      try {
+        await apiPut(`/api/notifications/${msg.id}/read`)
+        setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, lu: true } : m))
+      } catch (err) {
+        console.error('Error marking message as read:', err)
+      }
+    }
   }
 
 
@@ -171,19 +225,22 @@ const DashboardEtudiant = () => {
                     {messages.map((msg) => (
                       <div 
                         key={msg.id} 
-                        className={`flex gap-3 items-start p-2.5 rounded-xl transition cursor-pointer hover:bg-slate-50 ${!msg.read ? 'bg-blue-50/40' : ''}`}
+                        onClick={() => handleMessageClick(msg)}
+                        className={`flex gap-3 items-start p-2.5 rounded-xl transition cursor-pointer hover:bg-slate-50 ${!msg.lu ? 'bg-blue-50/40' : ''}`}
                       >
                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
-                          {msg.initial}
+                          {msg.titre ? msg.titre.charAt(0) : '?'}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <h4 className="text-xs font-bold text-slate-800 truncate">{msg.sender}</h4>
-                            <span className="text-[9px] text-slate-400 font-medium">{msg.time}</span>
+                            <h4 className="text-xs font-bold text-slate-800 truncate">{msg.titre}</h4>
+                            <span className="text-[9px] text-slate-400 font-medium">
+                              {new Date(msg.dateCreation).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
                           </div>
-                          <p className="text-[10px] text-slate-500 truncate mt-0.5">{msg.text}</p>
+                          <p className="text-[10px] text-slate-500 truncate mt-0.5">{msg.description}</p>
                         </div>
-                        {!msg.read && <span className="w-2 h-2 rounded-full bg-blue-500 self-center"></span>}
+                        {!msg.lu && <span className="w-2 h-2 rounded-full bg-blue-500 self-center"></span>}
                       </div>
                     ))}
                   </div>
@@ -233,7 +290,8 @@ const DashboardEtudiant = () => {
                     {notifications.map((notif) => (
                       <div 
                         key={notif.id} 
-                        className={`flex gap-3 items-start p-2.5 rounded-xl transition cursor-pointer hover:bg-slate-50 ${!notif.read ? 'bg-blue-50/40' : ''}`}
+                        onClick={() => handleNotificationClick(notif)}
+                        className={`flex gap-3 items-start p-2.5 rounded-xl transition cursor-pointer hover:bg-slate-50 ${!notif.lu ? 'bg-blue-50/40' : ''}`}
                       >
                         <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs ${
                           notif.category === 'schedule' ? 'bg-amber-100 text-amber-700' : 
@@ -243,11 +301,14 @@ const DashboardEtudiant = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <h4 className="text-xs font-bold text-slate-800 truncate">{notif.title}</h4>
-                            <span className="text-[9px] text-slate-400 font-medium">{notif.time}</span>
+                            <h4 className="text-xs font-bold text-slate-800 truncate">{notif.titre}</h4>
+                            <span className="text-[9px] text-slate-400 font-medium">
+                              {new Date(notif.dateCreation).toLocaleDateString('fr-FR')}
+                            </span>
                           </div>
                           <p className="text-[10px] text-slate-500 leading-normal mt-0.5">{notif.description}</p>
                         </div>
+                        {!notif.lu && <span className="w-2 h-2 rounded-full bg-blue-500 self-center"></span>}
                       </div>
                     ))}
                   </div>
