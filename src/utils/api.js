@@ -71,9 +71,16 @@ export const apiPut = (endpoint, body, options = {}) =>
   request(endpoint, { ...options, method: 'PUT', body: typeof body === 'object' && !(body instanceof FormData) ? JSON.stringify(body) : body });
 export const apiDelete = (endpoint, options = {}) => request(endpoint, { ...options, method: 'DELETE' });
 
+export const getProfileImage = (photoPath) => {
+  if (!photoPath) return "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100&h=100";
+  if (photoPath.startsWith('http://') || photoPath.startsWith('https://')) return photoPath;
+  return `http://localhost:8080${photoPath.startsWith('/') ? '' : '/'}${photoPath}`;
+};
+
 export default {
   get: apiGet,
   post: apiPost,
   put: apiPut,
   delete: apiDelete,
+  getProfileImage
 };

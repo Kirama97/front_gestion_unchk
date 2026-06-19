@@ -35,6 +35,10 @@ import CourEnseignant from './pages/enseignant/CourEnseignant';
 import NotesEnseignant from './pages/enseignant/NotesEnseignant';
 import ProfilEnseignant from './pages/enseignant/ProfilEnseignant';
 import ParametreEnseignant from './pages/enseignant/ParametreEnseignant';
+import TuteurSuivi from './pages/tuteur/TuteurSuivi';
+import TuteurReunions from './pages/tuteur/TuteurReunions';
+import TuteurBilan from './pages/tuteur/TuteurBilan';
+import ProfilTuteur from './pages/tuteur/ProfilTuteur';
 
 import CourrierList from './app/module/module_administration/CourrierList';
 import NoteServiceList from './app/module/module_administration/NoteServiceList';
@@ -160,7 +164,12 @@ function App() {
            </ProtectedRoute>
           ),
           children : [
+                { index: true, element: <Navigate to="emploi-du-temps" replace /> },
                 { path: "emploi-du-temps", element: <EmploiDuTemps /> },
+                { path: "suivi", element: <TuteurSuivi /> },
+                { path: "reunions", element: <TuteurReunions /> },
+                { path: "bilan", element: <TuteurBilan /> },
+                { path: "profil", element: <ProfilTuteur /> },
           ]
         },
         // route insertion

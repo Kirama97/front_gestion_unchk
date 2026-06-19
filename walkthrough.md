@@ -34,6 +34,7 @@ Toutes les spécifications du projet pour l'Université Cheikh Hamidou KANE ont 
 ## 4. Gestion des Emplois du Temps & Contraintes Enseignants
 
 *   **Contrainte Enseignant** : Le backend (`createEmploiDuTemps` et `updateEmploiDuTemps`) valide désormais que pour un même enseignant, le même cours (`Cours` comprenant le prof, la matière et la classe) ne peut être planifié qu'une seule fois dans la journée (`jourSemaine`). Si la contrainte est violée, une erreur 400 Bad Request est renvoyée avec un message structuré affiché sous forme de Toast.
+*   **Notification Automatique de la Classe** : Lors de la création (`POST`) ou de la modification (`PUT`) d'un cours planifié dans l'emploi du temps d'une classe, le backend recherche automatiquement tous les étudiants de cette classe et génère pour chacun d'eux une notification (catégorie `schedule`) détaillant la matière, le jour, l'horaire et la salle.
 *   **Modification & Suppression de Créneaux** :
     *   Création des endpoints `PUT /api/emplois-du-temps/{id}` et `DELETE /api/emplois-du-temps/{id}` sur le backend (`FormationController.java`).
     *   Dans l'interface [AdminPlanning.jsx](file:///c:/Users/KIRA%20DEV/Downloads/Documents/Cour%20M1%20S2%20ingenierie%20Logiciel/Technologies%20d'application%20web/Projet/projet_exam_s2/full_remote_gestion/front_gestion_unchk/src/pages/administrateur/AdminPlanning.jsx), chaque créneau horaire possède des icônes d'action Modifier/Supprimer qui s'affichent au survol de la carte de cours.
@@ -57,3 +58,4 @@ Toutes les spécifications du projet pour l'Université Cheikh Hamidou KANE ont 
         *   Tentez de planifier le même cours deux fois le même jour (par exemple le Lundi) pour la même classe et le même prof. L'application bloque la demande et affiche un Toast d'erreur.
         *   Modifiez un créneau planifié en cliquant sur l'icône Modifier, puis validez. Les nouvelles valeurs sont immédiatement appliquées.
         *   Supprimez un créneau en cliquant sur l'icône de suppression.
+        *   Planifiez un cours pour une classe. Connectez-vous avec le compte d'un étudiant de cette classe : un toast et une notification cloche l'informent instantanément qu'un nouveau cours a été planifié.

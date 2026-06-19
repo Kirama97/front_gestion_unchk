@@ -88,7 +88,7 @@ const BtnGhost = ({ children, onClick }) => (
 )
 
 import { useEffect } from 'react'
-import { apiGet, apiPut } from '../../utils/api'
+import { apiGet, apiPut, apiPost, getProfileImage } from '../../utils/api'
 import { useToast } from '../../context/ToastContext'
 
 /* ─── Composant principal ─── */
@@ -109,7 +109,7 @@ const ProfilEtudiant = () => {
       nom: `${userObj.prenom || ''} ${userObj.nom || ''}`,
       prenom: userObj.prenom || '',
       nomSeul: userObj.nom || '',
-      image: "/img2.jpg",
+      image: userObj.photoProfil || '',
       identifiant: data.ine || '',
       email: userObj.email || '',
       telephone: userObj.telephone || '',
@@ -180,6 +180,35 @@ const ProfilEtudiant = () => {
     }
   }
 
+  const handlePhotoChange = async (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      showToast("Téléchargement de la photo...", "info")
+      const uploadRes = await apiPost('/api/files/upload', formData)
+      const newPhotoUrl = uploadRes.url
+
+      await apiPut('/api/auth/photo', { photoProfil: newPhotoUrl })
+
+      const storedUser = JSON.parse(localStorage.getItem('user') || '{}')
+      storedUser.photoProfil = newPhotoUrl
+      localStorage.setItem('user', JSON.stringify(storedUser))
+
+      setEtudiant(prev => ({ ...prev, image: newPhotoUrl }))
+      setDraft(prev => ({ ...prev, image: newPhotoUrl }))
+      window.dispatchEvent(new Event('user-profile-updated'))
+
+      showToast("Photo de profil mise à jour avec succès !", "success")
+    } catch (err) {
+      console.error("Error uploading photo:", err)
+      showToast(err.message || "Erreur lors du téléchargement de la photo.", "error")
+    }
+  }
+
   const handleCancel = () => {
     setDraft(etudiant)
     setEditMode(false)
@@ -225,9 +254,19 @@ const ProfilEtudiant = () => {
       <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm mb-6">
         <div className=" h-24" />
         <div className="px-5 pb-5">
-          <div className="-mt-10 mb-3">
-              <div className="w-20 h-20 rounded-full overflow-hidden  flex items-center justify-center text-3xl font-medium text-white shrink-0 border-4 border-white ring-2 ring-orange-500">
-                <img src={e.image} alt="" className='w-full h-full object-cover' />
+          <div className="-mt-10 mb-3 flex items-center justify-start">
+            <div className="relative group w-20 h-20">
+              <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center border-4 border-white ring-2 ring-orange-500 bg-orange-100 font-bold text-orange-700 text-2xl shadow-md">
+                {e.image ? (
+                  <img src={getProfileImage(e.image)} alt="Profil" className='w-full h-full object-cover' />
+                ) : (
+                  <FiUser className="w-10 h-10 text-orange-500" />
+                )}
+              </div>
+              <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                <FiEdit className="text-white w-5 h-5" />
+                <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+              </label>
             </div>
           </div>
           <div className="flex flex-wrap justify-between items-start gap-3">

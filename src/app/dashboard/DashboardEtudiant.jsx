@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { apiGet, apiPut } from '../../utils/api';
+import { apiGet, apiPut, getProfileImage } from '../../utils/api';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom'
 import BarreDeRechercheEtudiant from '../../components/etudant/BarreDeRechercheEtudiant';
 import Footer from './../commun/Footer';
@@ -26,7 +26,7 @@ import {
 const DashboardEtudiant = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || '{}'))
   const displayName = user.prenom && user.nom ? `${user.prenom} ${user.nom}` : "Diene thiam"
   const { showToast } = useToast()
 
@@ -46,6 +46,14 @@ const DashboardEtudiant = () => {
   const previousNotificationsRef = useRef([])
   const previousMessagesRef = useRef([])
   const isFirstLoad = useRef(true)
+
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      setUser(JSON.parse(localStorage.getItem('user') || '{}'))
+    }
+    window.addEventListener('user-profile-updated', handleUserUpdate)
+    return () => window.removeEventListener('user-profile-updated', handleUserUpdate)
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -335,14 +343,20 @@ const DashboardEtudiant = () => {
                 className="flex items-center gap-2 rounded-xl p-1.5 text-left hover:bg-slate-100 transition duration-200"
               >
                 <div className="relative h-7 w-7">
-                  <img
-                    src="/img2.jpg"
-                    alt="Photo de profil"
-                    className="h-full w-full rounded-full object-cover border border-slate-200 shadow-sm"
-                    onError={(e) => {
-                      e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100&h=100";
-                    }}
-                  />
+                  {user.photoProfil ? (
+                    <img
+                      src={getProfileImage(user.photoProfil)}
+                      alt="Photo de profil"
+                      className="h-full w-full rounded-full object-cover border border-slate-200 shadow-sm"
+                      onError={(e) => {
+                        e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100&h=100";
+                      }}
+                    />
+                  ) : (
+                    <div className="h-full w-full rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 shadow-sm">
+                      <FiUser className="w-4 h-4" />
+                    </div>
+                  )}
                   <span className="absolute bottom-0 right-0 block h-1 w-1 rounded-full bg-green-500 ring-2 ring-white" />
                 </div>
                 <div className="hidden lg:flex flex-col text-left">
@@ -515,14 +529,20 @@ const DashboardEtudiant = () => {
         {/* User profile footer inside mobile sidebar */}
         <div className="absolute bottom-6 left-6 right-6 border-t border-slate-100 pt-6">
           <div className="flex items-center gap-3 mb-4">
-            <img
-              src="/img2.jpg"
-              alt="Photo de profil"
-              className="h-9 w-9 rounded-full object-cover border border-slate-200"
-              onError={(e) => {
-                e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100&h=100";
-              }}
-            />
+            {user.photoProfil ? (
+              <img
+                src={getProfileImage(user.photoProfil)}
+                alt="Photo de profil"
+                className="h-9 w-9 rounded-full object-cover border border-slate-200"
+                onError={(e) => {
+                  e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100&h=100";
+                }}
+              />
+            ) : (
+              <div className="h-9 w-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500">
+                <FiUser className="w-5 h-5" />
+              </div>
+            )}
             <div className="flex flex-col flex-1 min-w-0">
               <span className="text-xs font-bold text-slate-800 truncate">{displayName}</span>
               <span className="text-[9px] text-slate-400 font-semibold truncate">{user.email || 'etudiant@gmail.com'}</span>

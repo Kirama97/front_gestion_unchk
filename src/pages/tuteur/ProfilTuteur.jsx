@@ -3,7 +3,7 @@ import { apiGet, apiPut, apiPost, getProfileImage } from '../../utils/api'
 import { FiUser, FiMail, FiPhone, FiBookOpen, FiActivity, FiMapPin, FiShield, FiEdit } from 'react-icons/fi'
 import { useToast } from '../../context/ToastContext'
 
-const ProfilEnseignant = () => {
+const ProfilTuteur = () => {
   const { showToast } = useToast()
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -17,7 +17,7 @@ const ProfilEnseignant = () => {
         setProfile(data)
         setLoading(false)
       } catch (err) {
-        console.error("Error fetching teacher profile:", err)
+        console.error("Error fetching tutor profile:", err)
         setError("Impossible de charger votre profil.")
         setLoading(false)
       }
@@ -56,7 +56,7 @@ const ProfilEnseignant = () => {
   if (loading) {
     return (
       <div className="w-full min-h-[55vh] flex items-center justify-center">
-        <div className="text-sm font-semibold text-gray-500 animate-pulse">Chargement de votre profil...</div>
+        <div className="text-sm font-semibold text-slate-500 animate-pulse">Chargement de votre profil...</div>
       </div>
     )
   }
@@ -71,7 +71,7 @@ const ProfilEnseignant = () => {
     )
   }
 
-  const displayName = profile ? `${profile.prenom} ${profile.nom?.toUpperCase()}` : "Moussa NDIAYE"
+  const displayName = profile ? `${profile.prenom} ${profile.nom?.toUpperCase()}` : "Tuteur"
 
   return (
     <div className="w-full px-[5%] sm:px-[10%] py-10 animate-fadeIn">
@@ -83,14 +83,14 @@ const ProfilEnseignant = () => {
 
       <div className="max-w-3xl mx-auto bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         {/* Banner header inside card */}
-        <div className="h-32 bg-gradient-to-r relative flex items-end p-6">
+        <div className="h-32 bg-gradient-to-r from-indigo-650 to-purple-650 relative flex items-end p-6">
           <div className="absolute -bottom-1 left-6">
             <div className="relative group w-20 h-20">
-              <div className="w-20 h-20 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center text-emerald-700 font-black text-3xl overflow-hidden">
+              <div className="w-20 h-20 rounded-full bg-slate-100 border-4 border-white shadow-md flex items-center justify-center text-indigo-700 font-black text-3xl overflow-hidden">
                 {profile?.photoProfil ? (
                   <img src={getProfileImage(profile.photoProfil)} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <FiUser className="w-10 h-10 text-emerald-700" />
+                  <FiUser className="w-10 h-10 text-indigo-700" />
                 )}
               </div>
               <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
@@ -105,8 +105,8 @@ const ProfilEnseignant = () => {
         <div className="pt-14 p-6 sm:p-8 flex flex-col gap-6">
           <div>
             <h2 className="text-lg font-black text-slate-800 tracking-tight">{displayName}</h2>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 mt-1 uppercase tracking-wider">
-              Enseignant UNCHK
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 mt-1 uppercase tracking-wider">
+              Tuteur UNCHK
             </span>
           </div>
 
@@ -116,15 +116,15 @@ const ProfilEnseignant = () => {
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-2">Informations Académiques</h3>
               
               <div className="flex items-start gap-3">
-                <FiBookOpen className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                <FiBookOpen className="w-4 h-4 text-indigo-655 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Département</p>
-                  <p className="text-xs font-semibold text-slate-700 mt-0.5">{profile?.departement || 'Informatique'}</p>
+                  <p className="text-xs font-semibold text-slate-700 mt-0.5">{profile?.departement || 'Tutorat d\'Accompagnement'}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <FiActivity className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                <FiActivity className="w-4 h-4 text-indigo-655 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Statut</p>
                   <p className="text-xs font-semibold text-slate-700 mt-0.5">{profile?.statut || 'Actif'}</p>
@@ -132,7 +132,7 @@ const ProfilEnseignant = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <FiShield className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                <FiShield className="w-4 h-4 text-indigo-655 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Rôle système</p>
                   <p className="text-xs font-semibold text-slate-700 mt-0.5 uppercase">{profile?.role}</p>
@@ -145,7 +145,7 @@ const ProfilEnseignant = () => {
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-2">Coordonnées</h3>
 
               <div className="flex items-start gap-3">
-                <FiMail className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                <FiMail className="w-4 h-4 text-indigo-655 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email</p>
                   <p className="text-xs font-semibold text-slate-700 mt-0.5">{profile?.email}</p>
@@ -153,7 +153,7 @@ const ProfilEnseignant = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <FiPhone className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                <FiPhone className="w-4 h-4 text-indigo-655 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Téléphone</p>
                   <p className="text-xs font-semibold text-slate-700 mt-0.5">{profile?.telephone || '+221 77 123 45 67'}</p>
@@ -161,7 +161,7 @@ const ProfilEnseignant = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <FiMapPin className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                <FiMapPin className="w-4 h-4 text-indigo-655 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Localisation</p>
                   <p className="text-xs font-semibold text-slate-700 mt-0.5">Dakar, Sénégal</p>
@@ -175,4 +175,4 @@ const ProfilEnseignant = () => {
   )
 }
 
-export default ProfilEnseignant
+export default ProfilTuteur

@@ -1,4 +1,5 @@
-import React, { useRef , useState} from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import { getProfileImage } from '../../utils/api'
 import { Outlet, useNavigate, Link } from 'react-router-dom'
 import { CiMenuBurger } from "react-icons/ci";
 
@@ -21,8 +22,16 @@ import {
 
 const NavbarAdmin = () => {
       const navigate = useNavigate()
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || '{}'))
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
+  
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      setUser(JSON.parse(localStorage.getItem('user') || '{}'))
+    }
+    window.addEventListener('user-profile-updated', handleUserUpdate)
+    return () => window.removeEventListener('user-profile-updated', handleUserUpdate)
+  }, [])
   
     // Refs for click-outside
     const profileRef = useRef(null)
@@ -58,23 +67,28 @@ const NavbarAdmin = () => {
              }}
              className="flex items-center gap-2 rounded-xl p-1.5 text-left hover:bg-slate-100 transition duration-200"
            >
-             <div className="relative h-7 w-7">
-               <img
-                 src="/img2.jpg"
-                 alt="Photo de profil"
-                 className="h-full w-full rounded-full object-cover border border-slate-200 shadow-sm"
-                 onError={(e) => {
-                   e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100&h=100";
-                 }}
-               />
-               <span className="absolute bottom-0 right-0 block h-1 w-1 rounded-full bg-green-500 ring-2 ring-white" />
-             </div>
-             <div className="hidden lg:flex flex-col text-left">
-               <span className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
-                 Diene thiam
-               </span>
-               
-             </div>
+              <div className="relative h-7 w-7">
+                {user.photoProfil ? (
+                  <img
+                    src={getProfileImage(user.photoProfil)}
+                    alt="Photo de profil"
+                    className="h-full w-full rounded-full object-cover border border-slate-200 shadow-sm"
+                    onError={(e) => {
+                      e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100&h=100";
+                    }}
+                  />
+                ) : (
+                  <div className="h-full w-full rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shadow-sm">
+                    <FiUser className="w-4 h-4" />
+                  </div>
+                )}
+                <span className="absolute bottom-0 right-0 block h-1 w-1 rounded-full bg-green-500 ring-2 ring-white" />
+              </div>
+              <div className="hidden lg:flex flex-col text-left">
+                <span className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
+                  {user.prenom || user.nom ? `${user.prenom || ''} ${user.nom || ''}`.trim() : 'Diene thiam'}
+                </span>
+              </div>
              <FiChevronDown className="hidden lg:block w-4 h-4 text-slate-400" />
            </button>
          

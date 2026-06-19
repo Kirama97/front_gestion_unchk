@@ -140,7 +140,7 @@ const HomeAdmin = () => {
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
       {/* Title */}
       <div>
-        <h1 className="text-2xl font-black text-slate-800 tracking-tight">Tableau de Bord Administrateur</h1>
+        <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Tableau de Bord Administrateur</h1>
         <p className="text-xs text-slate-500 font-medium mt-0.5">Vue d'ensemble de l'établissement et gestion des annonces.</p>
       </div>
 
@@ -154,7 +154,7 @@ const HomeAdmin = () => {
           </div>
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Promotions</span>
-            <span className="text-2xl font-black text-slate-800 mt-0.5">{stats.promotions}</span>
+            <span className="text-2xl font-bold text-slate-800 mt-0.5">{stats.promotions}</span>
           </div>
         </div>
 
@@ -165,7 +165,7 @@ const HomeAdmin = () => {
           </div>
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Filières</span>
-            <span className="text-2xl font-black text-slate-800 mt-0.5">{stats.filieres}</span>
+            <span className="text-2xl font-bold text-slate-800 mt-0.5">{stats.filieres}</span>
           </div>
         </div>
 
@@ -176,7 +176,7 @@ const HomeAdmin = () => {
           </div>
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Étudiants</span>
-            <span className="text-2xl font-black text-slate-800 mt-0.5">{stats.etudiants}</span>
+            <span className="text-2xl font-bold text-slate-800 mt-0.5">{stats.etudiants}</span>
           </div>
         </div>
 
@@ -187,7 +187,7 @@ const HomeAdmin = () => {
           </div>
           <div>
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Enseignants</span>
-            <span className="text-2xl font-black text-slate-800 mt-0.5">{stats.enseignants}</span>
+            <span className="text-2xl font-bold text-slate-800 mt-0.5">{stats.enseignants}</span>
           </div>
         </div>
 
@@ -215,7 +215,7 @@ const HomeAdmin = () => {
                     <FiTrash2 className="w-4 h-4" />
                   </button>
                   <div className="flex items-center gap-2">
-                    <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full ${
+                    <span className={`text-[8px] font-bold uppercase px-2 py-0.5 rounded-full ${
                       ann.type === 'CHANGEMENT_EDT' ? 'bg-amber-50 text-amber-700' :
                       ann.type === 'ACADEMIQUE' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'
                     }`}>

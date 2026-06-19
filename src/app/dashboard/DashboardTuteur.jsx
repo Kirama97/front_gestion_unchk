@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom'
-import { apiGet, apiPut } from '../../utils/api'
+import { apiGet, apiPut, getProfileImage } from '../../utils/api'
 import { useToast } from '../../context/ToastContext'
 import { 
   FiBell, 
@@ -13,13 +13,14 @@ import {
   FiSettings, 
   FiCalendar, 
   FiHelpCircle,
-  FiFileText
+  FiFileText,
+  FiUsers
 } from 'react-icons/fi'
 
 const DashboardTuteur = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || '{}'))
   const displayName = user.prenom && user.nom ? `${user.prenom} ${user.nom}` : "Tuteur"
   const { showToast } = useToast()
 
@@ -39,6 +40,14 @@ const DashboardTuteur = () => {
   const previousNotificationsRef = useRef([])
   const previousMessagesRef = useRef([])
   const isFirstLoad = useRef(true)
+
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      setUser(JSON.parse(localStorage.getItem('user') || '{}'))
+    }
+    window.addEventListener('user-profile-updated', handleUserUpdate)
+    return () => window.removeEventListener('user-profile-updated', handleUserUpdate)
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -319,9 +328,17 @@ const DashboardTuteur = () => {
                 className="flex items-center gap-2 rounded-xl p-1.5 text-left hover:bg-slate-100 transition duration-200"
               >
                 <div className="relative h-7 w-7">
-                  <div className="h-full w-full rounded-full bg-indigo-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-indigo-700 shadow-sm">
-                    {user.prenom?.charAt(0)}{user.nom?.charAt(0)}
-                  </div>
+                  {user.photoProfil ? (
+                    <img
+                      src={getProfileImage(user.photoProfil)}
+                      alt="Photo de profil"
+                      className="h-full w-full rounded-full object-cover border border-slate-200 shadow-sm"
+                    />
+                  ) : (
+                    <div className="h-full w-full rounded-full bg-indigo-100 border border-slate-200 flex items-center justify-center text-indigo-700 shadow-sm">
+                      <FiUser className="w-4 h-4" />
+                    </div>
+                  )}
                   <span className="absolute bottom-0 right-0 block h-1 w-1 rounded-full bg-green-500 ring-2 ring-white" />
                 </div>
                 <div className="hidden lg:flex flex-col text-left">
@@ -340,10 +357,14 @@ const DashboardTuteur = () => {
                     <p className="text-xs font-bold text-slate-800 truncate">{user.email || 'tuteur@gmail.com'}</p>
                   </div>
                   <div className="mt-1 space-y-0.5">
-                    <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
+                    <Link 
+                      to="/tuteur/profil"
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition"
+                    >
                       <FiUser className="w-4 h-4" />
                       Mon Profil
-                    </button>
+                    </Link>
                     <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition">
                       <FiSettings className="w-4 h-4" />
                       Paramètres
@@ -414,14 +435,58 @@ const DashboardTuteur = () => {
             <FiCalendar className="w-4 h-4" />
             Emploi du Temps
           </Link>
+          <Link 
+            to="/tuteur/suivi" 
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold transition ${
+              location.pathname === '/tuteur/suivi' 
+                ? 'bg-indigo-50 text-indigo-600' 
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            }`}
+          >
+            <FiUsers className="w-4 h-4" />
+            Suivi Tutorat
+          </Link>
+          <Link 
+            to="/tuteur/reunions" 
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold transition ${
+              location.pathname === '/tuteur/reunions' 
+                ? 'bg-indigo-50 text-indigo-600' 
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            }`}
+          >
+            <FiCalendar className="w-4 h-4" />
+            Réunions
+          </Link>
+          <Link 
+            to="/tuteur/bilan" 
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold transition ${
+              location.pathname === '/tuteur/bilan' 
+                ? 'bg-indigo-50 text-indigo-600' 
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            }`}
+          >
+            <FiFileText className="w-4 h-4" />
+            Bilan Étudiants
+          </Link>
         </nav>
 
         {/* User profile footer inside mobile sidebar */}
         <div className="absolute bottom-6 left-6 right-6 border-t border-slate-100 pt-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="h-9 w-9 rounded-full bg-indigo-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-indigo-700">
-              {user.prenom?.charAt(0)}{user.nom?.charAt(0)}
-            </div>
+            {user.photoProfil ? (
+              <img
+                src={getProfileImage(user.photoProfil)}
+                alt="Photo de profil"
+                className="h-9 w-9 rounded-full object-cover border border-slate-200"
+              />
+            ) : (
+              <div className="h-9 w-9 rounded-full bg-indigo-100 border border-slate-200 flex items-center justify-center text-indigo-700">
+                <FiUser className="w-5 h-5" />
+              </div>
+            )}
             <div className="flex flex-col flex-1 min-w-0">
               <span className="text-xs font-bold text-slate-800 truncate">{displayName}</span>
               <span className="text-[9px] text-slate-400 font-semibold truncate">{user.email || 'tuteur@gmail.com'}</span>
@@ -444,13 +509,47 @@ const DashboardTuteur = () => {
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Menu Principal</span>
             <Link
               to="/tuteur/emploi-du-temps"
-              className={`text-sm font-medium px-3 py-2.5 rounded-lg transition-all duration-200 flex items-center gap-2.5 ${
+              className={`text-xs font-bold px-3 py-2.5 rounded-xl transition-all duration-205 flex items-center gap-2.5 ${
                 location.pathname === '/tuteur/emploi-du-temps'
-                  ? 'bg-indigo-50 text-indigo-600'
-                  : 'text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/50'
+                  ? 'bg-indigo-50 text-indigo-650'
+                  : 'text-slate-650 hover:text-indigo-655 hover:bg-indigo-50/40'
               }`}
             >
-              📅 Emploi du Temps
+              <FiCalendar className="w-4 h-4 shrink-0" />
+              Emploi du Temps
+            </Link>
+            <Link
+              to="/tuteur/suivi"
+              className={`text-xs font-bold px-3 py-2.5 rounded-xl transition-all duration-205 flex items-center gap-2.5 ${
+                location.pathname === '/tuteur/suivi'
+                  ? 'bg-indigo-50 text-indigo-655'
+                  : 'text-slate-655 hover:text-indigo-655 hover:bg-indigo-50/40'
+              }`}
+            >
+              <FiUsers className="w-4 h-4 shrink-0" />
+              Suivi Tutorat
+            </Link>
+            <Link
+              to="/tuteur/reunions"
+              className={`text-xs font-bold px-3 py-2.5 rounded-xl transition-all duration-205 flex items-center gap-2.5 ${
+                location.pathname === '/tuteur/reunions'
+                  ? 'bg-indigo-50 text-indigo-655'
+                  : 'text-slate-655 hover:text-indigo-655 hover:bg-indigo-50/40'
+              }`}
+            >
+              <FiCalendar className="w-4 h-4 shrink-0" />
+              Réunions
+            </Link>
+            <Link
+              to="/tuteur/bilan"
+              className={`text-xs font-bold px-3 py-2.5 rounded-xl transition-all duration-205 flex items-center gap-2.5 ${
+                location.pathname === '/tuteur/bilan'
+                  ? 'bg-indigo-50 text-indigo-655'
+                  : 'text-slate-655 hover:text-indigo-655 hover:bg-indigo-50/40'
+              }`}
+            >
+              <FiFileText className="w-4 h-4 shrink-0" />
+              Bilan Étudiants
             </Link>
           </div>
         </aside>

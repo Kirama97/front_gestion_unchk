@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { apiGet, apiPut } from '../../utils/api'
+import { apiGet, apiPut, getProfileImage } from '../../utils/api'
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom'
 import Footer from '../commun/Footer'
 import { useToast } from '../../context/ToastContext'
@@ -22,7 +22,7 @@ import {
 const DashboardEnseignant = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || '{}'))
   const displayName = user.prenom && user.nom ? `${user.prenom} ${user.nom}` : "Moussa Ndiaye"
   const { showToast } = useToast()
 
@@ -43,6 +43,14 @@ const DashboardEnseignant = () => {
   const previousNotificationsRef = useRef([])
   const previousMessagesRef = useRef([])
   const isFirstLoad = useRef(true)
+
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      setUser(JSON.parse(localStorage.getItem('user') || '{}'))
+    }
+    window.addEventListener('user-profile-updated', handleUserUpdate)
+    return () => window.removeEventListener('user-profile-updated', handleUserUpdate)
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -325,9 +333,17 @@ const DashboardEnseignant = () => {
                 className="flex items-center gap-2 rounded-xl p-1.5 text-left hover:bg-slate-100 transition duration-200"
               >
                 <div className="relative h-7 w-7">
-                  <div className="h-full w-full rounded-full bg-emerald-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-emerald-700 shadow-sm">
-                    {user.prenom?.charAt(0)}{user.nom?.charAt(0)}
-                  </div>
+                  {user.photoProfil ? (
+                    <img
+                      src={getProfileImage(user.photoProfil)}
+                      alt="Photo de profil"
+                      className="h-full w-full rounded-full object-cover border border-slate-200 shadow-sm"
+                    />
+                  ) : (
+                    <div className="h-full w-full rounded-full bg-emerald-100 border border-slate-200 flex items-center justify-center text-emerald-700 shadow-sm">
+                      <FiUser className="w-4 h-4" />
+                    </div>
+                  )}
                   <span className="absolute bottom-0 right-0 block h-1 w-1 rounded-full bg-green-500 ring-2 ring-white" />
                 </div>
                 <div className="hidden lg:flex flex-col text-left">
@@ -525,9 +541,17 @@ const DashboardEnseignant = () => {
         {/* User profile footer inside mobile sidebar */}
         <div className="absolute bottom-6 left-6 right-6 border-t border-slate-100 pt-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="h-9 w-9 rounded-full bg-emerald-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-emerald-700">
-              {user.prenom?.charAt(0)}{user.nom?.charAt(0)}
-            </div>
+            {user.photoProfil ? (
+              <img
+                src={getProfileImage(user.photoProfil)}
+                alt="Photo de profil"
+                className="h-9 w-9 rounded-full object-cover border border-slate-200"
+              />
+            ) : (
+              <div className="h-9 w-9 rounded-full bg-emerald-100 border border-slate-200 flex items-center justify-center text-emerald-700">
+                <FiUser className="w-5 h-5" />
+              </div>
+            )}
             <div className="flex flex-col flex-1 min-w-0">
               <span className="text-xs font-bold text-slate-800 truncate">{displayName}</span>
               <span className="text-[9px] text-slate-400 font-semibold truncate">{user.email || 'enseignant@gmail.com'}</span>
