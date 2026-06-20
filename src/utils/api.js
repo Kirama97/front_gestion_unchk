@@ -3,7 +3,7 @@ const BASE_URL = 'http://localhost:8080';
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
-  // Get user details from localStorage to extract token
+ 
   let token = null;
   try {
     const userStr = localStorage.getItem('user');
@@ -15,7 +15,7 @@ async function request(endpoint, options = {}) {
     console.error('Error parsing user data from localStorage', e);
   }
 
-  // Set up default headers
+  
   const headers = { ...options.headers };
   
   if (token) {
@@ -35,10 +35,10 @@ async function request(endpoint, options = {}) {
     const response = await fetch(url, config);
 
     if (response.status === 401) {
-      // Auto logout or redirect if unauthorized
+     
       console.warn('Unauthorized request, logging out...');
       localStorage.removeItem('user');
-      // Redirect to login if window is available
+     
       if (typeof window !== 'undefined') {
         window.location.href = '/';
       }
