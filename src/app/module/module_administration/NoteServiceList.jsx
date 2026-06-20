@@ -17,7 +17,7 @@ const NoteServiceList = () => {
     try {
       setLoading(true)
       const data = await apiGet('/api/documents')
-      // Filter for notes and circulars
+      
       const notes = data.filter(d => 
         d.type === 'NOTE_SERVICE_INTERNE' || 
         d.type === 'NOTE_SERVICE_EXTERNE' || 
@@ -71,7 +71,7 @@ const NoteServiceList = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* List Column */}
+      {}
       <div className="lg:col-span-2 flex flex-col gap-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
@@ -157,7 +157,7 @@ const NoteServiceList = () => {
         )}
       </div>
 
-      {/* Form Column (For Admin only) */}
+      {}
       <div className="lg:col-span-1">
         {isAdmin ? (
           <NoteServiceForm onSave={fetchDocuments} />

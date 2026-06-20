@@ -30,7 +30,7 @@ const EmploiDuTemps = () => {
         
         const data = await apiGet(endpoint)
         const formatted = data.map(item => {
-          // Format time to HH:MM
+          
           const formatTime = (tStr) => {
             if (!tStr) return ''
             const parts = tStr.split(':')

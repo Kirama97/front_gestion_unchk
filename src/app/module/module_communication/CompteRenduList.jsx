@@ -54,7 +54,7 @@ const CompteRenduList = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* List Column */}
+      {}
       <div className="lg:col-span-2 flex flex-col gap-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
@@ -137,7 +137,7 @@ const CompteRenduList = () => {
         )}
       </div>
 
-      {/* Form Column (For Admin only) */}
+      {}
       <div className="lg:col-span-1">
         {isAdmin ? (
           <CompteRenduForm onSave={fetchReports} />

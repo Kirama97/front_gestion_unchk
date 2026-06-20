@@ -19,7 +19,7 @@ const ActualitesEvenements = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Card 1 */}
+        {}
         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col">
           <div className="h-44 w-full bg-blue-900 relative">
             <img 
@@ -54,7 +54,7 @@ const ActualitesEvenements = () => {
           </div>
         </div>
 
-        {/* Card 2 */}
+        {}
         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col">
           <div className="h-44 w-full bg-emerald-900 relative">
             <img 
@@ -89,7 +89,7 @@ const ActualitesEvenements = () => {
           </div>
         </div>
 
-        {/* Card 3 */}
+        {}
         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col">
           <div className="h-44 w-full bg-purple-900 relative">
             <img 

@@ -13,7 +13,7 @@ const TuteurSuivi = () => {
   const [loadingClasses, setLoadingClasses] = useState(true)
   const [loadingStudents, setLoadingStudents] = useState(false)
   
-  // Follow-up notes modal state
+  
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showNotesModal, setShowNotesModal] = useState(false)
   const [sessionNotes, setSessionNotes] = useState([])
@@ -24,13 +24,13 @@ const TuteurSuivi = () => {
     contenu: ''
   })
 
-  // Load classes assigned to this tutor
+  
   useEffect(() => {
     const fetchTutorClasses = async () => {
       try {
         setLoadingClasses(true)
         const allClasses = await apiGet('/api/classes')
-        // Filter classes where class.tuteur.id matches user.id
+        
         const tutorClasses = allClasses.filter(c => c.tuteur && c.tuteur.id === user.id)
         setClasses(tutorClasses)
         if (tutorClasses.length > 0) {
@@ -46,7 +46,7 @@ const TuteurSuivi = () => {
     fetchTutorClasses()
   }, [])
 
-  // Load students when selectedClass changes
+  
   useEffect(() => {
     if (!selectedClass) return
     const fetchClassStudents = async () => {
@@ -64,7 +64,7 @@ const TuteurSuivi = () => {
     fetchClassStudents()
   }, [selectedClass])
 
-  // Load history from localStorage for selected student
+  
   const openFollowUpModal = (student) => {
     setSelectedStudent(student)
     const storedNotes = localStorage.getItem(`tutor_sessions_${student.id}`)
@@ -82,7 +82,7 @@ const TuteurSuivi = () => {
     setShowNotesModal(true)
   }
 
-  // Save new follow-up note
+  
   const handleSaveNote = (e) => {
     e.preventDefault()
     if (!newNote.sujet || !newNote.contenu) {
@@ -110,7 +110,7 @@ const TuteurSuivi = () => {
     showToast("Note de suivi ajoutée avec succès !", "success")
   }
 
-  // Delete a session note
+  
   const handleDeleteNote = (noteId) => {
     const updated = sessionNotes.filter(n => n.id !== noteId)
     localStorage.setItem(`tutor_sessions_${selectedStudent.id}`, JSON.stringify(updated))
@@ -128,7 +128,7 @@ const TuteurSuivi = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div>
         <h1 className="text-2xl font-black text-indigo-950 tracking-tight">Suivi Tutorat</h1>
         <p className="text-xs text-slate-500 font-medium">Gérez le suivi individuel et collectif des étudiants sous votre encadrement.</p>

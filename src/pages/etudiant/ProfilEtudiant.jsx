@@ -6,7 +6,7 @@ import {
   FiSave, FiX,
 } from 'react-icons/fi'
 
-/* ─── Composants utilitaires ─── */
+
 
 
 
@@ -36,7 +36,7 @@ const SectionTitle = ({ icon: Icon, children }) => (
   </div>
 )
 
-/* Champ en mode lecture */
+
 const FieldRow = ({ label, icon: Icon, value, last = false }) => (
   <div className={`flex justify-between items-center py-2.5 text-sm ${!last ? 'border-b border-gray-100' : ''}`}>
     <span className="flex items-center gap-2 text-gray-400 shrink-0">
@@ -47,7 +47,7 @@ const FieldRow = ({ label, icon: Icon, value, last = false }) => (
   </div>
 )
 
-/* Champ en mode édition */
+
 const EditRow = ({ label, icon: Icon, name, value, onChange, type = 'text', readOnly = false, last = false }) => (
   <div className={`flex flex-col gap-1 py-2.5 text-sm ${!last ? 'border-b border-gray-100' : ''}`}>
     <span className="flex items-center gap-2 text-gray-400">
@@ -91,7 +91,7 @@ import { useEffect } from 'react'
 import { apiGet, apiPut, apiPost, getProfileImage } from '../../utils/api'
 import { useToast } from '../../context/ToastContext'
 
-/* ─── Composant principal ─── */
+
 
 const ProfilEtudiant = () => {
   const { showToast } = useToast()
@@ -242,7 +242,7 @@ const ProfilEtudiant = () => {
   return (
     <div className="w-full  mx-auto p-5 sm:px-[10%] py-6 font-sans">
 
-      {/* ── Toast succès ── */}
+      {}
       {saved && (
         <div className="mb-4 flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl">
           <FiCheckCircle size={16} />
@@ -250,7 +250,7 @@ const ProfilEtudiant = () => {
         </div>
       )}
 
-      {/* ── Header ── */}
+      {}
       <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm mb-6">
         <div className=" h-24" />
         <div className="px-5 pb-5">
@@ -294,10 +294,10 @@ const ProfilEtudiant = () => {
         </div>
       </div>
 
-      {/* ── Cartes ── */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-        {/* Informations personnelles */}
+        {}
         <Card>
           <SectionTitle icon={FiUser}>Informations personnelles</SectionTitle>
 
@@ -324,7 +324,7 @@ const ProfilEtudiant = () => {
           )}
         </Card>
 
-        {/* Informations académiques */}
+        {}
         <Card>
           <SectionTitle icon={FiBook}>Informations académiques</SectionTitle>
 

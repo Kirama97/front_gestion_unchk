@@ -10,7 +10,7 @@ const TuteurReunions = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   
-  // Modal state
+  
   const [showModal, setShowModal] = useState(false)
   const [editingReunion, setEditingReunion] = useState(null)
   const [titre, setTitre] = useState('')
@@ -23,7 +23,7 @@ const TuteurReunions = () => {
     try {
       setLoading(true)
       const data = await apiGet('/api/reunions')
-      // Show all meetings, or highlight tutor-related ones
+      
       setReunions(data)
       setLoading(false)
     } catch (err) {
@@ -37,7 +37,7 @@ const TuteurReunions = () => {
     loadReunions()
   }, [])
 
-  // Helper to format date for datetime-local input (YYYY-MM-DDThh:mm)
+  
   const formatDateForInput = (dateStr) => {
     if (!dateStr) return ''
     const d = new Date(dateStr)
@@ -129,7 +129,7 @@ const TuteurReunions = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-indigo-950 tracking-tight">Réunions</h1>

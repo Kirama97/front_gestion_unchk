@@ -19,7 +19,7 @@ const TuteurAccueil = () => {
         setLoading(true)
         const user = JSON.parse(localStorage.getItem('user') || '{}')
         
-        // Parallel requests (some might fail if not fully implemented, we catch and ignore)
+        
         const [profileData, annoncesData, reunionsData] = await Promise.all([
           apiGet('/api/auth/me').catch(() => user),
           apiGet('/api/annonces').catch(() => []),
@@ -29,9 +29,9 @@ const TuteurAccueil = () => {
         setProfile(profileData)
         setReunionsCount(reunionsData ? reunionsData.length : 0)
         
-        // Mock data for counts if API endpoints for specific tutor counts don't exist yet
-        setStudentsCount(25) // Example: 25 students assigned
-        setSuiviCount(12)    // Example: 12 follow-ups done
+        
+        setStudentsCount(25) 
+        setSuiviCount(12)    
 
         if (annoncesData && annoncesData.length > 0) {
           setLatestAnnonce(annoncesData[0])
@@ -59,7 +59,7 @@ const TuteurAccueil = () => {
 
   return (
     <div className='w-full'>
-      {/* Header / Bannière */}
+      {}
       <div className="bg-indigo-600 rounded-2xl p-8 mb-8 text-white shadow-lg relative overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-2xl font-bold tracking-tight mb-2">Bonjour, {displayName} ! </h1>
@@ -70,7 +70,7 @@ const TuteurAccueil = () => {
         <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-white/10 to-transparent"></div>
       </div>
 
-      {/* Stats Section */}
+      {}
       <div className="mb-6">
         <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Vue d'ensemble</h2>
         <p className="text-xs text-slate-400 font-medium mt-0.5">Statistiques de votre accompagnement.</p>
@@ -103,7 +103,7 @@ const TuteurAccueil = () => {
         />
       </div>
 
-      {/* Quick Actions */}
+      {}
       <div className="mb-12">
         <div className="mb-5">
           <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Accès Rapide</h2>
@@ -132,7 +132,7 @@ const TuteurAccueil = () => {
         </div>
       </div>
 
-      {/* Info Box / Annonces */}
+      {}
       <InfoBoxEtudiant annonce={latestAnnonce} />
 
     </div>

@@ -32,14 +32,14 @@ const DashboardAdmin = () => {
 
   return (
     <div className="h-[100vh] bg-slate-50 flex flex-col font-sans overflow-hidden">
-      {/* Header */}
+      {}
       <NavbarAdmin></NavbarAdmin>
 
       <div className="flex flex-1">
-        {/* Sidebar */}
+        {}
         <AsideAdmin></AsideAdmin>
 
-        {/* Main Content */}
+        {}
         <main className="flex-1 p-6 md:p-2 h-screen overflow-y-auto">
           <div className="w-full mx-auto  rounded-2xl   p-6 h-full">
             <Outlet />

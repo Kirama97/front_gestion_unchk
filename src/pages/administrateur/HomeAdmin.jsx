@@ -24,7 +24,7 @@ const HomeAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Form state for new announcement
+  
   const [newAnnonce, setNewAnnonce] = useState({
     titre: '',
     contenu: '',
@@ -36,7 +36,7 @@ const HomeAdmin = () => {
     try {
       setLoading(true);
       
-      // Fetch stats in parallel
+      
       const [promos, filieresList, students, personnel] = await Promise.all([
         apiGet('/api/academique/promotions'),
         apiGet('/api/academique/filieres'),
@@ -46,7 +46,7 @@ const HomeAdmin = () => {
 
       const teachers = personnel.filter(p => p.role === 'enseignant' || p.role === 'ENSEIGNANT');
 
-      // Fetch announcements
+      
       const annoncesList = await apiGet('/api/annonces');
 
       setStats({
@@ -85,10 +85,10 @@ const HomeAdmin = () => {
       });
       
       showToast("Annonce publiée avec succès.", "success");
-      // Reset form
+      
       setNewAnnonce({ titre: '', contenu: '', type: 'ACADEMIQUE' });
       
-      // Reload announcements
+      
       const annoncesList = await apiGet('/api/annonces');
       setAnnonces(annoncesList);
       setSubmitting(false);
@@ -138,16 +138,16 @@ const HomeAdmin = () => {
 
   return (
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* Title */}
+      {}
       <div>
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Tableau de Bord Administrateur</h1>
         <p className="text-xs text-slate-500 font-medium mt-0.5">Vue d'ensemble de l'établissement et gestion des annonces.</p>
       </div>
 
-      {/* Stats Cards */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         
-        {/* PROMOTIONS */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex items-center gap-4">
           <div className="p-3 bg-orange-50 text-orange-500 rounded-xl">
             <FiFolder className="w-6 h-6" />
@@ -158,7 +158,7 @@ const HomeAdmin = () => {
           </div>
         </div>
 
-        {/* FILIERES */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex items-center gap-4">
           <div className="p-3 bg-green-50 text-green-500 rounded-xl">
             <FiBookOpen className="w-6 h-6" />
@@ -169,7 +169,7 @@ const HomeAdmin = () => {
           </div>
         </div>
 
-        {/* ETUDIANTS */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex items-center gap-4">
           <div className="p-3 bg-blue-50 text-blue-500 rounded-xl">
             <FiUsers className="w-6 h-6" />
@@ -180,7 +180,7 @@ const HomeAdmin = () => {
           </div>
         </div>
 
-        {/* ENSEIGNANTS */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex items-center gap-4">
           <div className="p-3 bg-purple-50 text-purple-500 rounded-xl">
             <FiUsers className="w-6 h-6" />
@@ -193,10 +193,10 @@ const HomeAdmin = () => {
 
       </div>
 
-      {/* Main Grid */}
+      {}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Column 1 & 2: Recent announcements list */}
+        {}
         <div className="lg:col-span-2 flex flex-col gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3 mb-2">
             <FiBell className="text-orange-500 w-5 h-5" />
@@ -233,7 +233,7 @@ const HomeAdmin = () => {
           </div>
         </div>
 
-        {/* Column 3: Publish new announcement form */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3 mb-2">
             <FiPlusCircle className="text-orange-500 w-5 h-5" />

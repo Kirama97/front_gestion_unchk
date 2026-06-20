@@ -6,7 +6,7 @@ const CourseProgressCard = ({ subject, teacher, completedSessions, totalSessions
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl p-4.5 flex flex-col gap-4 shadow-sm hover:shadow-md transition-all duration-300">
       
-      {/* Subject & Teacher */}
+      {}
       <div className="flex justify-between items-start">
         <div className="flex flex-col gap-0.5">
           <h4 className="text-xs font-bold text-slate-800 line-clamp-1 leading-snug">{subject}</h4>
@@ -19,14 +19,14 @@ const CourseProgressCard = ({ subject, teacher, completedSessions, totalSessions
         </span>
       </div>
 
-      {/* Progress Stats */}
+      {}
       <div className="flex flex-col gap-1.5 mt-1">
         <div className="flex justify-between items-center text-[10px] font-bold text-slate-600">
           <span>Syllabus complété</span>
           <span className="text-slate-800">{percentage}%</span>
         </div>
         
-        {/* Progress Bar */}
+        {}
         <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
           <div 
             className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500 ease-out"
@@ -40,7 +40,7 @@ const CourseProgressCard = ({ subject, teacher, completedSessions, totalSessions
         </div>
       </div>
 
-      {/* Action/Details Footer */}
+      {}
       {gradePlaceholder && (
         <div className="border-t border-slate-100 pt-3 mt-1 flex justify-between items-center text-[9px] font-semibold text-slate-500">
           <span>Dernière note :</span>

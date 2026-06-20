@@ -22,7 +22,7 @@ const HomeEnseignant = () => {
 
     const days = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"]
     const now = new Date()
-    const currentDayIndex = now.getDay() // 0 = Sunday, 1 = Monday, ...
+    const currentDayIndex = now.getDay() 
     const currentMinutes = now.getHours() * 60 + now.getMinutes()
 
     let closestClass = null
@@ -100,7 +100,7 @@ const HomeEnseignant = () => {
         setProfile(profileData)
         setCoursesCount(coursesData.length)
 
-        // Calculate hours and student counts
+        
         let hoursTotal = 0
         edtData.forEach(item => {
           if (item.heureDebut && item.heureFin) {
@@ -111,7 +111,7 @@ const HomeEnseignant = () => {
         })
         setHoursCount(Math.round(hoursTotal * 10) / 10)
 
-        // Fetch students counts for each class
+        
         const classesSeen = new Set()
         coursesData.forEach(c => {
           if (c.classe?.id) {
@@ -127,7 +127,7 @@ const HomeEnseignant = () => {
         studentsLists.forEach(list => {
           totalStudents += list.length
         })
-        setStudentsCount(totalStudents || 25) // fallback to 25 if empty seeds
+        setStudentsCount(totalStudents || 25) 
 
         const next = getProchainCours(edtData)
         setProchainCours(next)
@@ -173,16 +173,16 @@ const HomeEnseignant = () => {
 
   return (
     <div className='w-full'>
-      {/* Section 1 : Bannière */}
+      {}
       <BanniereEnseignant user={user} />
 
-      {/* Section 2 : Aperçu Rapide & Stats */}
+      {}
       <div className="section2 px-4 sm:px-8 lg:px-12 py-10 bg-slate-50">
 
-        {/* Prochain cours — Card flottante */}
+        {}
         <ProchainCoursEnseignant prochainCours={prochainCours} />
 
-        {/* Profil Professionnel / Stats */}
+        {}
         <div className="max-w-5xl mx-auto mb-6">
           <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Vue d'ensemble Professionnelle</h2>
           <p className="text-xs text-slate-400 font-medium mt-0.5">Statistiques de vos activités académiques.</p>
@@ -252,7 +252,7 @@ const HomeEnseignant = () => {
           </div>
         </div>
 
-        {/* info box */}
+        {}
         <InfoBoxEtudiant annonce={latestAnnonce} />
 
       </div>

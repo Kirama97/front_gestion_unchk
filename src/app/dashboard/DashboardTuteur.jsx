@@ -25,7 +25,7 @@ const DashboardTuteur = () => {
   const displayName = user.prenom && user.nom ? `${user.prenom} ${user.nom}` : "Tuteur"
   const { showToast } = useToast()
 
-  // UI States
+  
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [isMessagesOpen, setIsMessagesOpen] = useState(false)
@@ -33,7 +33,7 @@ const DashboardTuteur = () => {
   const [notifications, setNotifications] = useState([])
   const [messages, setMessages] = useState([])
 
-  // Refs for click-outside
+  
   const profileRef = useRef(null)
   const notificationsRef = useRef(null)
   const messagesRef = useRef(null)
@@ -160,11 +160,11 @@ const DashboardTuteur = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans antialiased text-slate-800">
       
-      {/* Dynamic Header */}
+      {}
       <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-md shadow-sm transition-all duration-300">
         <div className="flex h-12 items-center justify-between px-4 sm:px-6">
           
-          {/* Logo & Brand Identity */}
+          {}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
@@ -184,10 +184,10 @@ const DashboardTuteur = () => {
             </Link>
           </div>
 
-          {/* Right Action Icons & Profile */}
+          {}
           <div className="flex items-center gap-2 sm:gap-2">
             
-            {/* Messages Dropdown */}
+            {}
             <div className="relative" ref={messagesRef}>
               <button
                 onClick={() => {
@@ -206,7 +206,7 @@ const DashboardTuteur = () => {
                 )}
               </button>
 
-              {/* Messages Panel */}
+              {}
               {isMessagesOpen && (
                 <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-slate-200/80 bg-white p-2 shadow-xl ring-1 ring-black/5 animate-in fade-in slide-in-from-top-3 duration-200">
                   <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100">
@@ -251,7 +251,7 @@ const DashboardTuteur = () => {
               )}
             </div>
 
-            {/* Notifications Dropdown */}
+            {}
             <div className="relative" ref={notificationsRef}>
               <button
                 onClick={() => {
@@ -270,7 +270,7 @@ const DashboardTuteur = () => {
                 )}
               </button>
 
-              {/* Notifications Panel */}
+              {}
               {isNotificationsOpen && (
                 <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-slate-200/80 bg-white p-2 shadow-xl ring-1 ring-black/5 animate-in fade-in slide-in-from-top-3 duration-200">
                   <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100">
@@ -315,10 +315,10 @@ const DashboardTuteur = () => {
               )}
             </div>
 
-            {/* Divider */}
+            {}
             <span className="h-6 w-px bg-slate-200" aria-hidden="true" />
 
-            {/* Profile Dropdown */}
+            {}
             <div className="relative" ref={profileRef}>
               <button
                 onClick={() => {
@@ -350,7 +350,7 @@ const DashboardTuteur = () => {
                 <FiChevronDown className="hidden lg:block w-4 h-4 text-slate-400" />
               </button>
 
-              {/* Profile Dropdown Menu */}
+              {}
               {isProfileDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-xl ring-1 ring-black/5 animate-in fade-in slide-in-from-top-3 duration-200">
                   <div className="px-3 py-2 border-b border-slate-100">
@@ -392,7 +392,7 @@ const DashboardTuteur = () => {
         </div>
       </header>
 
-      {/* Mobile Sidebar Overlay */}
+      {}
       {isMobileSidebarOpen && (
         <div 
           className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm md:hidden"
@@ -400,7 +400,7 @@ const DashboardTuteur = () => {
         />
       )}
 
-      {/* Mobile Sidebar Panel */}
+      {}
       <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-white p-6 shadow-2xl transition-transform duration-300 transform md:hidden ${
         isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
@@ -422,7 +422,7 @@ const DashboardTuteur = () => {
           </button>
         </div>
 
-        {/* Navigation Links inside Mobile Sidebar */}
+        {}
         <nav className="space-y-1">
           <Link 
             to="/tuteur/accueil" 
@@ -486,7 +486,7 @@ const DashboardTuteur = () => {
           </Link>
         </nav>
 
-        {/* User profile footer inside mobile sidebar */}
+        {}
         <div className="absolute bottom-6 left-6 right-6 border-t border-slate-100 pt-6">
           <div className="flex items-center gap-3 mb-4">
             {user.photoProfil ? (
@@ -516,7 +516,7 @@ const DashboardTuteur = () => {
       </div>
 
       <div className="flex flex-1">
-        {/* Sidebar */}
+        {}
         <aside className="w-64 bg-white border-r border-slate-200 p-6 flex flex-col gap-6 max-md:hidden">
           <div className="flex flex-col gap-1">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2">Menu Principal</span>
@@ -578,7 +578,7 @@ const DashboardTuteur = () => {
           </div>
         </aside>
 
-        {/* Main Content */}
+        {}
         <main className="flex-1 p-6 md:p-8">
           <div className="max-w-5xl mx-auto bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 min-h-[300px]">
             <Outlet />

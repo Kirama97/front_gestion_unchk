@@ -75,14 +75,14 @@ const ProfilTuteur = () => {
 
   return (
     <div className="w-full px-[5%] sm:px-[10%] py-10 animate-fadeIn">
-      {/* Header */}
+      {}
       <div className="mb-8">
         <h1 className="text-2xl font-black text-slate-800 tracking-tight">Mon Profil</h1>
         <p className="text-xs text-slate-500 font-medium">Consultez vos informations personnelles et professionnelles.</p>
       </div>
 
       <div className="max-w-3xl mx-auto bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
-        {/* Banner header inside card */}
+        {}
         <div className="h-32 bg-gradient-to-r from-indigo-650 to-purple-650 relative flex items-end p-6">
           <div className="absolute -bottom-1 left-6">
             <div className="relative group w-20 h-20">
@@ -101,7 +101,7 @@ const ProfilTuteur = () => {
           </div>
         </div>
 
-        {/* Profile info list */}
+        {}
         <div className="pt-14 p-6 sm:p-8 flex flex-col gap-6">
           <div>
             <h2 className="text-lg font-black text-slate-800 tracking-tight">{displayName}</h2>
@@ -111,7 +111,7 @@ const ProfilTuteur = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
-            {/* Professional Info */}
+            {}
             <div className="flex flex-col gap-4">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-2">Informations Académiques</h3>
               

@@ -22,35 +22,35 @@ const Detailcourstudiant = () => {
   const { showToast } = useToast();
   const { id } = useParams();
   const [open, setOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("sequences"); // "sequences" | "tds" | "devoirs"
+  const [activeTab, setActiveTab] = useState("sequences"); 
   
-  // Dynamic course states
+  
   const [cours, setCours] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Selected TD and Devoir IDs
+  
   const [selectedTdId, setSelectedTdId] = useState(null);
   const [selectedDevoirId, setSelectedDevoirId] = useState(null);
 
-  // File upload simulation states
+  
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadedFile, setUploadedFile] = useState(null);
 
-  // Local submissions storage to simulate backend delivery
+  
   const [submissions, setSubmissions] = useState({});
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
         setLoading(true);
-        // 1. Fetch course details
+        
         const courseData = await apiGet(`/api/cours/${id}`);
-        // 2. Fetch sequences for this course
+        
         const sequencesData = await apiGet(`/api/cours/${id}/sequences`);
         
-        // 3. Format sequences to match UI structure
+        
         const formattedSequences = sequencesData.map(seq => ({
           id: seq.id,
           titre: seq.titre,
@@ -67,7 +67,7 @@ const Detailcourstudiant = () => {
           ] : []
         }));
 
-        // 4. Create TDs and Devoirs based on sequences containing exerciceChemin
+        
         const formattedTds = sequencesData
           .filter(seq => seq.exerciceChemin)
           .map((seq, idx) => ({
@@ -84,7 +84,7 @@ const Detailcourstudiant = () => {
         const formattedDevoirs = sequencesData
           .filter(seq => seq.exerciceChemin)
           .map((seq, idx) => ({
-            id: seq.id + 1000, // offset id to avoid conflicts
+            id: seq.id + 1000, 
             titre: `Devoir ${idx + 1} : Évaluation - ${seq.titre}`,
             consigne: `Travail individuel noté. Veillez à respecter les critères de rigueur et de sémantique vus en cours.`,
             dateLimite: seq.dateFin || new Date().toLocaleDateString('fr-FR'),
@@ -94,7 +94,7 @@ const Detailcourstudiant = () => {
             ]
           }));
 
-        // 5. Construct course object matching mockData shape
+        
         const coursObj = {
           id: courseData.id,
           titre: courseData.matiere?.nom || "Cours sans titre",
@@ -121,25 +121,25 @@ const Detailcourstudiant = () => {
     fetchCourseDetails();
   }, [id]);
 
-  // Reset upload form when switching active TD/Devoir
+  
   useEffect(() => {
     setUploadedFile(null);
     setUploadProgress(0);
     setUploading(false);
   }, [selectedTdId, selectedDevoirId, activeTab]);
 
-  // Resolve active items
+  
   const activeTd = cours?.tds?.find((t) => t.id === selectedTdId) || cours?.tds?.[0];
   const activeDevoir = cours?.devoirs?.find((d) => d.id === selectedDevoirId) || cours?.devoirs?.[0];
 
-  // Submission handler
+  
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setUploading(true);
       setUploadProgress(0);
       
-      // Simulate file upload progress
+      
       const interval = setInterval(() => {
         setUploadProgress((oldProgress) => {
           if (oldProgress === 100) {
@@ -169,7 +169,7 @@ const Detailcourstudiant = () => {
     setUploadedFile(null);
   };
 
-  // Resolve status for active items (taking local submissions into account)
+  
   const getTdStatus = (td) => {
     if (!td) return {};
     const key = `td-${cours?.id}-${td.id}`;
@@ -218,10 +218,10 @@ const Detailcourstudiant = () => {
   return (
     <div className="w-full px-[3%] sm:px-[10%] relative pb-10">
 
-      {/* HEADER */}
+      {}
       <div className="w-full py-4 flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 mt-3 px-3 gap-3">
         <div className="flex items-center gap-2">
-          {/* MENU MOBILE */}
+          {}
           <button
             className="sm:hidden text-4xl p-1 hover:bg-slate-50 rounded-lg"
             onClick={() => setOpen(true)}
@@ -253,7 +253,7 @@ const Detailcourstudiant = () => {
         </div>
       </div>
 
-      {/* TAB SELECTOR */}
+      {}
       <div className="w-full flex border-b border-slate-100 mt-4 overflow-x-auto gap-1">
         <button
           onClick={() => { setActiveTab("sequences"); setOpen(false); }}
@@ -300,7 +300,7 @@ const Detailcourstudiant = () => {
         </button>
       </div>
 
-      {/* OVERLAY FOR MOBILE SIDEBAR */}
+      {}
       {open && (
         <div
           onClick={() => setOpen(false)}
@@ -308,10 +308,10 @@ const Detailcourstudiant = () => {
         />
       )}
 
-      {/* LAYOUT */}
+      {}
       <div className="flex min-h-[500px]">
 
-        {/* SIDEBAR */}
+        {}
         <aside
           className={`
             fixed sm:static top-0 left-0 h-full sm:h-auto z-50
@@ -321,7 +321,7 @@ const Detailcourstudiant = () => {
             sm:translate-x-0
           `}
         >
-          {/* CLOSE MOBILE */}
+          {}
           <div className="flex justify-between items-center sm:hidden mb-4 border-b pb-2">
             <h2 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
               {activeTab === "sequences" ? "Séquences" : activeTab === "tds" ? "Fiches TD" : "Évaluations"}
@@ -336,7 +336,7 @@ const Detailcourstudiant = () => {
               {activeTab === "sequences" ? "Contenu du cours" : activeTab === "tds" ? "Liste des TDs" : "Liste des Devoirs"}
             </span>
 
-            {/* RENDER SIDEBAR ITEMS BASED ON TAB */}
+            {}
             {activeTab === "sequences" && cours.sequences.map((sequence) => (
               <NavLink
                 key={sequence.id}
@@ -412,14 +412,14 @@ const Detailcourstudiant = () => {
           </div>
         </aside>
 
-        {/* MAIN PANEL */}
+        {}
         <main className="flex-1 p-3 md:p-6">
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 min-h-[450px]">
             
-            {/* VIEW 1: SEQUENCES */}
+            {}
             {activeTab === "sequences" && <Outlet />}
 
-            {/* VIEW 2: TRAVAUX DIRIGÉS (TD) */}
+            {}
             {activeTab === "tds" && (
               activeTd ? (
                 <div className="w-full">
@@ -448,7 +448,7 @@ const Detailcourstudiant = () => {
                     </p>
                   </div>
 
-                  {/* FILE ATTACHMENT */}
+                  {}
                   <div className="mt-6">
                     <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Document à télécharger</h3>
                     <div className="mt-3 flex items-center justify-between p-4 border border-slate-100 rounded-xl hover:bg-slate-50/50 transition-all duration-200">
@@ -471,7 +471,7 @@ const Detailcourstudiant = () => {
                     </div>
                   </div>
 
-                  {/* SUBMISSION / CORRECTION SECTION */}
+                  {}
                   <div className="mt-8 border-t pt-6">
                     {activeTd.statut === "Corrigé" ? (
                       <div className="bg-emerald-50/30 border border-emerald-100 rounded-xl p-5">
@@ -497,7 +497,7 @@ const Detailcourstudiant = () => {
                       <div>
                         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Rendre mon travail</h3>
                         
-                        {/* If already submitted locally */}
+                        {}
                         {submissions[`td-${cours.id}-${activeTd.id}`] ? (
                           <div className="mt-3 bg-blue-50/30 border border-blue-100 rounded-xl p-4 flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -512,7 +512,7 @@ const Detailcourstudiant = () => {
                             </span>
                           </div>
                         ) : (
-                          /* Submission Box */
+                          
                           <div className="mt-3 border-2 border-dashed border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-orange-300 transition-colors duration-200 bg-slate-50/30">
                             {uploading ? (
                               <div className="w-full max-w-xs">
@@ -571,7 +571,7 @@ const Detailcourstudiant = () => {
               )
             )}
 
-            {/* VIEW 3: DEVOIRS */}
+            {}
             {activeTab === "devoirs" && (
               activeDevoir ? (
                 <div className="w-full">
@@ -603,7 +603,7 @@ const Detailcourstudiant = () => {
                     </p>
                   </div>
 
-                  {/* SUBMISSION / CORRECTION SECTION */}
+                  {}
                   <div className="mt-8 border-t pt-6">
                     {activeDevoir.statut === "Corrigé" ? (
                       <div className="bg-emerald-50/30 border border-emerald-100 rounded-xl p-5">
@@ -629,7 +629,7 @@ const Detailcourstudiant = () => {
                       <div>
                         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Rendre ma copie</h3>
                         
-                        {/* If already submitted locally */}
+                        {}
                         {submissions[`devoir-${cours.id}-${activeDevoir.id}`] ? (
                           <div className="mt-3 bg-blue-50/30 border border-blue-100 rounded-xl p-4 flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -644,7 +644,7 @@ const Detailcourstudiant = () => {
                             </span>
                           </div>
                         ) : (
-                          /* Submission Box */
+                          
                           <div className="mt-3 border-2 border-dashed border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:border-orange-300 transition-colors duration-200 bg-slate-50/30">
                             {uploading ? (
                               <div className="w-full max-w-xs">

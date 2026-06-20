@@ -25,10 +25,10 @@ const Etudiants = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Search state
+  
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Form modal state
+  
   const [showForm, setShowForm] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [form, setForm] = useState({

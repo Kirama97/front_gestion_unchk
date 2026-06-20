@@ -6,14 +6,14 @@ import Modal from '../../components/common/Modal'
 
 const AdminTuteurs = () => {
   const { showToast } = useToast()
-  const [activeTab, setActiveTab] = useState('liste') // 'liste' | 'affectations' | 'groupes'
+  const [activeTab, setActiveTab] = useState('liste') 
   const [tuteurs, setTuteurs] = useState([])
   const [students, setStudents] = useState([])
   const [classes, setClasses] = useState([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
 
-  // Edit Modal State
+  
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingTuteur, setEditingTuteur] = useState(null)
   const [nom, setNom] = useState('')
@@ -113,7 +113,7 @@ const AdminTuteurs = () => {
     }
   }
 
-  // Filter lists
+  
   const filteredTuteurs = tuteurs.filter(t => {
     const s = `${t.prenom} ${t.nom} ${t.email} ${t.departement}`.toLowerCase()
     return s.includes(searchTerm.toLowerCase())
@@ -134,7 +134,7 @@ const AdminTuteurs = () => {
 
   return (
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* Header */}
+      {}
       <div>
         <h1 className="text-2xl font-black text-slate-800 tracking-tight">Gestion des Tuteurs</h1>
         <p className="text-xs text-slate-500 font-medium mt-0.5">Pilotez le tutorat d'accompagnement, gérez les tuteurs et les affectations de classe.</p>
@@ -318,9 +318,9 @@ const AdminTuteurs = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl">
           {tuteurs.length > 0 ? (
             tuteurs.map((tutor) => {
-              // Find all classes assigned to this tutor
+              
               const tutorClasses = classes.filter(c => c.tuteur && c.tuteur.id === tutor.id)
-              // Calculate total students in these classes
+              
               const totalStudents = students.filter(s => s.classe && tutorClasses.some(tc => tc.id === s.classe.id)).length
               
               return (
@@ -358,7 +358,7 @@ const AdminTuteurs = () => {
         </div>
       )}
 
-      {/* Edit Tutor Modal */}
+      {}
       <Modal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}

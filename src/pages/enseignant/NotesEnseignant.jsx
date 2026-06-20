@@ -7,14 +7,14 @@ const NotesEnseignant = () => {
   const [selectedCourse, setSelectedCourse] = useState(null)
   
   const [sequences, setSequences] = useState([])
-  const [selectedSequenceId, setSelectedSequenceId] = useState('') // empty string for Exam
+  const [selectedSequenceId, setSelectedSequenceId] = useState('') 
   
-  const [evalType, setEvalType] = useState('DEVOIR') // 'DEVOIR' or 'EXAMEN'
-  const [session, setSession] = useState('Principale') // 'Principale' or 'Rattrapage'
+  const [evalType, setEvalType] = useState('DEVOIR') 
+  const [session, setSession] = useState('Principale') 
   
   const [students, setStudents] = useState([])
-  const [gradesMap, setGradesMap] = useState({}) // studentId -> { noteId, valeur }
-  const [inputGrades, setInputGrades] = useState({}) // studentId -> valeur (string input)
+  const [gradesMap, setGradesMap] = useState({}) 
+  const [inputGrades, setInputGrades] = useState({}) 
   
   const [loading, setLoading] = useState(true)
   const [loadingStudents, setLoadingStudents] = useState(false)
@@ -22,7 +22,7 @@ const NotesEnseignant = () => {
   const [error, setError] = useState(null)
   const [statusMessage, setStatusMessage] = useState({ type: '', text: '' })
 
-  // 1. Fetch Teacher's Courses
+  
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -34,7 +34,7 @@ const NotesEnseignant = () => {
         setCourses(data)
         
         if (data.length > 0) {
-          // Select first course by default
+          
           setSelectedCourse(data[0])
         } else {
           setLoading(false)
@@ -48,7 +48,7 @@ const NotesEnseignant = () => {
     fetchCourses()
   }, [])
 
-  // 2. Fetch Sequences when selected course changes
+  
   useEffect(() => {
     if (!selectedCourse) return
 
@@ -56,7 +56,7 @@ const NotesEnseignant = () => {
       try {
         const data = await apiGet(`/api/cours/${selectedCourse.id}/sequences`)
         setSequences(data)
-        // Auto select sequence or reset
+        
         if (data.length > 0) {
           setSelectedSequenceId(data[0].id.toString())
           setEvalType('DEVOIR')
@@ -74,7 +74,7 @@ const NotesEnseignant = () => {
     fetchSequences()
   }, [selectedCourse])
 
-  // 3. Load Students and existing grades when course, sequence, evaluation type, or session changes
+  
   useEffect(() => {
     if (!selectedCourse) return
 
@@ -87,19 +87,19 @@ const NotesEnseignant = () => {
         const matiereId = selectedCourse.matiere?.id
         if (!classeId || !matiereId) return
 
-        // Fetch class students
+        
         const studentsList = await apiGet(`/api/etudiants/classe/${classeId}`)
         setStudents(studentsList)
 
-        // Fetch all notes to filter the matching ones
+        
         const allNotes = await apiGet('/api/notes')
         
-        // Map existing notes
+        
         const tempGrades = {}
         const tempInputs = {}
         
         studentsList.forEach(student => {
-          // Find if there is a note for this student, matiere, type, session and sequence
+          
           const studentNote = allNotes.find(note => 
             note.etudiant?.id === student.id &&
             note.matiere?.id === matiereId &&
@@ -136,7 +136,7 @@ const NotesEnseignant = () => {
   }, [selectedCourse, selectedSequenceId, evalType, session])
 
   const handleGradeChange = (studentId, value) => {
-    // Validate value to be between 0 and 20 or empty
+    
     if (value === '') {
       setInputGrades(prev => ({ ...prev, [studentId]: '' }))
       return
@@ -157,7 +157,7 @@ const NotesEnseignant = () => {
       
       const classeId = selectedCourse.classe?.id
       const matiereId = selectedCourse.matiere?.id
-      const promotionId = selectedCourse.classe?.promotion_id || 1 // fallback to promotion 1
+      const promotionId = selectedCourse.classe?.promotion_id || 1 
       
       if (!classeId || !matiereId) return
 
@@ -165,12 +165,12 @@ const NotesEnseignant = () => {
         const studentId = Number(studentIdStr)
         const gradeStr = inputGrades[studentId]
         
-        if (gradeStr === '') return // skip empty ones
+        if (gradeStr === '') return 
 
         const gradeValue = parseFloat(gradeStr)
         const existing = gradesMap[studentId]
 
-        // Payload matching Spring Boot Note entity structure
+        
         const payload = {
           id: existing ? existing.noteId : null,
           etudiant: { id: studentId },
@@ -190,7 +190,7 @@ const NotesEnseignant = () => {
       
       setStatusMessage({ type: 'success', text: 'Toutes les notes ont été enregistrées avec succès.' })
       
-      // Reload grades
+      
       const allNotes = await apiGet('/api/notes')
       const tempGrades = {}
       students.forEach(student => {
@@ -228,16 +228,16 @@ const NotesEnseignant = () => {
 
   return (
     <div className="w-full px-[5%] sm:px-[10%] py-10 animate-fadeIn">
-      {/* Page Header */}
+      {}
       <div className="mb-8">
         <h1 className="text-2xl font-black text-slate-800 tracking-tight">Saisie des Notes</h1>
         <p className="text-xs text-slate-500 font-medium">Saisissez et mettez à jour les évaluations des étudiants de vos classes.</p>
       </div>
 
-      {/* Selectors Card */}
+      {}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm mb-8 max-w-5xl mx-auto flex flex-col gap-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* 1. Matière/Cours */}
+          {}
           <div className="flex flex-col gap-1.5">
             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Matière & Classe</label>
             <select
@@ -256,7 +256,7 @@ const NotesEnseignant = () => {
             </select>
           </div>
 
-          {/* 2. Type d'évaluation */}
+          {}
           <div className="flex flex-col gap-1.5">
             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Type d'évaluation</label>
             <select
@@ -361,7 +361,7 @@ const NotesEnseignant = () => {
                   const hasGrade = gradesMap[student.id] !== null
                   const gradeVal = inputGrades[student.id] || ''
                   
-                  // Calculate result
+                  
                   let resultStr = "En attente"
                   let resultColor = "text-slate-400 bg-slate-50"
                   if (gradeVal !== '') {
@@ -377,18 +377,18 @@ const NotesEnseignant = () => {
 
                   return (
                     <tr key={student.id} className="hover:bg-slate-50/30 transition">
-                      {/* Name */}
+                      {}
                       <td className="px-6 py-4 font-bold text-slate-800">
                         {student.utilisateur?.prenom} {student.utilisateur?.nom?.toUpperCase()}
                         <span className="block text-[10px] text-slate-400 font-medium mt-0.5">{student.utilisateur?.email}</span>
                       </td>
 
-                      {/* INE */}
+                      {}
                       <td className="px-6 py-4 font-semibold text-slate-500">
                         {student.ine}
                       </td>
 
-                      {/* Input Status */}
+                      {}
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold ${
                           hasGrade ? 'bg-slate-100 text-slate-600' : 'bg-amber-50 text-amber-700 border border-amber-100'
@@ -398,7 +398,7 @@ const NotesEnseignant = () => {
                         </span>
                       </td>
 
-                      {/* Grade Input */}
+                      {}
                       <td className="px-6 py-4 text-center">
                         <input
                           type="number"
@@ -412,7 +412,7 @@ const NotesEnseignant = () => {
                         />
                       </td>
 
-                      {/* Result */}
+                      {}
                       <td className="px-6 py-4 text-right">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold ${resultColor}`}>
                           {resultStr}

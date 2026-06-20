@@ -23,10 +23,10 @@ const Login = () => {
            password: form.password
          });
 
-         // Store full response including token, email, role, nom, prenom, id in localStorage
+         
          localStorage.setItem("user", JSON.stringify(response));
 
-         // Redirect based on role
+         
          setTimeout(() => {
            setLoading(false)
            if (response.role === "admin") {
@@ -34,7 +34,7 @@ const Login = () => {
            } else if (response.role === "etudiant") {
              navigate("/etudiant/accueil")
            } else if (response.role === "enseignant") {
-             navigate("/enseignant/accueil") // Kept as is if that was the route
+             navigate("/enseignant/accueil") 
            } else if (response.role === "tuteur") {
              navigate("/tuteur/accueil")
            } else if (response.role === "insertion") {
@@ -42,7 +42,7 @@ const Login = () => {
            } else {
              navigate("/")
            }
-         }, 800) // slight delay for beautiful loading micro-animation
+         }, 800) 
        } catch (err) {
          setLoading(false)
          setError(err.message || "Email ou mot de passe institutionnel incorrect.")
@@ -66,9 +66,9 @@ const Login = () => {
              </div>
            )}
 
-            {/* form */}
+            {}
            <form action="" className="" onSubmit={handleLogin}>
-              {/* email */}
+              {}
                 <div className="flex flex-col gap-2 mb-3">
                   <label 
                   htmlFor=""
@@ -83,7 +83,7 @@ const Login = () => {
 
                     />
                 </div>
-                {/* mots de passe */}
+                {}
                 <div className="flex flex-col gap-2 mb-2">
                   <label htmlFor=""
                     className='text-xs font-semibold'
@@ -98,7 +98,7 @@ const Login = () => {
                     />
                 </div>
                 
-                {/* password oublier and save  */}
+                {}
                 <div className="flex items-center justify-between text-xs mt-5">
                     <div className="flex items-center gap-3 ">
                         <input type="checkbox" />
@@ -108,7 +108,7 @@ const Login = () => {
 
                 </div>
                 
-                  {/* btn submit  */}
+                  {}
                   <button
                     type='submit'
                     disabled={loading}

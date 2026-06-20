@@ -10,7 +10,7 @@ const AdminReunions = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   
-  // Modal state
+  
   const [showModal, setShowModal] = useState(false)
   const [editingReunion, setEditingReunion] = useState(null)
   const [titre, setTitre] = useState('')
@@ -36,7 +36,7 @@ const AdminReunions = () => {
     loadReunions()
   }, [])
 
-  // Helper to format date for datetime-local input (YYYY-MM-DDThh:mm)
+  
   const formatDateForInput = (dateStr) => {
     if (!dateStr) return ''
     const d = new Date(dateStr)
@@ -122,7 +122,7 @@ const AdminReunions = () => {
 
   return (
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* Header */}
+      {}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-800 tracking-tight">Réunions & Planifications</h1>
@@ -138,7 +138,7 @@ const AdminReunions = () => {
         </button>
       </div>
 
-      {/* List of Meetings */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl">
         {reunions.length > 0 ? (
           reunions.map((meeting) => {
@@ -195,7 +195,7 @@ const AdminReunions = () => {
         )}
       </div>
 
-      {/* Plan / Edit Modal */}
+      {}
       <Modal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

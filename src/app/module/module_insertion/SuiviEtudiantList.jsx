@@ -13,7 +13,7 @@ const SuiviEtudiantList = () => {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  // Form state
+  
   const [formData, setFormData] = useState({
     etudiantId: '',
     registreContact: '',
@@ -114,7 +114,7 @@ const SuiviEtudiantList = () => {
     fetchData()
   }, [])
 
-  // Calculate statistics
+  
   const total = suivis.length
   const salaried = suivis.filter(s => s.statutInsertion === 'SALARIE').length
   const auto = suivis.filter(s => s.statutInsertion === 'AUTO_EMPLOI').length
@@ -127,10 +127,10 @@ const SuiviEtudiantList = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-h-[85vh] overflow-y-auto pr-2">
       
-      {/* Main content column */}
+      {}
       <div className="lg:col-span-2 flex flex-col gap-6">
         
-        {/* Header */}
+        {}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold text-slate-800">Suivi d'Insertion Professionnelle</h2>
@@ -234,7 +234,7 @@ const SuiviEtudiantList = () => {
         </div>
       </div>
 
-      {/* Form Column */}
+      {}
       <div className="lg:col-span-1">
         {isAllowedToEdit ? (
           <form onSubmit={handleSubmit} className="bg-white p-5 border border-slate-100 rounded-2xl shadow-sm flex flex-col gap-4">

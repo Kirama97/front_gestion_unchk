@@ -39,7 +39,7 @@ const AssignmentItem = ({ title, course, dueDate, status = 'pending', daysRemain
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border border-slate-100 rounded-xl hover:bg-slate-50/50 transition-colors duration-200">
       
-      {/* Title & Subject */}
+      {}
       <div className="flex-1 min-w-0">
         <h4 className="text-xs font-bold text-slate-800 truncate leading-snug">{title}</h4>
         <div className="flex items-center gap-2 mt-1">
@@ -50,7 +50,7 @@ const AssignmentItem = ({ title, course, dueDate, status = 'pending', daysRemain
         </div>
       </div>
 
-      {/* Status & Action Button */}
+      {}
       <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold border ${badgeClass}`}>
           {icon}

@@ -18,7 +18,7 @@ const HomeEtudiant = () => {
     
     const days = ["DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"];
     const now = new Date();
-    const currentDayIndex = now.getDay(); // 0 = Sunday, 1 = Monday, ...
+    const currentDayIndex = now.getDay(); 
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
     let closestClass = null;
@@ -139,22 +139,22 @@ const HomeEtudiant = () => {
 
   return (
     <div className='w-full'>
-         {/* Section 1 : Bannière */}
+         {}
          <BanniereEtudiant user={user} />
 
-         {/* Section 2 : Aperçu Rapide & Stats */}
+         {}
          <div className="section2 px-4 sm:px-8 lg:px-12 py-10 bg-slate-50">
 
-            {/* Prochain cours — Card flottante qui remonte sur la bannière */}
+            {}
             <ProchainCours prochainCours={prochainCours} />
 
-            {/* Profil Académique */}
+            {}
             <ProfilAcademique profile={profile} />
 
-            {/* Actions Rapides */}
+            {}
             <AccesRapide />
 
-            {/* info box */}
+            {}
             <InfoBoxEtudiant annonce={latestAnnonce} />
 
          </div>

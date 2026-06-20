@@ -19,7 +19,7 @@ const DashboardInsertion = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
+      {}
       <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-3">
           <span className="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-teal-600/20">
@@ -46,7 +46,7 @@ const DashboardInsertion = () => {
       </header>
 
       <div className="flex flex-1">
-        {/* Sidebar */}
+        {}
         <aside className="w-64 bg-white border-r border-slate-200 p-6 flex flex-col gap-6 max-md:hidden">
           <div className="flex flex-col gap-1">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 mb-2">Menu Principal</span>
@@ -67,7 +67,7 @@ const DashboardInsertion = () => {
           </div>
         </aside>
 
-        {/* Main Content */}
+        {}
         <main className="flex-1 p-6 md:p-8 max-h-[92vh] overflow-y-auto">
           <Outlet />
         </main>

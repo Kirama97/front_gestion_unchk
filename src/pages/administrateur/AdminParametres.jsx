@@ -7,14 +7,14 @@ const AdminParametres = () => {
 
   return (
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* Header */}
+      {}
       <div>
         <h1 className="text-2xl font-black text-slate-800 tracking-tight">Paramètres du Portail</h1>
         <p className="text-xs text-slate-500 font-medium mt-0.5">Configurez les options système et gérez la base de données.</p>
       </div>
 
       <div className="max-w-2xl bg-white border border-slate-200/80 rounded-2xl shadow-sm p-6 flex flex-col gap-6">
-        {/* Section 1: System Settings */}
+        {}
         <div className="flex gap-4 items-start pb-5 border-b border-slate-100">
           <div className="p-3 bg-orange-50 text-orange-600 rounded-xl shrink-0">
             <FiSliders className="w-5 h-5" />
@@ -60,7 +60,7 @@ const AdminParametres = () => {
           </div>
         </div>
 
-        {/* Section 3: Backup */}
+        {}
         <div className="flex gap-4 items-start pb-5 border-b border-slate-100">
           <div className="p-3 bg-orange-50 text-orange-600 rounded-xl shrink-0">
             <FiDatabase className="w-5 h-5" />
@@ -85,7 +85,7 @@ const AdminParametres = () => {
           </div>
         </div>
 
-        {/* Section 4: App Info */}
+        {}
         <div className="flex gap-4 items-start">
           <div className="p-3 bg-orange-50 text-orange-600 rounded-xl shrink-0">
             <FiInfo className="w-5 h-5" />

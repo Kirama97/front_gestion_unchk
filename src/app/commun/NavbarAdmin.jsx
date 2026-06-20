@@ -33,7 +33,7 @@ const NavbarAdmin = () => {
     return () => window.removeEventListener('user-profile-updated', handleUserUpdate)
   }, [])
   
-    // Refs for click-outside
+    
     const profileRef = useRef(null)
     const notificationsRef = useRef(null)
     const messagesRef = useRef(null)
@@ -57,7 +57,7 @@ const NavbarAdmin = () => {
         </div>
      
          
-         {/* Profile Dropdown */}
+         {}
          <div className="relative" ref={profileRef}>
            <button
              onClick={() => {
@@ -92,7 +92,7 @@ const NavbarAdmin = () => {
              <FiChevronDown className="hidden lg:block w-4 h-4 text-slate-400" />
            </button>
          
-            {/* Profile Dropdown Menu */}
+            {}
             {isProfileDropdownOpen && (
               <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-xl ring-1 ring-black/5 animate-in fade-in slide-in-from-top-3 duration-200">
                 <div className="px-3 py-2 border-b border-slate-100">

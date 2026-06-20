@@ -15,13 +15,13 @@ const TuteurBilan = () => {
   const [loading, setLoading] = useState(true)
   const [loadingDetails, setLoadingDetails] = useState(false)
   
-  // Bilan modal state
+  
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showBilanModal, setShowBilanModal] = useState(false)
   const [bilanReport, setBilanReport] = useState('')
   const [savingBilan, setSavingBilan] = useState(false)
 
-  // Load tutor's classes
+  
   useEffect(() => {
     const fetchTutorClasses = async () => {
       try {
@@ -42,7 +42,7 @@ const TuteurBilan = () => {
     fetchTutorClasses()
   }, [])
 
-  // Load students and their grades when selectedClass changes
+  
   useEffect(() => {
     if (!selectedClass) return
     const fetchClassData = async () => {
@@ -51,7 +51,7 @@ const TuteurBilan = () => {
         const classStudents = await apiGet(`/api/etudiants/classe/${selectedClass.id}`)
         setStudents(classStudents)
         
-        // Fetch grades for each student to calculate averages
+        
         const gradesMap = {}
         await Promise.all(
           classStudents.map(async (student) => {
@@ -75,7 +75,7 @@ const TuteurBilan = () => {
     fetchClassData()
   }, [selectedClass])
 
-  // Helper to calculate student average grade
+  
   const getStudentAverage = (studentId) => {
     const notes = studentGrades[studentId] || []
     if (notes.length === 0) return null
@@ -83,7 +83,7 @@ const TuteurBilan = () => {
     return Number((sum / notes.length).toFixed(2))
   }
 
-  // Helper to determine academic status based on average
+  
   const getStatusByAverage = (avg) => {
     if (avg === null) return { label: 'Aucune note', color: 'bg-slate-100 text-slate-500 border-slate-200' }
     if (avg >= 16) return { label: 'Excellent', color: 'bg-green-100 text-green-700 border-green-200' }
@@ -92,7 +92,7 @@ const TuteurBilan = () => {
     return { label: 'En difficulté', color: 'bg-red-100 text-red-700 border-red-200' }
   }
 
-  // Open the Bilan evaluation modal
+  
   const openBilanModal = (student) => {
     setSelectedStudent(student)
     const storedBilan = localStorage.getItem(`tutor_bilan_${student.id}`)
@@ -100,7 +100,7 @@ const TuteurBilan = () => {
     setShowBilanModal(true)
   }
 
-  // Save Bilan Evaluation Report
+  
   const handleSaveBilan = async (e) => {
     e.preventDefault()
     setSavingBilan(true)
@@ -115,7 +115,7 @@ const TuteurBilan = () => {
     }
   }
 
-  // Calculate statistics for the class
+  
   const getClassStats = () => {
     if (students.length === 0) return { avg: 0, passRate: 0, difficulties: 0 }
     
@@ -309,7 +309,7 @@ const TuteurBilan = () => {
           subtitle={`Classe : ${selectedClass?.nom} — INE : ${selectedStudent.ine}`}
         >
           <div className="space-y-5">
-            {/* Academic Notes Summary */}
+            {}
             <div>
               <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Relevé de notes récent</h4>
               {(!studentGrades[selectedStudent.id] || studentGrades[selectedStudent.id].length === 0) ? (
@@ -328,7 +328,7 @@ const TuteurBilan = () => {
               )}
             </div>
 
-            {/* Bilan Report form */}
+            {}
             <form onSubmit={handleSaveBilan} className="space-y-4 pt-3 border-t">
               <div>
                 <label className="text-[10px] font-bold text-slate-400 uppercase">Appréciation et Bilan du Tuteur</label>

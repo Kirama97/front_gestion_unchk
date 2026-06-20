@@ -16,17 +16,17 @@ export default function DetailSequence() {
   const { showToast } = useToast();
   const { id, sequenceId } = useParams();
   
-  // Find the course
+  
   const cours = coursesData.find((c) => c.id === Number(id)) || coursesData[0];
   
-  // Find the sequence
+  
   const sequence = cours.sequences.find(
     (seq) => seq.id === Number(sequenceId)
   ) || cours.sequences[0];
 
   const [isCompleted, setIsCompleted] = useState(false);
 
-  // Load completion state from localStorage
+  
   useEffect(() => {
     if (cours && sequence) {
       const completed = localStorage.getItem(`seq-completed-${cours.id}-${sequence.id}`);
@@ -50,7 +50,7 @@ export default function DetailSequence() {
 
   return (
     <div className="w-full animate-fadeIn">
-      {/* Title & Duration */}
+      {}
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b pb-4 gap-3">
         <div>
           <span className="text-[10px] font-bold text-orange-500 uppercase tracking-widest bg-orange-50 px-2 py-1 rounded">
@@ -69,7 +69,7 @@ export default function DetailSequence() {
         )}
       </div>
 
-      {/* VIDEO SECTION (Optional) */}
+      {}
       {sequence.videoUrl && (
         <div className="mt-6">
           <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Cours vidéo</h3>
@@ -84,7 +84,7 @@ export default function DetailSequence() {
         </div>
       )}
 
-      {/* OBJECTIVES */}
+      {}
       {sequence.objectifs && sequence.objectifs.length > 0 && (
         <div className="mt-6 bg-slate-50/50 border border-slate-100 rounded-2xl p-5">
           <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
@@ -102,7 +102,7 @@ export default function DetailSequence() {
         </div>
       )}
 
-      {/* CONTENT */}
+      {}
       <div className="mt-6">
         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Contenu de la leçon</h3>
         <div className="prose prose-slate max-w-none text-slate-600 text-sm leading-relaxed whitespace-pre-line bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
@@ -110,7 +110,7 @@ export default function DetailSequence() {
         </div>
       </div>
 
-      {/* ATTACHMENTS (Optional) */}
+      {}
       {sequence.ressources && sequence.ressources.length > 0 && (
         <div className="mt-6">
           <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Supports complémentaires</h3>
@@ -133,7 +133,7 @@ export default function DetailSequence() {
         </div>
       )}
 
-      {/* COMPLETED BUTTON */}
+      {}
       <div className="mt-8 border-t pt-6 flex justify-end">
         <button
           onClick={handleComplete}

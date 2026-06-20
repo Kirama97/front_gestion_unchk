@@ -23,7 +23,7 @@ const NotificationsPage = () => {
 
   const markAsRead = async (id) => {
     try {
-      // Mark read in backend
+      
       const res = await fetch(`http://localhost:8080/api/notifications/${id}/read`, {
         method: 'PUT',
         headers: {
@@ -32,7 +32,7 @@ const NotificationsPage = () => {
       })
       if (!res.ok) throw new Error()
       
-      // Update UI state
+      
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, lu: true } : n))
       showToast("Notification marquée comme lue.", "success")
     } catch (err) {

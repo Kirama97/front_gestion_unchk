@@ -16,7 +16,7 @@ const AdminPlanning = () => {
   const [loadingSched, setLoadingSched] = useState(false)
   const [saving, setSaving] = useState(false)
 
-  // Modal State
+  
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingSlot, setEditingSlot] = useState(null)
   const [selectedCourseId, setSelectedCourseId] = useState('')
@@ -39,7 +39,7 @@ const AdminPlanning = () => {
     return dayStr
   }
 
-  // 1. Fetch Classes & Courses
+  
   useEffect(() => {
     const fetchConfig = async () => {
       try {
@@ -52,7 +52,7 @@ const AdminPlanning = () => {
         setClasses(cls)
         setCourses(allCourses)
 
-        // Select default class
+        
         let defClass = cls[0]
         if (filiereId) {
           const matching = cls.find(c => c.filiere?.id === Number(filiereId))
@@ -70,7 +70,7 @@ const AdminPlanning = () => {
     fetchConfig()
   }, [filiereId])
 
-  // 2. Fetch timetable items for selected class
+  
   const loadSchedule = async () => {
     if (!selectedClasse) return
     try {
@@ -190,7 +190,7 @@ const AdminPlanning = () => {
 
   return (
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* Header */}
+      {}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-800 tracking-tight">Emplois du Temps</h1>
@@ -214,7 +214,7 @@ const AdminPlanning = () => {
         </button>
       </div>
 
-      {/* Select class filter */}
+      {}
       <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
         <div className="flex flex-col gap-1 w-full max-w-xs">
           <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Sélectionner une classe</label>
@@ -230,7 +230,7 @@ const AdminPlanning = () => {
         </div>
       </div>
 
-      {/* Weekly Grid */}
+      {}
       {loadingSched ? (
         <div className="py-20 text-center text-slate-400 font-semibold text-xs animate-pulse">
           Chargement du planning de la classe...
@@ -256,7 +256,7 @@ const AdminPlanning = () => {
                             {slot.time}
                           </span>
                           
-                          {/* Actions */}
+                          {}
                           <div className="opacity-0 group-hover:opacity-100 flex gap-1.5 transition duration-155">
                             <button 
                               onClick={() => handleEditClick(slot.id)}
@@ -291,11 +291,11 @@ const AdminPlanning = () => {
         </div>
       )}
 
-      {/* Plan course modal */}
+      {}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-200">
-            {/* Header */}
+            {}
             <div className="bg-slate-50 px-5 py-4 border-b border-slate-100 flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
@@ -313,7 +313,7 @@ const AdminPlanning = () => {
               </button>
             </div>
 
-            {/* Success message banner */}
+            {}
             {success && (
               <div className="bg-emerald-50 border-b border-emerald-100 px-5 py-3 flex items-center gap-2 text-[10px] font-bold text-emerald-700">
                 <FiCheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -321,7 +321,7 @@ const AdminPlanning = () => {
               </div>
             )}
 
-            {/* Form */}
+            {}
             <form onSubmit={handleAddSchedule} className="p-5 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Matière & Enseignant *</label>

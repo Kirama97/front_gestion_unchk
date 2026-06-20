@@ -4,14 +4,14 @@ import { FiSliders, FiBell, FiLock, FiGlobe, FiInfo } from 'react-icons/fi'
 const ParametreEnseignant = () => {
   return (
     <div className="w-full px-[5%] sm:px-[10%] py-10 animate-fadeIn">
-      {/* Header */}
+      {}
       <div className="mb-8">
         <h1 className="text-2xl font-black text-slate-800 tracking-tight">Paramètres</h1>
         <p className="text-xs text-slate-500 font-medium">Gérez vos options de notification et de sécurité de compte.</p>
       </div>
 
       <div className="max-w-2xl mx-auto bg-white border border-slate-200/80 rounded-2xl shadow-sm p-6 flex flex-col gap-6">
-        {/* Section 1: Notifications */}
+        {}
         <div className="flex gap-4 items-start pb-5 border-b border-slate-100">
           <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl shrink-0">
             <FiBell className="w-5 h-5" />
@@ -32,7 +32,7 @@ const ParametreEnseignant = () => {
           </div>
         </div>
 
-        {/* Section 2: Security */}
+        {}
         <div className="flex gap-4 items-start pb-5 border-b border-slate-100">
           <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl shrink-0">
             <FiLock className="w-5 h-5" />
@@ -53,7 +53,7 @@ const ParametreEnseignant = () => {
           </div>
         </div>
 
-        {/* Section 3: App info */}
+        {}
         <div className="flex gap-4 items-start">
           <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl shrink-0">
             <FiInfo className="w-5 h-5" />

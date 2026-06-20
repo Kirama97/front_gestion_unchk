@@ -37,17 +37,17 @@ const PageNonAutorisé = () => {
   return (
    <div className="w-full h-screen bg-[url('/not_found.png')] bg-cover bg-center flex items-center justify-center font-sans px-4">
 
-  {/* overlay pour améliorer lisibilité */}
+  {}
   <div className="absolute inset-0 bg-black/40"></div>
 
   <div className="relative max-w-md w-full bg-white/10 backdrop-blur-md border border-slate-200/70 rounded-2xl shadow-xl p-8 text-center flex flex-col items-center gap-6">
 
-    {/* Icon */}
+    {}
     <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center text-red-500 text-3xl shadow-sm">
       <SiSpringsecurity />
     </div>
 
-    {/* Text */}
+    {}
     <div>
       <h1 className="text-2xl font-bold text-red-500">
         Accès non autorisé
@@ -58,7 +58,7 @@ const PageNonAutorisé = () => {
       </p>
     </div>
 
-    {/* Buttons */}
+    {}
     <div className="w-full pt-4 border-t border-slate-100 flex flex-col gap-3">
 
       <button

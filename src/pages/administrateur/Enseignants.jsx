@@ -15,10 +15,10 @@ const Enseignants = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Search state
+  
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Form modal state
+  
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     nom: '',
@@ -59,13 +59,13 @@ const Enseignants = () => {
     try {
       const payload = {
         ...form,
-        role: 'ENSEIGNANT' // Enforce teacher role
+        role: 'ENSEIGNANT' 
       };
 
       await apiPost('/api/personnel', payload);
       showToast("Le compte enseignant a été créé avec succès.", "success");
       setShowForm(false);
-      // Reset form
+      
       setForm({
         nom: '',
         prenom: '',
@@ -100,7 +100,7 @@ const Enseignants = () => {
     }
   };
 
-  // Filter teachers based on search term
+  
   const filteredEnseignants = enseignants.filter((t) => {
     const searchString = `${t.prenom || ''} ${t.nom || ''} ${t.email || ''} ${t.departement || ''}`.toLowerCase();
     return searchString.includes(searchTerm.toLowerCase());
@@ -117,7 +117,7 @@ const Enseignants = () => {
   return (
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
       
-      {/* HEADER SECTION */}
+      {}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-800 tracking-tight">Gestion des Enseignants</h1>

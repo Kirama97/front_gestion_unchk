@@ -14,7 +14,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
-          {/* Logo */}
+          {}
           <div className="col-span-2">
             <img
               src="/unchk_icon.png"
@@ -28,7 +28,7 @@ const Footer = () => {
 
      
 
-          {/* Réseaux sociaux */}
+          {}
           <div>
             <h3 className="text-md font-semibold mb-4">
               Suivez-nous

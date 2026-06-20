@@ -18,7 +18,7 @@ const CourrierList = () => {
     try {
       setLoading(true)
       const data = await apiGet('/api/documents')
-      // Only keep courriers
+      
       const courriers = data.filter(d => d.type === 'COURRIER_ARRIVE' || d.type === 'COURRIER_DEPART')
       setDocuments(courriers)
     } catch (err) {
@@ -58,7 +58,7 @@ const CourrierList = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* List Column */}
+      {}
       <div className="lg:col-span-2 flex flex-col gap-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
@@ -151,7 +151,7 @@ const CourrierList = () => {
         )}
       </div>
 
-      {/* Form Column (For Admin only) */}
+      {}
       <div className="lg:col-span-1">
         {isAdmin ? (
           <CourrierForm onSave={fetchDocuments} editingDoc={editingDoc} setEditingDoc={setEditingDoc} />

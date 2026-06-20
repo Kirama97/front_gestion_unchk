@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
   PiStudent,
   PiChalkboardTeacher,
-  PiBriefcase,        // ← remplace PiUserTie
+  PiBriefcase,        
   PiCalendarCheck,
   PiCalendarDotsLight ,
   PiNotebook,
@@ -23,7 +23,7 @@ import {
   PiCaretRight,
   PiCaretDown,
 } from 'react-icons/pi'
-// ─── Données (à remplacer par API) ────────────────────────────────────────
+
 const PROMOS = [
   {
     id: 1,
@@ -47,7 +47,7 @@ const PROMOS = [
   }
 ]
 
-// ─── Filière ───────────────────────────────────────────────────────────────
+
 const FiliereItem = ({ filiere }) => {
   const [open, setOpen] = useState(false)
 
@@ -76,7 +76,7 @@ const FiliereItem = ({ filiere }) => {
   )
 }
 
-// ─── Promo ─────────────────────────────────────────────────────────────────
+
 const PromoItem = ({ promo }) => {
   const [open, setOpen] = useState(false)
 
@@ -104,7 +104,7 @@ const PromoItem = ({ promo }) => {
   )
 }
 
-// ─── Lien simple ───────────────────────────────────────────────────────────
+
 const NavLink = ({ to, icon, label }) => (
   <Link
     to={to}
@@ -115,7 +115,7 @@ const NavLink = ({ to, icon, label }) => (
   </Link>
 )
 
-// ─── Section principale collapsible ───────────────────────────────────────
+
 const SideSection = ({ icon: Icon, label, children }) => {
   const [open, setOpen] = useState(false)
 
@@ -147,12 +147,12 @@ const SideSection = ({ icon: Icon, label, children }) => {
   )
 }
 
-// ─── Aside principal ───────────────────────────────────────────────────────
+
 const AsideAdminMobile = () => {
   return (
     <aside className="aside_admin w-64 h-[92vh]  bg-white border-r border-slate-200 p-4 flex flex-col gap-4 max-md:hidden overflow-y-auto">
 
-      {/* Logo */}
+      {}
       <div className="px-2 py-1 border-b border-slate-100 pb-4">
         <p className="text-base font-bold text-orange-600">Admin Panel</p>
         <p className="text-[10px] text-slate-400">Gestion académique</p>
@@ -163,7 +163,7 @@ const AsideAdminMobile = () => {
           Menu Principal
         </span>
 
-        {/* Étudiants */}
+        {}
         <SideSection icon={PiStudent} label="Étudiants">
           {PROMOS.map((promo) => (
             <PromoItem key={promo.id} promo={promo} />
@@ -171,14 +171,14 @@ const AsideAdminMobile = () => {
           <NavLink to="/admin/etudiants/promo/nouvelle" icon={<PiPlusCircle />} label="Nouvelle promo" />
         </SideSection>
 
-        {/* Enseignants */}
+        {}
         <SideSection icon={PiChalkboardTeacher} label="Enseignants">
           <NavLink to="/admin/enseignants" icon={<PiListBullets />} label="Liste des enseignants" />
           <NavLink to="/admin/enseignants/ajouter" icon={<PiUserPlus />} label="Ajouter un enseignant" />
           <NavLink to="/admin/enseignants/matieres" icon={<PiBooks />} label="Matières assignées" />
         </SideSection>
 
-        {/* Tuteurs */}
+        {}
        <SideSection icon={PiBriefcase} label="Tuteurs">
           <NavLink to="/admin/tuteurs" icon={<PiListBullets />} label="Liste des tuteurs" />
           <NavLink to="/admin/tuteurs/ajouter" icon={<PiUserPlus />} label="Ajouter un tuteur" />
@@ -186,14 +186,14 @@ const AsideAdminMobile = () => {
           <NavLink to="/admin/tuteurs/groupes" icon={<PiUsersFour />} label="Groupes de suivi" />
         </SideSection>
 
-        {/* Réunion / Planning */}
+        {}
         <SideSection icon={PiCalendarCheck} label="Réunion / Planning">
           <NavLink to="/admin/reunions" icon={<PiListBullets />} label="Calendrier des réunions" />
           <NavLink to="/admin/reunions/nouvelle" icon={<PiCalendarPlus />} label="Planifier une réunion" />
           <NavLink to="/admin/planning" icon={<PiTable />} label="Planning général" />
         </SideSection>
 
-        {/* Notes */}
+        {}
         <SideSection icon={PiNotebook} label="Notes & Évaluations">
           <NavLink to="/admin/notes" icon={<PiTable />} label="Tableau des notes" />
           <NavLink to="/admin/notes/saisir" icon={<PiPencilLine />} label="Saisir des notes" />
@@ -201,7 +201,7 @@ const AsideAdminMobile = () => {
         </SideSection>
       </div>
 
-      {/* Accès rapides */}
+      {}
       <div className="mt-auto border-t border-slate-100 pt-4 flex flex-col gap-1">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 mb-1">
           Accès rapide

@@ -12,7 +12,7 @@ const CourEtudiant = () => {
              <p className='text-sm text-neutral-500'>Bonjour Diene !👌</p>
         </div>
         
-          {/* les cours */}
+          {}
         <LesCours/>
       
         

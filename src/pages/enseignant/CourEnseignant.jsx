@@ -11,7 +11,7 @@ const CourEnseignant = () => {
   const [expandedCourseId, setExpandedCourseId] = useState(null)
   const [sequencesByCourse, setSequencesByCourse] = useState({})
   
-  // Modal State for adding sequence
+  
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedCourseForSeq, setSelectedCourseForSeq] = useState(null)
   const [newSeqTitle, setNewSeqTitle] = useState('')
@@ -31,7 +31,7 @@ const CourEnseignant = () => {
         const data = await apiGet(`/api/cours/enseignant/${user.id}`)
         setCourses(data)
         
-        // Fetch sequences for each course
+        
         const seqsMap = {}
         const seqPromises = data.map(async (c) => {
           try {
@@ -60,10 +60,10 @@ const CourEnseignant = () => {
   }
 
   const openAddSequenceModal = (course, e) => {
-    e.stopPropagation() // Prevent card toggle
+    e.stopPropagation() 
     setSelectedCourseForSeq(course)
     setShowAddModal(true)
-    // reset form
+    
     setNewSeqTitle('')
     setNewSeqDesc('')
     setNewSeqStartDate('')
@@ -88,7 +88,7 @@ const CourEnseignant = () => {
 
       const savedSeq = await apiPost(`/api/cours/${selectedCourseForSeq.id}/sequences`, payload)
       
-      // Update local state
+      
       setSequencesByCourse(prev => ({
         ...prev,
         [selectedCourseForSeq.id]: [...(prev[selectedCourseForSeq.id] || []), savedSeq]
@@ -132,7 +132,7 @@ const CourEnseignant = () => {
 
   return (
     <div className="w-full px-[5%] sm:px-[10%] py-10 animate-fadeIn">
-      {/* Page Header */}
+      {}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-800 tracking-tight">Mes Enseignements</h1>
@@ -140,7 +140,7 @@ const CourEnseignant = () => {
         </div>
       </div>
 
-      {/* Courses List */}
+      {}
       <div className="flex flex-col gap-4 max-w-5xl mx-auto">
         {courses.length > 0 ? (
           courses.map((course) => {
@@ -155,7 +155,7 @@ const CourEnseignant = () => {
                   isExpanded ? 'border-emerald-500/30 ring-1 ring-emerald-500/10' : 'border-slate-200/80'
                 }`}
               >
-                {/* Course Header Bar (Clickable) */}
+                {}
                 <div 
                   onClick={() => toggleExpand(course.id)}
                   className="p-5 sm:p-6 flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/50 transition duration-150"
@@ -189,7 +189,7 @@ const CourEnseignant = () => {
                   </div>
                 </div>
 
-                {/* Expanded Content: Sequences List */}
+                {}
                 {isExpanded && (
                   <div className="border-t border-slate-100 bg-slate-50/30 p-5 sm:p-6 animate-in slide-in-from-top-2 duration-200">
                     <div className="flex items-center justify-between mb-4">

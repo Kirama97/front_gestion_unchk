@@ -11,13 +11,13 @@ const ProfilAcademique = ({ profile }) => {
 
   return (
     <>
-      {/* Titre de section */}
+      {}
       <div className="max-w-5xl mx-auto mb-6">
         <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">Profil Académique</h2>
         <p className="text-xs text-slate-400 font-medium mt-0.5">Vos informations académiques et administratives.</p>
       </div>
 
-      {/* Grille de StatCards */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 max-w-5xl mx-auto mb-12">
         <StatCard 
           icon={FiAward} 

@@ -7,9 +7,9 @@ import { useToast } from '../../context/ToastContext'
 const AdminNotes = () => {
   const { showToast } = useToast()
   const { filiereId } = useParams()
-  const [activeTab, setActiveTab] = useState('tableau') // 'tableau' | 'saisir' | 'bulletins'
+  const [activeTab, setActiveTab] = useState('tableau') 
 
-  // Common Academic lists
+  
   const [promotions, setPromotions] = useState([])
   const [filieres, setFilieres] = useState([])
   const [classes, setClasses] = useState([])
@@ -18,26 +18,26 @@ const AdminNotes = () => {
   const [students, setStudents] = useState([])
   const [allNotes, setAllNotes] = useState([])
 
-  // Selection states for Tab 1 (Tableau des Notes)
+  
   const [filterPromo, setFilterPromo] = useState('Toutes')
   const [filterFiliere, setFilterFiliere] = useState(filiereId || 'Toutes')
   const [searchStudent, setSearchStudent] = useState('')
 
-  // Selection states for Tab 2 (Saisie Administrative)
+  
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [selectedSequenceId, setSelectedSequenceId] = useState('')
   const [evalType, setEvalType] = useState('DEVOIR')
   const [session, setSession] = useState('Principale')
   const [sequences, setSequences] = useState([])
-  const [inputGrades, setInputGrades] = useState({}) // studentId -> grade string
-  const [existingGrades, setExistingGrades] = useState({}) // studentId -> { noteId, value }
+  const [inputGrades, setInputGrades] = useState({}) 
+  const [existingGrades, setExistingGrades] = useState({}) 
   
-  // UI States
+  
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [statusMessage, setStatusMessage] = useState({ type: '', text: '' })
 
-  // Load initial configurations
+  
   useEffect(() => {
     const loadConfig = async () => {
       try {
@@ -71,7 +71,7 @@ const AdminNotes = () => {
     loadConfig()
   }, [])
 
-  // Load sequences for selected course in Tab 2
+  
   useEffect(() => {
     if (!selectedCourse) return
     const fetchSequences = async () => {
@@ -94,7 +94,7 @@ const AdminNotes = () => {
     fetchSequences()
   }, [selectedCourse])
 
-  // Load students & existing grades for Tab 2
+  
   useEffect(() => {
     if (!selectedCourse || activeTab !== 'saisir') return
 
@@ -140,7 +140,7 @@ const AdminNotes = () => {
     loadSaisieGrid()
   }, [selectedCourse, selectedSequenceId, evalType, session, activeTab])
 
-  // Load students directory for Tab 3 (Bulletins)
+  
   useEffect(() => {
     if (activeTab === 'bulletins') {
       const fetchAllStudents = async () => {
@@ -201,7 +201,7 @@ const AdminNotes = () => {
       await Promise.all(savePromises)
       setStatusMessage({ type: 'success', text: 'Notes enregistrées avec succès dans la base de données.' })
 
-      // Refresh notes list
+      
       const notesList = await apiGet('/api/notes')
       setAllNotes(notesList)
     } catch (err) {
@@ -447,7 +447,7 @@ const AdminNotes = () => {
             </div>
           </div>
 
-          {/* Feedback banner */}
+          {}
           {statusMessage.text && (
             <div className={`p-4 rounded-xl border flex items-center gap-2.5 text-xs font-semibold ${
               statusMessage.type === 'success' ? 'bg-emerald-50 text-emerald-800 border-emerald-100' : 'bg-red-50 text-red-800 border-red-100'
@@ -457,7 +457,7 @@ const AdminNotes = () => {
             </div>
           )}
 
-          {/* Saisie Grid */}
+          {}
           <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Effectif : {students.length} élèves</span>
@@ -537,10 +537,10 @@ const AdminNotes = () => {
         </div>
       )}
 
-      {/* Tab 3: Bulletins de notes */}
+      {}
       {activeTab === 'bulletins' && (
         <div className="flex flex-col gap-4">
-          {/* Search bar */}
+          {}
           <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm flex gap-4">
             <div className="relative flex-1">
               <FiSearch className="absolute left-3 top-3 text-slate-400 w-3.5 h-3.5" />
@@ -552,7 +552,7 @@ const AdminNotes = () => {
             </div>
           </div>
 
-          {/* Student list for bulletins */}
+          {}
           <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">

@@ -65,7 +65,7 @@ function App() {
           element: <PageNonAutorisé />
         },
 
-        // route administration
+        
         {
           path: "/admin",
           element : (
@@ -106,7 +106,7 @@ function App() {
           ]
         },
 
-        // route etudiant
+        
        {
           path: "/etudiant",
           element: (
@@ -138,7 +138,7 @@ function App() {
             },
           ],
         },
-        // route enseignant
+        
         {
           path: "/enseignant",
           element : (
@@ -156,7 +156,7 @@ function App() {
                 { path: "parametre", element: <ParametreEnseignant /> },
           ]
         },
-        // route tuteur
+        
         {
           path: "/tuteur",
           element : (
@@ -174,7 +174,7 @@ function App() {
                 { path: "profil", element: <ProfilTuteur /> },
           ]
         },
-        // route insertion
+        
         {
           path: "/insertion",
           element : (
@@ -189,7 +189,7 @@ function App() {
             { path: "notifications", element: <NotificationsPage /> }
           ]
         },
-        // wildcards
+        
         {
           path: "*",
           element: <NotFoundPage />

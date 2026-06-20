@@ -26,28 +26,28 @@ export default function NotesEtudiant() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedCourseId, setExpandedCourseId] = useState(null);
-  const [filterStatut, setFilterStatut] = useState("Tous"); // "Tous" | "Validé" | "Rattrapage" | "En cours"
+  const [filterStatut, setFilterStatut] = useState("Tous"); 
   const [showModalBulletin, setShowModalBulletin] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-  // Helper to calculate course average
+  
   const calculateCourseAverage = (course) => {
     if (course.statut === "En cours" && !course.examen) return null;
 
-    // Average TDs
+    
     const tdSum = course.tds.reduce((acc, td) => acc + (td.note || 0) * td.coef, 0);
     const tdCoefSum = course.tds.reduce((acc, td) => acc + td.coef, 0);
     const tdAvg = tdCoefSum > 0 ? tdSum / tdCoefSum : null;
 
-    // Average Devoirs
+    
     const devoirSum = course.devoirs.reduce((acc, dev) => acc + (dev.note || 0) * dev.coef, 0);
     const devoirCoefSum = course.devoirs.reduce((acc, dev) => acc + dev.coef, 0);
     const devoirAvg = devoirCoefSum > 0 ? devoirSum / devoirCoefSum : null;
 
-    // Exam
+    
     const examNote = course.examen?.note;
 
-    // Formula: 30% TDs + 30% Devoirs + 40% Exam
+    
     if (examNote !== undefined && examNote !== null) {
       const tAvg = tdAvg !== null ? tdAvg : examNote;
       const dAvg = devoirAvg !== null ? devoirAvg : examNote;
@@ -69,7 +69,7 @@ export default function NotesEtudiant() {
         setLoading(true);
         const notesList = await apiGet("/api/notes/me");
         
-        // Group notes by matiere
+        
         const matiereGroups = {};
         
         notesList.forEach(note => {
@@ -79,7 +79,7 @@ export default function NotesEtudiant() {
               id: mat.id,
               titre: mat.nom,
               tuteur: note.formation && note.formation.formateur ? `${note.formation.formateur.prenom} ${note.formation.formateur.nom}` : "Administration",
-              ects: 4, // Default ECTS per course
+              ects: 4, 
               statut: "En cours",
               examen: null,
               tds: [],
@@ -108,7 +108,7 @@ export default function NotesEtudiant() {
           }
         });
 
-        // Compute status for each course
+        
         const processed = Object.values(matiereGroups).map(course => {
           const avg = calculateCourseAverage(course);
           let status = "En cours";
@@ -133,24 +133,24 @@ export default function NotesEtudiant() {
     fetchNotes();
   }, []);
 
-  // Toggle expand/collapse card
+  
   const toggleExpand = (courseId) => {
     setExpandedCourseId(expandedCourseId === courseId ? null : courseId);
   };
 
-  // Filter courses
+  
   const filteredCourses = gradesData.filter((course) => {
     if (filterStatut === "Tous") return true;
     return course.statut === filterStatut;
   });
 
-  // Calculate semester average from completed modules
+  
   const completedCourses = gradesData.filter(c => c.statut !== "En cours");
   const semesterAverage = completedCourses.length > 0 
     ? Math.round((completedCourses.reduce((acc, course) => acc + (calculateCourseAverage(course) || 0), 0) / completedCourses.length) * 100) / 100
     : 0;
 
-  // Calculate ECTS credits
+  
   const totalEcts = gradesData.reduce((acc, c) => acc + c.ects, 0);
   const validatedEcts = gradesData
     .filter(c => c.statut === "Validé")
@@ -186,14 +186,14 @@ export default function NotesEtudiant() {
   return (
     <div className="w-full px-[5%] sm:px-[10%] py-10 animate-fadeIn">
       
-      {/* HEADER PAGE */}
+      {}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-800 tracking-tight">Mes Notes & Résultats</h1>
           <p className="text-xs text-slate-500 font-medium">Consultez vos relevés de notes et le détail de vos évaluations.</p>
         </div>
         
-        {/* DOWNLOAD BULLETIN BUTTON */}
+        {}
         <button
           onClick={() => setShowModalBulletin(true)}
           className="flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl shadow-lg shadow-orange-500/10 hover:shadow-orange-500/25 transition duration-200"
@@ -203,10 +203,10 @@ export default function NotesEtudiant() {
         </button>
       </div>
 
-      {/* DASHBOARD STATISTICS */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         
-        {/* GPA CARD */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex items-center gap-4">
           <div className="p-3.5 bg-orange-50 text-orange-500 rounded-xl">
             <FiTrendingUp className="w-6 h-6" />
@@ -223,7 +223,7 @@ export default function NotesEtudiant() {
           </div>
         </div>
 
-        {/* ECTS PROGRESS CARD */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex flex-col justify-center">
           <div className="flex justify-between items-center mb-2">
             <div>
@@ -240,7 +240,7 @@ export default function NotesEtudiant() {
           </div>
         </div>
 
-        {/* SUMMARY VALIDATED MODULES */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex items-center gap-4">
           <div className="p-3.5 bg-blue-50 text-blue-500 rounded-xl">
             <FiBook className="w-6 h-6" />
@@ -435,7 +435,7 @@ export default function NotesEtudiant() {
                             </div>
                           </div>
 
-                          {/* FORMULA & WARNING INFO */}
+                          {}
                           <div className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm">
                             <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                               <FiPercent className="text-orange-500" />

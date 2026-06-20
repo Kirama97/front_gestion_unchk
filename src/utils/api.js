@@ -51,7 +51,7 @@ async function request(endpoint, options = {}) {
       throw new Error(errorMessage);
     }
 
-    // Check content type before parsing json
+    
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       return await response.json();

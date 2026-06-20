@@ -13,7 +13,7 @@ const BudgetPage = () => {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
 
-  // Form state
+  
   const [formData, setFormData] = useState({
     annee: new Date().getFullYear(),
     type: 'PROJET_BUDGET',
@@ -102,7 +102,7 @@ const BudgetPage = () => {
     fetchBudgets()
   }, [])
 
-  // Calculate stats for current year
+  
   const currentYear = new Date().getFullYear()
   const yearBudgets = budgets.filter(b => b.annee === currentYear)
   const projected = yearBudgets.find(b => b.type === 'PROJET_BUDGET')?.montant || 0
@@ -112,16 +112,16 @@ const BudgetPage = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-h-[85vh] overflow-y-auto pr-2">
       
-      {/* Main Budget Dashboard */}
+      {}
       <div className="lg:col-span-2 flex flex-col gap-6">
         
-        {/* Header */}
+        {}
         <div>
           <h2 className="text-xl font-bold text-slate-800">Gestion Budgétaire</h2>
           <p className="text-xs text-slate-500 mt-0.5">Suivi financier de l'établissement pour l'exercice en cours.</p>
         </div>
 
-        {/* Stats Cards */}
+        {}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm flex items-center gap-3">
             <div className="p-2.5 bg-blue-50 text-blue-500 rounded-xl">
@@ -215,7 +215,7 @@ const BudgetPage = () => {
         </div>
       </div>
 
-      {/* Form Column (Admins only) */}
+      {}
       <div className="lg:col-span-1">
         {isAdmin ? (
           <form onSubmit={handleSubmit} className="bg-white p-5 border border-slate-100 rounded-2xl shadow-sm flex flex-col gap-4">

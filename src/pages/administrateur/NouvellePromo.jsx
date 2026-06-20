@@ -19,11 +19,11 @@ const NouvellePromo = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Form states
+  
   const [newPromoNom, setNewPromoNom] = useState('');
   const [newFiliere, setNewFiliere] = useState({ nom: '', code: '' });
 
-  // Edit states
+  
   const [editingPromoId, setEditingPromoId] = useState(null);
   const [editPromoNom, setEditPromoNom] = useState('');
   const [editingFiliereId, setEditingFiliereId] = useState(null);
@@ -70,7 +70,7 @@ const NouvellePromo = () => {
     loadData(true);
   }, []);
 
-  // ──────────────────── Promotions Handlers ────────────────────
+  
 
   const handleCreatePromo = async (e) => {
     e.preventDefault();
@@ -124,7 +124,7 @@ const NouvellePromo = () => {
     }
   };
 
-  // ──────────────────── Filières Handlers ────────────────────
+  
 
   const handleCreateFiliere = async (e) => {
     e.preventDefault();
@@ -202,23 +202,23 @@ const NouvellePromo = () => {
 
   return (
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* Title */}
+      {}
       <div>
         <h1 className="text-2xl font-black text-slate-800 tracking-tight">Gestion des Promotions & Filières</h1>
         <p className="text-xs text-slate-500 font-medium mt-0.5">Créez et configurez la structure académique de l'établissement.</p>
       </div>
 
-      {/* Main Grid */}
+      {}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        {/* PANEL 1: PROMOTIONS */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3 mb-1">
             <FiFolder className="text-orange-500 w-5 h-5" />
             <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Promotions</h2>
           </div>
 
-          {/* Form to add promo */}
+          {}
           <form onSubmit={handleCreatePromo} className="flex gap-2 mb-2">
             <input 
               type="text" 
@@ -236,7 +236,7 @@ const NouvellePromo = () => {
             </button>
           </form>
 
-          {/* Promotions list */}
+          {}
           <div className="flex flex-col gap-2 max-h-[45vh] overflow-y-auto pr-1">
             {promotions.length > 0 ? (
               promotions.map((promo) => (
@@ -269,14 +269,14 @@ const NouvellePromo = () => {
           </div>
         </div>
 
-        {/* PANEL 2: FILIERES */}
+        {}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3 mb-1">
             <FiBookOpen className="text-orange-500 w-5 h-5" />
             <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Filières</h2>
           </div>
 
-          {/* Form to add filiere */}
+          {}
           <form onSubmit={handleCreateFiliere} className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
             <input 
               type="text" 
@@ -301,7 +301,7 @@ const NouvellePromo = () => {
             </button>
           </form>
 
-          {/* Filières list */}
+          {}
           <div className="flex flex-col gap-2 max-h-[45vh] overflow-y-auto pr-1">
             {filieres.length > 0 ? (
               filieres.map((fil) => (

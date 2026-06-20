@@ -10,7 +10,7 @@ const AdminAjouterMembre = () => {
   const { filiereId } = useParams()
   const { showToast } = useToast()
 
-  // Determine role/type based on route URL
+  
   let memberType = 'etudiant'
   if (location.pathname.includes('enseignants')) {
     memberType = 'enseignant'
@@ -18,14 +18,14 @@ const AdminAjouterMembre = () => {
     memberType = 'tuteur'
   }
 
-  // Common form fields
+  
   const [nom, setNom] = useState('')
   const [prenom, setPrenom] = useState('')
   const [email, setEmail] = useState('')
   const [motDePasse, setMotDePasse] = useState('Passer123')
   const [telephone, setTelephone] = useState('')
   
-  // Student-specific fields
+  
   const [ine, setIne] = useState('')
   const [dateNaissance, setDateNaissance] = useState('')
   const [niveauEtude, setNiveauEtude] = useState('Licence 1')
@@ -37,11 +37,11 @@ const AdminAjouterMembre = () => {
   const [selectedFiliereId, setSelectedFiliereId] = useState(filiereId || '')
   const [selectedPromotionId, setSelectedPromotionId] = useState('')
 
-  // Teacher/Tutor specific fields
+  
   const [departement, setDepartement] = useState('Informatique')
   const [statut, setStatut] = useState('Actif')
 
-  // Dropdown lists
+  
   const [promotions, setPromotions] = useState([])
   const [filieres, setFilieres] = useState([])
   const [classes, setClasses] = useState([])
@@ -131,7 +131,7 @@ const AdminAjouterMembre = () => {
         setSuccess(`${memberType === 'enseignant' ? 'L\'enseignant' : 'Le tuteur'} a été créé avec succès !`)
       }
 
-      // Reset form
+      
       setNom('')
       setPrenom('')
       setEmail('')
@@ -142,7 +142,7 @@ const AdminAjouterMembre = () => {
 
       setTimeout(() => {
         setSuccess('')
-        // Go back
+        
         navigate(-1)
       }, 1500)
     } catch (err) {
@@ -159,7 +159,7 @@ const AdminAjouterMembre = () => {
 
   return (
     <div className="flex flex-col gap-6 max-h-[85vh] overflow-y-auto pr-2">
-      {/* Header */}
+      {}
       <div className="flex items-center gap-3">
         <button 
           onClick={() => navigate(-1)}
@@ -223,7 +223,7 @@ const AdminAjouterMembre = () => {
             </div>
           </div>
 
-          {/* Student Fields */}
+          {}
           {memberType === 'etudiant' && (
             <>
               <div className="flex items-center gap-2 border-b border-slate-100 pb-3 mt-4 mb-2">
@@ -364,7 +364,7 @@ const AdminAjouterMembre = () => {
             </>
           )}
 
-          {/* Save Button */}
+          {}
           <div className="flex justify-end gap-3 mt-6 border-t border-slate-100 pt-5">
             <button 
               type="button" 

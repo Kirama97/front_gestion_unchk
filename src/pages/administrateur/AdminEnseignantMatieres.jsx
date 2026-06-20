@@ -12,7 +12,7 @@ const AdminEnseignantMatieres = () => {
   const [loading, setLoading] = useState(true)
   const [success, setSuccess] = useState('')
 
-  // Assign Modal state
+  
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [selectedTeacherId, setSelectedTeacherId] = useState('')
   const [selectedMatiereId, setSelectedMatiereId] = useState('')
